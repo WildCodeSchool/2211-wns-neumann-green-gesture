@@ -12,10 +12,16 @@ COPY .npmrc .
 
 RUN pnpm i
 
-COPY src ./src
-COPY public ./public
 COPY tsconfig.json .
+COPY tsconfig.node.json .
+COPY vite.config.ts .
 COPY codegen.yml .
 COPY .env .
+
+COPY src ./src
+COPY public ./public
+COPY index.html .
+
+
 
 CMD pnpm start
