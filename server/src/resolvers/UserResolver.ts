@@ -42,7 +42,7 @@ export class UserResolver {
     });
   }
 
-  @Query(() => String)
+  @Mutation(() => String)
   async login(
     @Arg("data") { email, password }: UserInputLogin,
     @Ctx() { res }: ContextType

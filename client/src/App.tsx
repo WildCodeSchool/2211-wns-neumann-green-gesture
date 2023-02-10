@@ -1,32 +1,23 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
+import { Route, Routes } from "react-router-dom";
 import "./App.css";
 
-function App() {
-  const [count, setCount] = useState(0);
+// PAGES
+// - Auth
+// - Home
+// - Profile
+// - CreateGroup
+// - Challenge/:id
 
+function App() {
   return (
     <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <Routes>
+        <Route path="/auth" element={<h1>Authentication</h1>} />
+        <Route path="/" element={<h1>Home</h1>} />
+        <Route path="/profile" element={<h1>Profile</h1>} />
+        <Route path="/create-group" element={<h1>CreateGroup</h1>} />
+        <Route path="/challenge/:id" element={<h1>Challenge</h1>} />
+      </Routes>
     </div>
   );
 }
