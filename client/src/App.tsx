@@ -1,24 +1,29 @@
-import { Route, Routes } from "react-router-dom";
-import "./App.css";
-
-// PAGES
-// - Auth
-// - Home
-// - Profile
-// - CreateGroup
-// - Challenge/:id
+import { Navigate, Route, Routes } from "react-router-dom";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Challenge from "./pages/Challenge";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import NewGroup from "./pages/NewGroup";
+import Profile from "./pages/Profile";
+import Register from "./pages/Register";
 
 function App() {
+  const isAllowed = false;
   return (
-    <div className="App">
-      <Routes>
-        <Route path="/auth" element={<h1>Authentication</h1>} />
-        <Route path="/" element={<h1>Home</h1>} />
-        <Route path="/profile" element={<h1>Profile</h1>} />
-        <Route path="/create-group" element={<h1>CreateGroup</h1>} />
-        <Route path="/challenge/:id" element={<h1>Challenge</h1>} />
-      </Routes>
-    </div>
+    <Routes>
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+
+      {/* <Route
+        element={<ProtectedRoute isAllowed={isAllowed} redirectPath="/login" />}
+      > */}
+      <Route path="/" element={<Home />} />
+      <Route path="/profile" element={<Profile />} />
+      <Route path="/create-group" element={<NewGroup />} />
+      <Route path="/challenge/:id" element={<Challenge />} />
+      {/* </Route> */}
+      <Route path="*" element={<Navigate to="/" />} />
+    </Routes>
   );
 }
 
