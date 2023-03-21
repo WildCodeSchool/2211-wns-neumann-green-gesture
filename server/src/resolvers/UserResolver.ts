@@ -1,5 +1,5 @@
 import { ApolloError } from "apollo-server-errors";
-import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Ctx, Int, Mutation, Query, Resolver } from "type-graphql";
 import datasource from "../db";
 import User, {
   hashPassword,
@@ -21,6 +21,17 @@ export class UserResolver {
         groups: true,
       },
     });
+  }
+
+  @Query(() => User)
+  async getUserById(@Arg("id", () => Int) id: number): Promise<User> {
+    const user = await datasource
+      .getRepository(User)
+      .findOne({ where: { id } });
+
+    if (user === null) throw new ApolloError("user not found", "NOT_FOUND");
+
+    return user;
   }
 
   @Mutation(() => User)
@@ -47,7 +58,7 @@ export class UserResolver {
     });
   }
 
-  @Query(() => String)
+  @Mutation(() => String)
   async login(
     @Arg("data") { email, password }: UserInputLogin,
     @Ctx() { res }: ContextType
