@@ -15,7 +15,12 @@ import { ContextType } from "..";
 export class UserResolver {
   @Query(() => [User])
   async users(): Promise<User[]> {
-    return await datasource.getRepository(User).find();
+    return await datasource.getRepository(User).find({
+      relations: {
+        createdGroups: true,
+        groups: true,
+      },
+    });
   }
 
   @Mutation(() => User)
