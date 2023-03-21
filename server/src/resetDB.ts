@@ -1,4 +1,5 @@
 import datasource from "./db";
+import Group from "./entity/Group";
 import User, { hashPassword } from "./entity/User";
 
 async function resetDB(): Promise<void> {
@@ -8,28 +9,56 @@ async function resetDB(): Promise<void> {
   // delete all users in the database
   await datasource.getRepository(User).delete({});
 
-  // create a new user
-  await datasource.getRepository(User).save([
+  // create new users
+  const admin = await datasource.getRepository(User).save({
+    firstName: "Admin",
+    lastName: "Doe",
+    email: "admin@gmail.com",
+    password: await hashPassword("testtest"),
+    role: "admin",
+    subscriptionType: "partner",
+  });
+
+  const userFree = await datasource.getRepository(User).save({
+    firstName: "User",
+    lastName: "Free",
+    email: "user@gmail.com",
+    password: await hashPassword("testtest"),
+  });
+
+  const userPartner = await datasource.getRepository(User).save({
+    firstName: "User",
+    lastName: "Partner",
+    email: "partner@gmail.com",
+    password: await hashPassword("testtest"),
+    subscriptionType: "partner",
+  });
+
+  // delete all groups in the database
+  await datasource.getRepository(Group).delete({});
+
+  // create new groups
+  await datasource.getRepository(Group).save([
     {
-      firstName: "Admin",
-      lastName: "Doe",
-      email: "admin@gmail.com",
-      password: await hashPassword("testtest"),
-      role: "admin",
-      subscriptionType: "partner",
+      name: "GreenGesture 1",
+      startDate: "2016-01-25T10:10:10.555555",
+      endDate: "2020-01-25T10:10:10.555555",
+      author: admin,
+      users: [admin],
     },
     {
-      firstName: "User",
-      lastName: "Free",
-      email: "user@gmail.com",
-      password: await hashPassword("testtest"),
+      name: "GreenGesture 2",
+      startDate: "2016-01-25T10:10:10.555555",
+      endDate: "2020-01-25T10:10:10.555555",
+      author: userFree,
+      users: [admin, userFree],
     },
     {
-      firstName: "User",
-      lastName: "Partner",
-      email: "partner@gmail.com",
-      password: await hashPassword("testtest"),
-      subscriptionType: "partner",
+      name: "GreenGesture 3",
+      startDate: "2016-01-25T10:10:10.555555",
+      endDate: "2020-01-25T10:10:10.555555",
+      author: userPartner,
+      users: [admin, userFree, userPartner],
     },
   ]);
 
