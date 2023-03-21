@@ -1,7 +1,14 @@
 import { Field, InputType, ObjectType } from "type-graphql";
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  ManyToMany,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 import { IsEmail, MaxLength, MinLength } from "class-validator";
 import argon2, { Options, argon2id } from "argon2";
+import Group from "./Group";
 
 @Entity()
 @ObjectType()
@@ -33,6 +40,18 @@ class User {
   @Field()
   @Column({ default: "free", length: 155 })
   subscriptionType: string;
+
+  @Field(() => [Group])
+  @OneToMany(() => Group, (group) => group.author, {
+    cascade: true,
+  })
+  createdGroups?: Group[];
+
+  @Field(() => [Group])
+  @ManyToMany(() => Group, (group) => group.users, {
+    onDelete: "CASCADE",
+  })
+  groups?: Group[];
 }
 
 @InputType()
