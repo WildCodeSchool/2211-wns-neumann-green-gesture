@@ -25,6 +25,9 @@ async function start(): Promise<void> {
 
   const schema = await buildSchema({
     resolvers: [join(__dirname, "/resolvers/*.ts")],
+    validate: {
+      forbidUnknownValues: false,
+    },
     authChecker: async ({ context }: { context: ContextType }) => {
       const {
         req: { headers },

@@ -24,6 +24,10 @@ class Group {
   name: string;
 
   @Field()
+  @Column({ length: 255 })
+  challengeName: string;
+
+  @Field()
   @Column({ type: "timestamptz" })
   startDate: Date;
 
@@ -58,13 +62,29 @@ export class GroupInputCreation {
   name: string;
 
   @Field()
+  @MinLength(3)
+  @MaxLength(255)
+  challengeName: string;
+
+  @Field()
   startDate: Date;
 
   @Field()
   endDate: Date;
+
+  @Field(() => [Int])
+  participants: number[];
 }
 
-// @InputType() for adding ecoActions to a group
+@InputType()
+export class GroupInputAddOneUser {
+  @Field()
+  groupId: number;
+
+  @Field(() => Int)
+  userId: number;
+}
+
 @InputType()
 export class GroupInputAddEcoActions {
   @Field()

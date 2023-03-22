@@ -1,0 +1,9 @@
+query GetUserGroups {
+  getUserGroups {
+    id
+    name
+    startDate
+    endDate
+    challengeName
+  }
+}

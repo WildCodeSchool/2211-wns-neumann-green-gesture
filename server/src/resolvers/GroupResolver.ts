@@ -2,6 +2,7 @@ import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import datasource from "../db";
 import Group, {
   GroupInputAddEcoActions,
+  GroupInputAddOneUser,
   GroupInputCreation,
 } from "../entity/Group";
 import { ContextType } from "..";
@@ -18,31 +19,61 @@ export class GroupResolver {
   @Mutation(() => Group)
   async createGroup(
     @Arg("data")
-    { name, startDate, endDate }: GroupInputCreation,
+    {
+      name,
+      challengeName,
+      startDate,
+      endDate,
+      participants,
+    }: GroupInputCreation,
     @Ctx() { currentUser }: ContextType
   ): Promise<Group> {
+    // get users from participants
+    const participantUsers = await datasource
+      .getRepository(User)
+      .findBy({ id: In(participants) });
+
     return await datasource.getRepository(Group).save({
       name,
+      challengeName,
       startDate,
       endDate,
       author: currentUser,
-      users: [currentUser as User],
+      users: [currentUser as User, ...participantUsers],
     });
   }
 
-  /* @Authorized<UserSubscriptionType>([
+  @Authorized<UserSubscriptionType>([
     UserSubscriptionType.PARTNER,
     UserSubscriptionType.FREE,
-  ]) */
+  ])
+  @Mutation(() => Group)
+  async addUserToGroup(
+    @Arg("data") { groupId, userId }: GroupInputAddOneUser
+  ): Promise<Group> {
+    const group = await datasource
+      .getRepository(Group)
+      .findOne({ where: { id: groupId }, relations: { users: true } });
+
+    const user = await datasource
+      .getRepository(User)
+      .findOne({ where: { id: userId } });
+
+    if (group !== null && user !== null) {
+      group.users = [...group.users, user];
+      return await datasource.getRepository(Group).save(group);
+    }
+    throw new Error("Group or user not found");
+  }
+
+  @Authorized<UserSubscriptionType>([
+    UserSubscriptionType.PARTNER,
+    UserSubscriptionType.FREE,
+  ])
   @Mutation(() => Group)
   async addEcoActionsToGroup(
-    /* @Arg("groupId", () => Int) groupId: number,
-    @Arg("ecoActionIds", () => [Int]) ecoActionIds: number[] */
     @Arg("data") { groupId, ecoActionIds }: GroupInputAddEcoActions
   ): Promise<Group> {
-    console.log("groupId", groupId);
-    console.log("ecoActionIds", ecoActionIds);
-
     const group = await datasource
       .getRepository(Group)
       .findOneBy({ id: groupId });
@@ -66,5 +97,47 @@ export class GroupResolver {
         users: true,
       },
     });
+  }
+
+  @Authorized<UserSubscriptionType>([
+    UserSubscriptionType.PARTNER,
+    UserSubscriptionType.FREE,
+  ])
+  @Query(() => [Group])
+  async getUserGroups(@Ctx() { currentUser }: ContextType): Promise<Group[]> {
+    const res = await datasource.getRepository(User).findOne({
+      where: { id: currentUser?.id },
+      relations: {
+        groups: true,
+      },
+    });
+
+    if (res?.groups !== undefined) {
+      return res.groups;
+    }
+    throw new Error("User not found");
+  }
+
+  // Query to get one group by his groupId
+  @Authorized<UserSubscriptionType>([
+    UserSubscriptionType.PARTNER,
+    UserSubscriptionType.FREE,
+  ])
+  @Query(() => Group)
+  async getGroup(@Arg("groupId") groupId: number): Promise<Group> {
+    const res = await datasource.getRepository(Group).findOne({
+      where: { id: groupId },
+      relations: {
+        author: true,
+        users: true,
+        ecoActions: true,
+      },
+    });
+
+    if (res !== null) {
+      return res;
+    }
+
+    throw new Error("Group not found");
   }
 }

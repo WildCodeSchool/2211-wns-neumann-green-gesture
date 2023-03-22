@@ -20,6 +20,7 @@ export type EcoAction = {
   __typename?: 'EcoAction';
   author?: Maybe<User>;
   description: Scalars['String'];
+  groups: Array<Group>;
   id: Scalars['Float'];
   name: Scalars['String'];
 };
@@ -32,6 +33,8 @@ export type EcoActionInputCreation = {
 export type Group = {
   __typename?: 'Group';
   author: User;
+  challengeName: Scalars['String'];
+  ecoActions: Array<EcoAction>;
   endDate: Scalars['DateTime'];
   id: Scalars['Float'];
   name: Scalars['String'];
@@ -39,18 +42,31 @@ export type Group = {
   users: Array<User>;
 };
 
+export type GroupInputAddEcoActions = {
+  ecoActionIds: Array<Scalars['Int']>;
+  groupId: Scalars['Float'];
+};
+
 export type GroupInputCreation = {
+  challengeName: Scalars['String'];
   endDate: Scalars['DateTime'];
   name: Scalars['String'];
+  participants: Array<Scalars['Int']>;
   startDate: Scalars['DateTime'];
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
+  addEcoActionsToGroup: Group;
   createEcoAction: EcoAction;
   createGroup: Group;
   createUser: User;
   login: Scalars['String'];
+};
+
+
+export type MutationAddEcoActionsToGroupArgs = {
+  data: GroupInputAddEcoActions;
 };
 
 
@@ -79,6 +95,7 @@ export type Query = {
   getGroups: Array<Group>;
   getUserById: User;
   getUserEcoActions: Array<EcoAction>;
+  getUserGroups: Array<Group>;
   users: Array<User>;
 };
 
@@ -131,6 +148,11 @@ export type GetUserEcoActionsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetUserEcoActionsQuery = { __typename?: 'Query', getUserEcoActions: Array<{ __typename?: 'EcoAction', id: number, name: string, description: string, author?: { __typename?: 'User', firstName: string, lastName: string, email: string } | null }> };
+
+export type GetUserGroupsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetUserGroupsQuery = { __typename?: 'Query', getUserGroups: Array<{ __typename?: 'Group', id: number, name: string, startDate: any, endDate: any, challengeName: string }> };
 
 export type UsersQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -270,6 +292,44 @@ export function useGetUserEcoActionsLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type GetUserEcoActionsQueryHookResult = ReturnType<typeof useGetUserEcoActionsQuery>;
 export type GetUserEcoActionsLazyQueryHookResult = ReturnType<typeof useGetUserEcoActionsLazyQuery>;
 export type GetUserEcoActionsQueryResult = Apollo.QueryResult<GetUserEcoActionsQuery, GetUserEcoActionsQueryVariables>;
+export const GetUserGroupsDocument = gql`
+    query GetUserGroups {
+  getUserGroups {
+    id
+    name
+    startDate
+    endDate
+    challengeName
+  }
+}
+    `;
+
+/**
+ * __useGetUserGroupsQuery__
+ *
+ * To run a query within a React component, call `useGetUserGroupsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUserGroupsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUserGroupsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetUserGroupsQuery(baseOptions?: Apollo.QueryHookOptions<GetUserGroupsQuery, GetUserGroupsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetUserGroupsQuery, GetUserGroupsQueryVariables>(GetUserGroupsDocument, options);
+      }
+export function useGetUserGroupsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUserGroupsQuery, GetUserGroupsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetUserGroupsQuery, GetUserGroupsQueryVariables>(GetUserGroupsDocument, options);
+        }
+export type GetUserGroupsQueryHookResult = ReturnType<typeof useGetUserGroupsQuery>;
+export type GetUserGroupsLazyQueryHookResult = ReturnType<typeof useGetUserGroupsLazyQuery>;
+export type GetUserGroupsQueryResult = Apollo.QueryResult<GetUserGroupsQuery, GetUserGroupsQueryVariables>;
 export const UsersDocument = gql`
     query Users {
   users {

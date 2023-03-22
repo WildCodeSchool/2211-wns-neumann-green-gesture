@@ -42,6 +42,7 @@ async function resetDB(): Promise<void> {
   await datasource.getRepository(Group).save([
     {
       name: "GreenGesture 1",
+      challengeName: "Challenge 1",
       startDate: "2016-01-25T10:10:10.555555",
       endDate: "2020-01-25T10:10:10.555555",
       author: admin,
@@ -49,6 +50,7 @@ async function resetDB(): Promise<void> {
     },
     {
       name: "GreenGesture 2",
+      challengeName: "Challenge 2",
       startDate: "2016-01-25T10:10:10.555555",
       endDate: "2020-01-25T10:10:10.555555",
       author: userFree,
@@ -56,6 +58,7 @@ async function resetDB(): Promise<void> {
     },
     {
       name: "GreenGesture 3",
+      challengeName: "Challenge 3",
       startDate: "2016-01-25T10:10:10.555555",
       endDate: "2020-01-25T10:10:10.555555",
       author: userPartner,
