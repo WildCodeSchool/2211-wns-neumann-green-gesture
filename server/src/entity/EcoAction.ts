@@ -32,11 +32,11 @@ class EcoAction {
   })
   author?: User;
 
-  @Field(() => [Group])
+  @Field(() => [Group], { nullable: true })
   @ManyToMany(() => Group, (group) => group.ecoActions, {
     onDelete: "CASCADE",
   })
-  groups: Group[];
+  groups?: Group[];
 }
 
 @InputType()

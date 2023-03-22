@@ -57,7 +57,7 @@ class User {
   })
   createdGroups?: Group[];
 
-  @Field(() => [Group])
+  @Field(() => [Group], { nullable: true })
   @ManyToMany(() => Group, (group) => group.users, {
     onDelete: "CASCADE",
   })

@@ -2,7 +2,7 @@ import Layout from "../containers/Layout";
 import { useGetCurrentUserQuery } from "../gql/generated/schema";
 
 function Home() {
-  const data = useGetCurrentUserQuery();
+  const { data } = useGetCurrentUserQuery();
   console.log(data);
 
   return (

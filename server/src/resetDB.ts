@@ -35,42 +35,11 @@ async function resetDB(): Promise<void> {
     subscriptionType: "partner",
   });
 
-  // delete all groups in the database
-  await datasource.getRepository(Group).delete({});
-
-  // create new groups
-  await datasource.getRepository(Group).save([
-    {
-      name: "GreenGesture 1",
-      challengeName: "Challenge 1",
-      startDate: "2016-01-25T10:10:10.555555",
-      endDate: "2020-01-25T10:10:10.555555",
-      author: admin,
-      users: [admin],
-    },
-    {
-      name: "GreenGesture 2",
-      challengeName: "Challenge 2",
-      startDate: "2016-01-25T10:10:10.555555",
-      endDate: "2020-01-25T10:10:10.555555",
-      author: userFree,
-      users: [admin, userFree],
-    },
-    {
-      name: "GreenGesture 3",
-      challengeName: "Challenge 3",
-      startDate: "2016-01-25T10:10:10.555555",
-      endDate: "2020-01-25T10:10:10.555555",
-      author: userPartner,
-      users: [admin, userFree, userPartner],
-    },
-  ]);
-
   // delete all eco actions in the database
   await datasource.getRepository(EcoAction).delete({});
 
   // create new eco actions
-  await datasource.getRepository(EcoAction).save([
+  const ecoActions = await datasource.getRepository(EcoAction).save([
     {
       name: "EcoAction 1",
       description: "EcoAction 1 description",
@@ -84,6 +53,40 @@ async function resetDB(): Promise<void> {
     {
       name: "EcoAction 3",
       description: "EcoAction 3 description",
+    },
+  ]);
+
+  // delete all groups in the database
+  await datasource.getRepository(Group).delete({});
+
+  // create new groups
+  await datasource.getRepository(Group).save([
+    {
+      name: "GreenGesture 1",
+      challengeName: "Challenge 1",
+      startDate: "2016-01-25T10:10:10.555555",
+      endDate: "2020-01-25T10:10:10.555555",
+      author: admin,
+      users: [admin],
+      ecoActions,
+    },
+    {
+      name: "GreenGesture 2",
+      challengeName: "Challenge 2",
+      startDate: "2016-01-25T10:10:10.555555",
+      endDate: "2020-01-25T10:10:10.555555",
+      author: userFree,
+      users: [admin, userFree],
+      ecoActions,
+    },
+    {
+      name: "GreenGesture 3",
+      challengeName: "Challenge 3",
+      startDate: "2016-01-25T10:10:10.555555",
+      endDate: "2020-01-25T10:10:10.555555",
+      author: userPartner,
+      users: [admin, userFree, userPartner],
+      ecoActions,
     },
   ]);
 
