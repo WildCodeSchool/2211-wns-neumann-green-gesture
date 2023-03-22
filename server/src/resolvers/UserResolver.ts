@@ -1,5 +1,13 @@
 import { ApolloError } from "apollo-server-errors";
-import { Arg, Ctx, Int, Mutation, Query, Resolver } from "type-graphql";
+import {
+  Arg,
+  Authorized,
+  Ctx,
+  Int,
+  Mutation,
+  Query,
+  Resolver,
+} from "type-graphql";
 import datasource from "../db";
 import User, {
   hashPassword,
@@ -76,5 +84,11 @@ export class UserResolver {
     });
 
     return token;
+  }
+
+  @Authorized()
+  @Query(() => User)
+  async getCurrentUser(@Ctx() { currentUser }: ContextType): Promise<User> {
+    return currentUser as User;
   }
 }
