@@ -47,6 +47,11 @@ export type GroupInputAddEcoActions = {
   groupId: Scalars['Float'];
 };
 
+export type GroupInputAddOneUser = {
+  groupId: Scalars['Float'];
+  userId: Scalars['Int'];
+};
+
 export type GroupInputCreation = {
   challengeName: Scalars['String'];
   endDate: Scalars['DateTime'];
@@ -58,6 +63,7 @@ export type GroupInputCreation = {
 export type Mutation = {
   __typename?: 'Mutation';
   addEcoActionsToGroup: Group;
+  addUserToGroup: Group;
   createEcoAction: EcoAction;
   createGroup: Group;
   createUser: User;
@@ -67,6 +73,11 @@ export type Mutation = {
 
 export type MutationAddEcoActionsToGroupArgs = {
   data: GroupInputAddEcoActions;
+};
+
+
+export type MutationAddUserToGroupArgs = {
+  data: GroupInputAddOneUser;
 };
 
 
@@ -91,12 +102,19 @@ export type MutationLoginArgs = {
 
 export type Query = {
   __typename?: 'Query';
+  getCurrentUser: User;
   getFreeEcoActions: Array<EcoAction>;
+  getGroup: Group;
   getGroups: Array<Group>;
   getUserById: User;
   getUserEcoActions: Array<EcoAction>;
   getUserGroups: Array<Group>;
   users: Array<User>;
+};
+
+
+export type QueryGetGroupArgs = {
+  groupId: Scalars['Float'];
 };
 
 
@@ -131,6 +149,11 @@ export type UserInputSubscribe = {
   role?: InputMaybe<Scalars['String']>;
   subscriptionType?: InputMaybe<Scalars['String']>;
 };
+
+export type GetCurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetCurrentUserQuery = { __typename?: 'Query', getCurrentUser: { __typename?: 'User', role: string, email: string, firstName: string, id: number, lastName: string, subscriptionType: string, groups: Array<{ __typename?: 'Group', name: string, id: number, startDate: any, challengeName: string }>, createdEcoActions: Array<{ __typename?: 'EcoAction', name: string, id: number, description: string }> } };
 
 export type GetFreeEcoActionsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -174,6 +197,56 @@ export type CreateUserMutationVariables = Exact<{
 export type CreateUserMutation = { __typename?: 'Mutation', createUser: { __typename?: 'User', email: string, firstName: string, lastName: string, password: string } };
 
 
+export const GetCurrentUserDocument = gql`
+    query getCurrentUser {
+  getCurrentUser {
+    role
+    email
+    firstName
+    id
+    lastName
+    groups {
+      name
+      id
+      startDate
+      challengeName
+    }
+    subscriptionType
+    createdEcoActions {
+      name
+      id
+      description
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetCurrentUserQuery__
+ *
+ * To run a query within a React component, call `useGetCurrentUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCurrentUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCurrentUserQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetCurrentUserQuery(baseOptions?: Apollo.QueryHookOptions<GetCurrentUserQuery, GetCurrentUserQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetCurrentUserQuery, GetCurrentUserQueryVariables>(GetCurrentUserDocument, options);
+      }
+export function useGetCurrentUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCurrentUserQuery, GetCurrentUserQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetCurrentUserQuery, GetCurrentUserQueryVariables>(GetCurrentUserDocument, options);
+        }
+export type GetCurrentUserQueryHookResult = ReturnType<typeof useGetCurrentUserQuery>;
+export type GetCurrentUserLazyQueryHookResult = ReturnType<typeof useGetCurrentUserLazyQuery>;
+export type GetCurrentUserQueryResult = Apollo.QueryResult<GetCurrentUserQuery, GetCurrentUserQueryVariables>;
 export const GetFreeEcoActionsDocument = gql`
     query GetFreeEcoActions {
   getFreeEcoActions {
