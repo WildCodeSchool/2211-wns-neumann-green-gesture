@@ -1,5 +1,5 @@
 import { MaxLength, MinLength } from "class-validator";
-import { Field, InputType, ObjectType } from "type-graphql";
+import { Field, InputType, Int, ObjectType } from "type-graphql";
 import {
   Column,
   Entity,
@@ -8,6 +8,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
+import EcoAction from "./EcoAction";
 
 import User from "./User";
 
@@ -21,6 +22,10 @@ class Group {
   @Field()
   @Column({ length: 150 })
   name: string;
+
+  @Field()
+  @Column({ length: 255 })
+  challengeName: string;
 
   @Field()
   @Column({ type: "timestamptz" })
@@ -42,6 +47,11 @@ class Group {
   })
   @JoinTable()
   users: User[];
+
+  @Field(() => [EcoAction])
+  @ManyToMany(() => EcoAction, (ecoAction) => ecoAction.groups)
+  @JoinTable()
+  ecoActions: EcoAction[];
 }
 
 @InputType()
@@ -52,10 +62,36 @@ export class GroupInputCreation {
   name: string;
 
   @Field()
+  @MinLength(3)
+  @MaxLength(255)
+  challengeName: string;
+
+  @Field()
   startDate: Date;
 
   @Field()
   endDate: Date;
+
+  @Field(() => [Int])
+  participants: number[];
+}
+
+@InputType()
+export class GroupInputAddOneUser {
+  @Field()
+  groupId: number;
+
+  @Field(() => Int)
+  userId: number;
+}
+
+@InputType()
+export class GroupInputAddEcoActions {
+  @Field()
+  groupId: number;
+
+  @Field(() => [Int])
+  ecoActionIds: number[];
 }
 
 export default Group;

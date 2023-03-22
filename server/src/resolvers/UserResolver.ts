@@ -62,7 +62,7 @@ export class UserResolver {
   async login(
     @Arg("data") { email, password }: UserInputLogin,
     @Ctx() { res }: ContextType
-  ): Promise<string> {
+  ): Promise<String> {
     const user = await datasource.getRepository(User).findOneBy({ email });
 
     if (user === null || !(await verifyPassword(user.password, password)))

@@ -1,4 +1,4 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   Box,
@@ -18,7 +18,7 @@ import { GetUserByIdDocument, useLoginMutation } from "../gql/generated/schema";
 import client from "../gql/client";
 
 function Login() {
-  const [email, setEmail] = useState("test24@gmail.com");
+  const [email, setEmail] = useState("partner@gmail.com");
   const [password, setPassword] = useState("testtest");
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();

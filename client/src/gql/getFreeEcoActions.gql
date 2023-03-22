@@ -1,0 +1,7 @@
+query GetFreeEcoActions {
+  getFreeEcoActions {
+    description
+    id
+    name
+  }
+}
