@@ -75,6 +75,7 @@ export type MutationLoginArgs = {
 
 export type Query = {
   __typename?: 'Query';
+  getFreeEcoActions: Array<EcoAction>;
   getGroups: Array<Group>;
   getUserById: User;
   getUserEcoActions: Array<EcoAction>;
@@ -114,6 +115,11 @@ export type UserInputSubscribe = {
   subscriptionType?: InputMaybe<Scalars['String']>;
 };
 
+export type GetFreeEcoActionsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetFreeEcoActionsQuery = { __typename?: 'Query', getFreeEcoActions: Array<{ __typename?: 'EcoAction', description: string, id: number, name: string }> };
+
 export type GetUserByIdQueryVariables = Exact<{
   getUserById: Scalars['Int'];
 }>;
@@ -146,6 +152,42 @@ export type CreateUserMutationVariables = Exact<{
 export type CreateUserMutation = { __typename?: 'Mutation', createUser: { __typename?: 'User', email: string, firstName: string, lastName: string, password: string } };
 
 
+export const GetFreeEcoActionsDocument = gql`
+    query GetFreeEcoActions {
+  getFreeEcoActions {
+    description
+    id
+    name
+  }
+}
+    `;
+
+/**
+ * __useGetFreeEcoActionsQuery__
+ *
+ * To run a query within a React component, call `useGetFreeEcoActionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetFreeEcoActionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetFreeEcoActionsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetFreeEcoActionsQuery(baseOptions?: Apollo.QueryHookOptions<GetFreeEcoActionsQuery, GetFreeEcoActionsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetFreeEcoActionsQuery, GetFreeEcoActionsQueryVariables>(GetFreeEcoActionsDocument, options);
+      }
+export function useGetFreeEcoActionsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetFreeEcoActionsQuery, GetFreeEcoActionsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetFreeEcoActionsQuery, GetFreeEcoActionsQueryVariables>(GetFreeEcoActionsDocument, options);
+        }
+export type GetFreeEcoActionsQueryHookResult = ReturnType<typeof useGetFreeEcoActionsQuery>;
+export type GetFreeEcoActionsLazyQueryHookResult = ReturnType<typeof useGetFreeEcoActionsLazyQuery>;
+export type GetFreeEcoActionsQueryResult = Apollo.QueryResult<GetFreeEcoActionsQuery, GetFreeEcoActionsQueryVariables>;
 export const GetUserByIdDocument = gql`
     query GetUserById($getUserById: Int!) {
   getUserById(id: $getUserById) {

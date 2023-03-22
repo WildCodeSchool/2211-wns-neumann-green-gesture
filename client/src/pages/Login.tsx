@@ -14,22 +14,16 @@ import {
 } from "@chakra-ui/react";
 
 import Layout from "../containers/Layout";
-import {
-  GetUserByIdDocument,
-  useGetUserEcoActionsQuery,
-  useLoginMutation,
-} from "../gql/generated/schema";
+import { GetUserByIdDocument, useLoginMutation } from "../gql/generated/schema";
 import client from "../gql/client";
 
 function Login() {
-  const [email, setEmail] = useState("test24@gmail.com");
+  const [email, setEmail] = useState("partner@gmail.com");
   const [password, setPassword] = useState("testtest");
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const [loginUser, { loading: processing }] = useLoginMutation();
-
-  //const {data}  = useGetUserEcoActionsQuery()
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();

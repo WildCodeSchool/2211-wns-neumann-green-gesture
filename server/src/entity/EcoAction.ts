@@ -1,6 +1,13 @@
 import { MaxLength, MinLength } from "class-validator";
 import { Field, InputType, ObjectType } from "type-graphql";
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  ManyToMany,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from "typeorm";
+import Group from "./Group";
 // import Group from "./Group";
 import User from "./User";
 
@@ -25,10 +32,11 @@ class EcoAction {
   })
   author?: User;
 
-  /*  @Field(() => Group)
+  @Field(() => [Group])
   @ManyToMany(() => Group, (group) => group.ecoActions, {
     onDelete: "CASCADE",
-  }) */
+  })
+  groups: Group[];
 }
 
 @InputType()

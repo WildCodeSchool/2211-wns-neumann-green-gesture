@@ -11,6 +11,15 @@ import argon2, { Options, argon2id } from "argon2";
 import Group from "./Group";
 import EcoAction from "./EcoAction";
 
+export enum UserRole {
+  ADMIN = "admin",
+  USER = "user",
+}
+export enum UserSubscriptionType {
+  FREE = "free",
+  PARTNER = "partner",
+}
+
 @Entity()
 @ObjectType()
 class User {
@@ -35,11 +44,11 @@ class User {
   password: string;
 
   @Field()
-  @Column({ default: "user", length: 155 })
+  @Column({ default: UserRole.USER, enum: UserRole })
   role: string;
 
   @Field()
-  @Column({ default: "free", length: 155 })
+  @Column({ default: UserSubscriptionType.FREE, enum: UserSubscriptionType })
   subscriptionType: string;
 
   @Field(() => [Group])
