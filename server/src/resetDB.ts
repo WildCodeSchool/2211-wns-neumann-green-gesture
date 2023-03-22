@@ -1,4 +1,5 @@
 import datasource from "./db";
+import EcoAction from "./entity/EcoAction";
 import Group from "./entity/Group";
 import User, { hashPassword } from "./entity/User";
 
@@ -59,6 +60,27 @@ async function resetDB(): Promise<void> {
       endDate: "2020-01-25T10:10:10.555555",
       author: userPartner,
       users: [admin, userFree, userPartner],
+    },
+  ]);
+
+  // delete all eco actions in the database
+  await datasource.getRepository(EcoAction).delete({});
+
+  // create new eco actions
+  await datasource.getRepository(EcoAction).save([
+    {
+      name: "EcoAction 1",
+      description: "EcoAction 1 description",
+      author: userPartner,
+    },
+    {
+      name: "EcoAction 2",
+      description: "EcoAction 2 description",
+      author: userPartner,
+    },
+    {
+      name: "EcoAction 3",
+      description: "EcoAction 3 description",
     },
   ]);
 

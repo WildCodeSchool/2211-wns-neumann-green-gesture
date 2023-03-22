@@ -9,6 +9,7 @@ import {
 import { IsEmail, MaxLength, MinLength } from "class-validator";
 import argon2, { Options, argon2id } from "argon2";
 import Group from "./Group";
+import EcoAction from "./EcoAction";
 
 @Entity()
 @ObjectType()
@@ -52,6 +53,12 @@ class User {
     onDelete: "CASCADE",
   })
   groups?: Group[];
+
+  @Field(() => [EcoAction])
+  @OneToMany(() => EcoAction, (ecoAction) => ecoAction.author, {
+    cascade: true,
+  })
+  createdEcoActions?: EcoAction[];
 }
 
 @InputType()

@@ -1,0 +1,12 @@
+query GetUserEcoActions {
+  getUserEcoActions {
+    id
+    name
+    description
+    author {
+      firstName
+      lastName
+      email
+    }
+  }
+}

@@ -1,4 +1,4 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   Box,
@@ -14,7 +14,11 @@ import {
 } from "@chakra-ui/react";
 
 import Layout from "../containers/Layout";
-import { GetUserByIdDocument, useLoginMutation } from "../gql/generated/schema";
+import {
+  GetUserByIdDocument,
+  useGetUserEcoActionsQuery,
+  useLoginMutation,
+} from "../gql/generated/schema";
 import client from "../gql/client";
 
 function Login() {
@@ -24,6 +28,8 @@ function Login() {
   const navigate = useNavigate();
 
   const [loginUser, { loading: processing }] = useLoginMutation();
+
+  //const {data}  = useGetUserEcoActionsQuery()
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
