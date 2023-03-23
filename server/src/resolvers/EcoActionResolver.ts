@@ -29,7 +29,9 @@ export class EcoActionResolver {
   ): Promise<EcoAction[]> {
     return await datasource.getRepository(EcoAction).find({
       where: {
-        author: currentUser,
+        author: {
+          id: currentUser?.id,
+        },
       },
       relations: {
         author: true,

@@ -74,6 +74,9 @@ export class GroupInputCreation {
 
   @Field(() => [Int])
   participants: number[];
+
+  @Field(() => [Int])
+  ecoActionsIds: number[];
 }
 
 @InputType()

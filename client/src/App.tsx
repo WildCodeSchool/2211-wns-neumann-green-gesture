@@ -3,7 +3,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import SingleGroup from "./pages/SingleGroup";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
-import NewGroup from "./pages/NewGroup";
+import NewGroup from "./pages/CreateGroup";
 import Profile from "./pages/Profile";
 import Register from "./pages/Register";
 

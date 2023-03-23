@@ -25,6 +25,7 @@ export class GroupResolver {
       startDate,
       endDate,
       participants,
+      ecoActionsIds,
     }: GroupInputCreation,
     @Ctx() { currentUser }: ContextType
   ): Promise<Group> {
@@ -33,6 +34,10 @@ export class GroupResolver {
       .getRepository(User)
       .findBy({ id: In(participants) });
 
+    const ecoActions = await datasource
+      .getRepository(EcoAction)
+      .findBy({ id: In(ecoActionsIds) });
+
     return await datasource.getRepository(Group).save({
       name,
       challengeName,
@@ -40,6 +45,7 @@ export class GroupResolver {
       endDate,
       author: currentUser,
       users: [currentUser as User, ...participantUsers],
+      ecoActions,
     });
   }
 
