@@ -1,9 +1,23 @@
 query GetUserGroups {
   getUserGroups {
     id
-    name
-    startDate
-    endDate
+    users {
+      id
+      firstName
+      lastName
+    }
     challengeName
+    startDate
+    name
+    endDate
+    author {
+      id
+      firstName
+      lastName
+    }
+    ecoActions {
+      id
+      name
+    }
   }
 }

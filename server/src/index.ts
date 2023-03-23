@@ -42,7 +42,14 @@ async function start(): Promise<void> {
         if (typeof decoded === "object") {
           const currentUser = await datasource
             .getRepository(User)
-            .findOneBy({ id: decoded.userId });
+            .findOne({
+              where: { id: decoded.userId },
+              relations: {
+                groups: true,
+                createdGroups: true,
+                createdEcoActions: true,
+              },
+            });
           if (currentUser !== null) context.currentUser = currentUser;
           return true;
         }

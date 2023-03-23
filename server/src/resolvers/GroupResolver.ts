@@ -105,15 +105,25 @@ export class GroupResolver {
   ])
   @Query(() => [Group])
   async getUserGroups(@Ctx() { currentUser }: ContextType): Promise<Group[]> {
-    const res = await datasource.getRepository(User).findOne({
-      where: { id: currentUser?.id },
+    const res = await datasource.getRepository(Group).find({
+      where: { users: { id: currentUser?.id } },
       relations: {
-        groups: true,
+        users: true,
+        ecoActions: true,
+        author: true,
+      },
+      join: {
+        alias: "group",
+        leftJoinAndSelect: {
+          users: "group.users",
+        },
       },
     });
 
-    if (res?.groups !== undefined) {
-      return res.groups;
+    if (res !== undefined) {
+      console.log(res);
+
+      return res;
     }
     throw new Error("User not found");
   }

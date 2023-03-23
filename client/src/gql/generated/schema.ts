@@ -20,7 +20,7 @@ export type EcoAction = {
   __typename?: 'EcoAction';
   author?: Maybe<User>;
   description: Scalars['String'];
-  groups: Array<Group>;
+  groups?: Maybe<Array<Group>>;
   id: Scalars['Float'];
   name: Scalars['String'];
 };
@@ -47,6 +47,11 @@ export type GroupInputAddEcoActions = {
   groupId: Scalars['Float'];
 };
 
+export type GroupInputAddOneUser = {
+  groupId: Scalars['Float'];
+  userId: Scalars['Int'];
+};
+
 export type GroupInputCreation = {
   challengeName: Scalars['String'];
   endDate: Scalars['DateTime'];
@@ -58,6 +63,7 @@ export type GroupInputCreation = {
 export type Mutation = {
   __typename?: 'Mutation';
   addEcoActionsToGroup: Group;
+  addUserToGroup: Group;
   createEcoAction: EcoAction;
   createGroup: Group;
   createUser: User;
@@ -67,6 +73,11 @@ export type Mutation = {
 
 export type MutationAddEcoActionsToGroupArgs = {
   data: GroupInputAddEcoActions;
+};
+
+
+export type MutationAddUserToGroupArgs = {
+  data: GroupInputAddOneUser;
 };
 
 
@@ -91,12 +102,19 @@ export type MutationLoginArgs = {
 
 export type Query = {
   __typename?: 'Query';
+  getCurrentUser: User;
   getFreeEcoActions: Array<EcoAction>;
+  getGroup: Group;
   getGroups: Array<Group>;
   getUserById: User;
   getUserEcoActions: Array<EcoAction>;
   getUserGroups: Array<Group>;
   users: Array<User>;
+};
+
+
+export type QueryGetGroupArgs = {
+  groupId: Scalars['Float'];
 };
 
 
@@ -110,7 +128,7 @@ export type User = {
   createdGroups: Array<Group>;
   email: Scalars['String'];
   firstName: Scalars['String'];
-  groups: Array<Group>;
+  groups?: Maybe<Array<Group>>;
   id: Scalars['Float'];
   lastName: Scalars['String'];
   password: Scalars['String'];
@@ -132,6 +150,11 @@ export type UserInputSubscribe = {
   subscriptionType?: InputMaybe<Scalars['String']>;
 };
 
+export type GetCurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetCurrentUserQuery = { __typename?: 'Query', getCurrentUser: { __typename?: 'User', id: number, firstName: string, lastName: string, email: string, role: string, subscriptionType: string, groups?: Array<{ __typename?: 'Group', startDate: any, endDate: any, name: string, challengeName: string, id: number }> | null, createdEcoActions: Array<{ __typename?: 'EcoAction', id: number, name: string, description: string }> } };
+
 export type GetFreeEcoActionsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -152,7 +175,7 @@ export type GetUserEcoActionsQuery = { __typename?: 'Query', getUserEcoActions: 
 export type GetUserGroupsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetUserGroupsQuery = { __typename?: 'Query', getUserGroups: Array<{ __typename?: 'Group', id: number, name: string, startDate: any, endDate: any, challengeName: string }> };
+export type GetUserGroupsQuery = { __typename?: 'Query', getUserGroups: Array<{ __typename?: 'Group', id: number, challengeName: string, startDate: any, name: string, endDate: any, users: Array<{ __typename?: 'User', id: number, firstName: string, lastName: string }>, author: { __typename?: 'User', id: number, firstName: string, lastName: string }, ecoActions: Array<{ __typename?: 'EcoAction', id: number, name: string }> }> };
 
 export type UsersQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -174,6 +197,57 @@ export type CreateUserMutationVariables = Exact<{
 export type CreateUserMutation = { __typename?: 'Mutation', createUser: { __typename?: 'User', email: string, firstName: string, lastName: string, password: string } };
 
 
+export const GetCurrentUserDocument = gql`
+    query GetCurrentUser {
+  getCurrentUser {
+    id
+    firstName
+    lastName
+    email
+    role
+    subscriptionType
+    groups {
+      startDate
+      endDate
+      name
+      challengeName
+      id
+    }
+    createdEcoActions {
+      id
+      name
+      description
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetCurrentUserQuery__
+ *
+ * To run a query within a React component, call `useGetCurrentUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCurrentUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCurrentUserQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetCurrentUserQuery(baseOptions?: Apollo.QueryHookOptions<GetCurrentUserQuery, GetCurrentUserQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetCurrentUserQuery, GetCurrentUserQueryVariables>(GetCurrentUserDocument, options);
+      }
+export function useGetCurrentUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCurrentUserQuery, GetCurrentUserQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetCurrentUserQuery, GetCurrentUserQueryVariables>(GetCurrentUserDocument, options);
+        }
+export type GetCurrentUserQueryHookResult = ReturnType<typeof useGetCurrentUserQuery>;
+export type GetCurrentUserLazyQueryHookResult = ReturnType<typeof useGetCurrentUserLazyQuery>;
+export type GetCurrentUserQueryResult = Apollo.QueryResult<GetCurrentUserQuery, GetCurrentUserQueryVariables>;
 export const GetFreeEcoActionsDocument = gql`
     query GetFreeEcoActions {
   getFreeEcoActions {
@@ -296,10 +370,24 @@ export const GetUserGroupsDocument = gql`
     query GetUserGroups {
   getUserGroups {
     id
-    name
-    startDate
-    endDate
+    users {
+      id
+      firstName
+      lastName
+    }
     challengeName
+    startDate
+    name
+    endDate
+    author {
+      id
+      firstName
+      lastName
+    }
+    ecoActions {
+      id
+      name
+    }
   }
 }
     `;

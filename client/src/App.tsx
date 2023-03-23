@@ -1,6 +1,6 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute";
-import Challenge from "./pages/Challenge";
+import SingleGroup from "./pages/SingleGroup";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import NewGroup from "./pages/NewGroup";
@@ -20,7 +20,7 @@ function App() {
       <Route path="/" element={<Home />} />
       <Route path="/profile" element={<Profile />} />
       <Route path="/create-group" element={<NewGroup />} />
-      <Route path="/challenge/:id" element={<Challenge />} />
+      <Route path="/group/:id" element={<SingleGroup />} />
       {/* </Route> */}
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
