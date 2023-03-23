@@ -1,20 +1,21 @@
-query getCurrentUser {
+query GetCurrentUser {
   getCurrentUser {
-    role
-    email
-    firstName
     id
+    firstName
     lastName
-    groups {
-      name
-      id
-      startDate
-      challengeName
-    }
+    email
+    role
     subscriptionType
-    createdEcoActions {
+    groups {
+      startDate
+      endDate
       name
+      challengeName
       id
+    }
+    createdEcoActions {
+      id
+      name
       description
     }
   }
