@@ -6,22 +6,31 @@ import Login from "./pages/Login";
 import NewGroup from "./pages/CreateGroup";
 import Profile from "./pages/Profile";
 import Register from "./pages/Register";
+import { useGetCurrentUserQuery } from "./gql/generated/schema";
 
 function App() {
-  const isAllowed = false;
+  const { data, loading } = useGetCurrentUserQuery();
+  const currentUser = data?.getCurrentUser;
+
+  const isLoggedIn = loading || (currentUser ? true : false);
+
   return (
     <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
+      <Route element={<ProtectedRoute isAllowed={!isLoggedIn} />}>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+      </Route>
 
-      {/* <Route
-        element={<ProtectedRoute isAllowed={isAllowed} redirectPath="/login" />}
-      > */}
-      <Route path="/" element={<Home />} />
-      <Route path="/profile" element={<Profile />} />
-      <Route path="/create-group" element={<NewGroup />} />
-      <Route path="/group/:id" element={<SingleGroup />} />
-      {/* </Route> */}
+      <Route
+        element={
+          <ProtectedRoute isAllowed={isLoggedIn} redirectPath="/login" />
+        }
+      >
+        <Route path="/" element={<Home />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/create-group" element={<NewGroup />} />
+        <Route path="/group/:id" element={<SingleGroup />} />
+      </Route>
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );
