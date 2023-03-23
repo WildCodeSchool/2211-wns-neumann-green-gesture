@@ -2,19 +2,23 @@ import { Box, Heading, Text } from "@chakra-ui/react";
 import React from "react";
 
 interface Props {
-  id: number;
   challengeName: string;
   startDate: string;
   endDate: string;
+  participants: number;
 }
 
-function ChallengeCard({ id, challengeName, startDate, endDate }: Props) {
+function ChallengeCard({
+  challengeName,
+  startDate,
+  endDate,
+  participants,
+}: Props) {
   return (
     <Box
       display={"flex"}
       justifyContent={"space-between"}
       flexDirection={"column"}
-      key={id}
       height="150px"
       width="300px"
       bgColor="#554CBB"
@@ -29,7 +33,7 @@ function ChallengeCard({ id, challengeName, startDate, endDate }: Props) {
         {challengeName}
       </Heading>
       <Text fontSize={"xs"}>{`du ${startDate} au ${endDate}`}</Text>
-      <Text alignSelf={"end"}>Participants</Text>
+      <Text alignSelf={"end"}>{participants} participants</Text>
     </Box>
   );
 }

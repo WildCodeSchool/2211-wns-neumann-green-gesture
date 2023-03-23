@@ -1,6 +1,6 @@
 import Layout from "../containers/Layout";
 
-function Challenge() {
+function SingleGroup() {
   return (
     <Layout>
       <div>Challenge page</div>
@@ -8,4 +8,4 @@ function Challenge() {
   );
 }
 
-export default Challenge;
+export default SingleGroup;

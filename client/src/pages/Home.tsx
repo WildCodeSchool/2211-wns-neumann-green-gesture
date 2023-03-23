@@ -9,13 +9,17 @@ import {
   Text,
 } from "@chakra-ui/react";
 import Layout from "../containers/Layout";
-import { useGetCurrentUserQuery } from "../gql/generated/schema";
+import {
+  useGetCurrentUserQuery,
+  useGetUserGroupsQuery,
+} from "../gql/generated/schema";
 import { AddIcon } from "@chakra-ui/icons";
 import ChallengeCard from "../components/ChallengeCard";
+import { Link } from "react-router-dom";
 
 function Home() {
-  const { data } = useGetCurrentUserQuery();
-  console.log(data);
+  const { data } = useGetUserGroupsQuery();
+  const groups = data?.getUserGroups || [];
 
   return (
     <Layout>
@@ -31,11 +35,13 @@ function Home() {
               variant="solid"
               borderRadius="3px"
               shadow={"xl"}
+              as={Link}
+              to="/create-group"
             >
               Créer un groupe
             </Button>
           </Flex>
-          {data?.getCurrentUser?.groups?.length === undefined ? (
+          {groups.length === 0 ? (
             <Center>
               <Flex
                 flexDirection={"column"}
@@ -80,14 +86,15 @@ function Home() {
                   "@media (max-width: 726px)": { justifyContent: "center" },
                 }}
               >
-                {data?.getCurrentUser?.groups?.map((group) => (
-                  <ChallengeCard
-                    key={group.id}
-                    id={group.id}
-                    challengeName={group.challengeName}
-                    startDate={group.startDate}
-                    endDate={group.endDate}
-                  />
+                {groups.map((group) => (
+                  <Link to={`/group/${group.id}`} key={group.id}>
+                    <ChallengeCard
+                      challengeName={group.challengeName}
+                      startDate={group.startDate}
+                      endDate={group.endDate}
+                      participants={group.users.length}
+                    />
+                  </Link>
                 ))}
               </Flex>
             </>

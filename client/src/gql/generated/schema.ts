@@ -175,7 +175,7 @@ export type GetUserEcoActionsQuery = { __typename?: 'Query', getUserEcoActions: 
 export type GetUserGroupsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetUserGroupsQuery = { __typename?: 'Query', getUserGroups: Array<{ __typename?: 'Group', id: number, name: string, startDate: any, endDate: any, challengeName: string }> };
+export type GetUserGroupsQuery = { __typename?: 'Query', getUserGroups: Array<{ __typename?: 'Group', id: number, challengeName: string, startDate: any, name: string, endDate: any, users: Array<{ __typename?: 'User', id: number, firstName: string, lastName: string }>, author: { __typename?: 'User', id: number, firstName: string, lastName: string }, ecoActions: Array<{ __typename?: 'EcoAction', id: number, name: string }> }> };
 
 export type UsersQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -370,10 +370,24 @@ export const GetUserGroupsDocument = gql`
     query GetUserGroups {
   getUserGroups {
     id
-    name
-    startDate
-    endDate
+    users {
+      id
+      firstName
+      lastName
+    }
     challengeName
+    startDate
+    name
+    endDate
+    author {
+      id
+      firstName
+      lastName
+    }
+    ecoActions {
+      id
+      name
+    }
   }
 }
     `;
