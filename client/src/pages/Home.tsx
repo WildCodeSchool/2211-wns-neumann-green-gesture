@@ -1,25 +1,14 @@
-import {
-  Box,
-  Button,
-  Center,
-  Flex,
-  Image,
-  Heading,
-  SimpleGrid,
-  Text,
-} from "@chakra-ui/react";
+import { Button, Center, Flex, Image, Heading } from "@chakra-ui/react";
 import Layout from "../containers/Layout";
-import {
-  useGetCurrentUserQuery,
-  useGetUserGroupsQuery,
-} from "../gql/generated/schema";
+import { useGetUserGroupsQuery } from "../gql/generated/schema";
 import { AddIcon } from "@chakra-ui/icons";
 import ChallengeCard from "../components/ChallengeCard";
 import { Link } from "react-router-dom";
 
 function Home() {
-  const { data } = useGetUserGroupsQuery();
+  const { data, refetch } = useGetUserGroupsQuery();
   const groups = data?.getUserGroups || [];
+  refetch();
 
   return (
     <Layout>
