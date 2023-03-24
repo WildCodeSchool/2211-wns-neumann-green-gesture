@@ -86,6 +86,16 @@ export class UserResolver {
     return token;
   }
 
+  @Mutation(() => String)
+  async logout(@Ctx() { res }: ContextType): Promise<String> {
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: env.NODE_ENV === "production",
+    });
+
+    return "Successfully logged out";
+  }
+
   @Authorized()
   @Query(() => User)
   async getCurrentUser(@Ctx() { currentUser }: ContextType): Promise<User> {

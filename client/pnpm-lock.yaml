@@ -2,7 +2,6 @@ lockfileVersion: 5.4
 
 specifiers:
   '@apollo/client': ^3.7.7
-  '@chakra-ui/icons': ^2.0.17
   '@chakra-ui/react': ^2.5.2
   '@emotion/react': ^11.10.6
   '@emotion/styled': ^11.10.6
@@ -26,6 +25,7 @@ specifiers:
   graphql: ^16.6.0
   react: ^18.2.0
   react-dom: ^18.2.0
+  react-icons: ^4.8.0
   react-router-dom: ^6.8.1
   react-scripts: ^5.0.1
   typescript: ^4.9.3
@@ -33,7 +33,6 @@ specifiers:
 
 dependencies:
   '@apollo/client': 3.7.7_gdcq4dv6opitr3wbfwyjmanyra
-  '@chakra-ui/icons': 2.0.17_vnxkkotftpvd7ci6s2qlbwplcq
   '@chakra-ui/react': 2.5.2_nirympussn7l6vf7ezhtzs2xwa
   '@emotion/react': 11.10.6_3stiutgnnbnfnf3uowm5cip22i
   '@emotion/styled': 11.10.6_zjrrpqmb4rf5frur5mrydkybnq
@@ -47,6 +46,7 @@ dependencies:
   graphql: 16.6.0
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
+  react-icons: 4.8.0_react@18.2.0
   react-router-dom: 6.8.1_biqbaboplfbrettd7655fr4n2y
   react-scripts: 5.0.1_dxa5ypbzchn7qjkpu75skatd6u
 
@@ -1795,17 +1795,6 @@ packages:
       react: '>=18'
     dependencies:
       '@chakra-ui/shared-utils': 2.0.5
-      '@chakra-ui/system': 2.5.2_xqp3pgpqjlfxxa3zxu4zoc4fba
-      react: 18.2.0
-    dev: false
-
-  /@chakra-ui/icons/2.0.17_vnxkkotftpvd7ci6s2qlbwplcq:
-    resolution: {integrity: sha512-HMJP0WrJgAmFR9+Xh/CBH0nVnGMsJ4ZC8MK6tMgxPKd9/muvn0I4hsicHqdPlLpmB0TlxlhkBAKaVMtOdz6F0w==}
-    peerDependencies:
-      '@chakra-ui/system': '>=2.0.0'
-      react: '>=18'
-    dependencies:
-      '@chakra-ui/icon': 3.0.16_vnxkkotftpvd7ci6s2qlbwplcq
       '@chakra-ui/system': 2.5.2_xqp3pgpqjlfxxa3zxu4zoc4fba
       react: 18.2.0
     dev: false
@@ -11749,6 +11738,14 @@ packages:
       react-clientside-effect: 1.2.6_react@18.2.0
       use-callback-ref: 1.3.0_3stiutgnnbnfnf3uowm5cip22i
       use-sidecar: 1.1.2_3stiutgnnbnfnf3uowm5cip22i
+    dev: false
+
+  /react-icons/4.8.0_react@18.2.0:
+    resolution: {integrity: sha512-N6+kOLcihDiAnj5Czu637waJqSnwlMNROzVZMhfX68V/9bu9qHaMIJC4UdozWoOk57gahFCNHwVvWzm0MTzRjg==}
+    peerDependencies:
+      react: '*'
+    dependencies:
+      react: 18.2.0
     dev: false
 
   /react-is/16.13.1:

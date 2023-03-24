@@ -1,4 +1,4 @@
-import { AddIcon } from "@chakra-ui/icons";
+import { MdAdd } from "react-icons/md";
 import { Button } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 
@@ -6,7 +6,7 @@ function CreateGroupButton() {
   return (
     <Button
       size="md"
-      rightIcon={<AddIcon />}
+      rightIcon={<MdAdd size={20} />}
       bgColor={"#007DFF"}
       _hover={{ bgColor: "#0062CC" }}
       color={"#fff"}

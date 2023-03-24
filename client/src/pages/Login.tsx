@@ -33,7 +33,8 @@ function Login() {
         variables: { loginData: { email, password } },
         //refetchQueries: [{ query: GetUserByIdDocument }],
       });
-      navigate("/");
+      window.localStorage.setItem("gg_logged", "isLogged");
+      navigate("/", { replace: true });
     } catch (err) {
       console.error("err", err);
     } finally {
