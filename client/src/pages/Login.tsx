@@ -33,9 +33,6 @@ function Login() {
         variables: { loginData: { email, password } },
         //refetchQueries: [{ query: GetUserByIdDocument }],
       });
-      console.log("user", user);
-
-      // TODO add user id to LS
       navigate("/");
     } catch (err) {
       console.error("err", err);

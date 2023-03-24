@@ -1,9 +1,9 @@
 import { Button, Center, Flex, Image, Heading } from "@chakra-ui/react";
 import Layout from "../containers/Layout";
 import { useGetUserGroupsQuery } from "../gql/generated/schema";
-import { AddIcon } from "@chakra-ui/icons";
 import ChallengeCard from "../components/ChallengeCard";
 import { Link } from "react-router-dom";
+import CreateGroupButton from "../components/CreateGroupButton";
 
 function Home() {
   const { data, refetch } = useGetUserGroupsQuery();
@@ -15,20 +15,7 @@ function Home() {
       <>
         <Flex flexDirection={"column"} justifyContent={"space-around"}>
           <Flex pt={"1.5rem"} pe={"2rem"} justifyContent={"end"}>
-            <Button
-              size="md"
-              rightIcon={<AddIcon />}
-              bgColor={"#007DFF"}
-              _hover={{ bgColor: "#0062CC" }}
-              color={"#fff"}
-              variant="solid"
-              borderRadius="3px"
-              shadow={"xl"}
-              as={Link}
-              to="/create-group"
-            >
-              Créer un groupe
-            </Button>
+            <CreateGroupButton />
           </Flex>
           {groups.length === 0 ? (
             <Center>
