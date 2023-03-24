@@ -72,6 +72,7 @@ function Login() {
                 required={true}
                 onChange={({ target }) => setEmail(target.value)}
                 value={email}
+                data-testid="login-email"
               />
             </FormControl>
             <FormControl>
@@ -84,6 +85,7 @@ function Login() {
                   required={true}
                   value={password}
                   onChange={({ target }) => setPassword(target.value)}
+                  data-testid="login-password"
                 />
                 <InputRightElement width="4.5rem">
                   <Button

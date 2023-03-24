@@ -1,5 +1,7 @@
 import { DataSource } from "typeorm";
-import { join } from "path";
+import User from "./entity/User";
+import Group from "./entity/Group";
+import EcoAction from "./entity/EcoAction";
 import { env } from "./env";
 
 const datasource = new DataSource({
@@ -10,7 +12,7 @@ const datasource = new DataSource({
   password: env.DB_PASS,
   database: env.DB_NAME,
   synchronize: true,
-  entities: [join(__dirname, "/entity/*.ts")],
+  entities: [User, Group, EcoAction],
 });
 
 export default datasource;

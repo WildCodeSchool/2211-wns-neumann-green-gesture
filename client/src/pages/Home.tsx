@@ -30,8 +30,13 @@ function Home() {
                   src="./src/assets/images/empty-mountain.png"
                   alt="Dan Abramov"
                 />
-                <Heading as="h1" size="xl" textAlign={"center"}>
-                  Tu n'as pas encores de challenges...
+                <Heading
+                  data-testid="no-challenge"
+                  as="h3"
+                  size="xl"
+                  textAlign={"center"}
+                >
+                  Tu n'as pas encore de challenges...
                 </Heading>
                 <Button
                   height="55px"
@@ -52,7 +57,7 @@ function Home() {
             </Center>
           ) : (
             <>
-              <Heading as="h1" size="xl">
+              <Heading as="h3" size="xl">
                 Mes Challenges en cours
               </Heading>
               <Flex
