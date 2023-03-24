@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { IsEmail, MaxLength, MinLength } from "class-validator";
-import argon2, { Options, argon2id } from "argon2";
+import { Options, argon2id, hash, verify } from "argon2";
 import Group from "./Group";
 import EcoAction from "./EcoAction";
 
@@ -112,7 +112,7 @@ const hashOptions: Options & { raw?: false } = {
 };
 
 export const hashPassword = async (plain: string): Promise<string> => {
-  const hashedPassword = await argon2.hash(plain, hashOptions);
+  const hashedPassword = await hash(plain, hashOptions);
 
   return hashedPassword;
 };
@@ -121,7 +121,7 @@ export const verifyPassword = async (
   hashPassword: string,
   plain: string
 ): Promise<boolean> => {
-  return await argon2.verify(hashPassword, plain);
+  return await verify(hashPassword, plain);
 };
 
 export default User;
