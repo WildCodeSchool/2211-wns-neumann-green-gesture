@@ -168,6 +168,13 @@ export type GetFreeEcoActionsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetFreeEcoActionsQuery = { __typename?: 'Query', getFreeEcoActions: Array<{ __typename?: 'EcoAction', description: string, id: number, name: string }> };
 
+export type GetGroupQueryVariables = Exact<{
+  groupId: Scalars['Float'];
+}>;
+
+
+export type GetGroupQuery = { __typename?: 'Query', getGroup: { __typename?: 'Group', challengeName: string, endDate: any, id: number, name: string, startDate: any, author: { __typename?: 'User', id: number, firstName: string, lastName: string }, ecoActions: Array<{ __typename?: 'EcoAction', id: number, name: string, description: string, author?: { __typename?: 'User', id: number, firstName: string, lastName: string } | null }>, users: Array<{ __typename?: 'User', id: number, firstName: string, lastName: string }> } };
+
 export type GetUserByIdQueryVariables = Exact<{
   getUserById: Scalars['Int'];
 }>;
@@ -326,6 +333,65 @@ export function useGetFreeEcoActionsLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type GetFreeEcoActionsQueryHookResult = ReturnType<typeof useGetFreeEcoActionsQuery>;
 export type GetFreeEcoActionsLazyQueryHookResult = ReturnType<typeof useGetFreeEcoActionsLazyQuery>;
 export type GetFreeEcoActionsQueryResult = Apollo.QueryResult<GetFreeEcoActionsQuery, GetFreeEcoActionsQueryVariables>;
+export const GetGroupDocument = gql`
+    query GetGroup($groupId: Float!) {
+  getGroup(groupId: $groupId) {
+    author {
+      id
+      firstName
+      lastName
+    }
+    challengeName
+    ecoActions {
+      id
+      name
+      description
+      author {
+        id
+        firstName
+        lastName
+      }
+    }
+    endDate
+    id
+    name
+    startDate
+    users {
+      id
+      firstName
+      lastName
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetGroupQuery__
+ *
+ * To run a query within a React component, call `useGetGroupQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetGroupQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetGroupQuery({
+ *   variables: {
+ *      groupId: // value for 'groupId'
+ *   },
+ * });
+ */
+export function useGetGroupQuery(baseOptions: Apollo.QueryHookOptions<GetGroupQuery, GetGroupQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetGroupQuery, GetGroupQueryVariables>(GetGroupDocument, options);
+      }
+export function useGetGroupLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetGroupQuery, GetGroupQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetGroupQuery, GetGroupQueryVariables>(GetGroupDocument, options);
+        }
+export type GetGroupQueryHookResult = ReturnType<typeof useGetGroupQuery>;
+export type GetGroupLazyQueryHookResult = ReturnType<typeof useGetGroupLazyQuery>;
+export type GetGroupQueryResult = Apollo.QueryResult<GetGroupQuery, GetGroupQueryVariables>;
 export const GetUserByIdDocument = gql`
     query GetUserById($getUserById: Int!) {
   getUserById(id: $getUserById) {

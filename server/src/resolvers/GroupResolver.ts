@@ -127,8 +127,6 @@ export class GroupResolver {
     });
 
     if (res !== undefined) {
-      console.log(res);
-
       return res;
     }
     throw new Error("User not found");
