@@ -3,6 +3,7 @@ import User from "./entity/User";
 import Group from "./entity/Group";
 import EcoAction from "./entity/EcoAction";
 import { env } from "./env";
+import Comment from "./entity/Comment";
 
 const datasource = new DataSource({
   type: "postgres",
@@ -12,7 +13,7 @@ const datasource = new DataSource({
   password: env.DB_PASS,
   database: env.DB_NAME,
   synchronize: true,
-  entities: [User, Group, EcoAction],
+  entities: [User, Group, EcoAction, Comment],
 });
 
 export default datasource;
