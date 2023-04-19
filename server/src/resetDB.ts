@@ -1,4 +1,5 @@
 import datasource from "./db";
+import Comment from "./entity/Comment";
 import EcoAction from "./entity/EcoAction";
 import Group from "./entity/Group";
 import User, { hashPassword } from "./entity/User";
@@ -60,7 +61,7 @@ async function resetDB(): Promise<void> {
   await datasource.getRepository(Group).delete({});
 
   // create new groups
-  await datasource.getRepository(Group).save([
+  const groups = await datasource.getRepository(Group).save([
     {
       name: "GreenGesture 1",
       challengeName: "Challenge 1",
@@ -87,6 +88,63 @@ async function resetDB(): Promise<void> {
       author: userPartner,
       users: [admin, userFree, userPartner],
       ecoActions,
+    },
+  ]);
+
+  // create new comments
+  // comments group 1
+  await datasource.getRepository(Comment).save([
+    {
+      message: "Commentaire 1: Group 1",
+      author: userFree,
+      group: groups[0],
+      createdAt: new Date(),
+    },
+    {
+      message: "Commentaire 2: Group 1",
+      author: userFree,
+      group: groups[0],
+      createdAt: new Date(),
+    },
+    {
+      message: "Commentaire 3: Group 1",
+      author: userPartner,
+      group: groups[0],
+      createdAt: new Date(),
+    },
+    {
+      message: "Commentaire 4: Group 1",
+      author: userFree,
+      group: groups[0],
+      createdAt: new Date(),
+    },
+  ]);
+
+  // comments group 2
+  await datasource.getRepository(Comment).save([
+    {
+      message: "Commentaire 1: Group 2",
+      author: userFree,
+      group: groups[1],
+      createdAt: new Date(),
+    },
+    {
+      message: "Commentaire 2: Group 2",
+      author: userFree,
+      group: groups[1],
+      createdAt: new Date(),
+    },
+    {
+      message: "Commentaire 3: Group 2",
+      author: userPartner,
+      group: groups[1],
+      createdAt: new Date(),
+    },
+    {
+      message: "Commentaire 4: Group 2",
+      author: userFree,
+      group: groups[1],
+      createdAt: new Date(),
     },
   ]);
 

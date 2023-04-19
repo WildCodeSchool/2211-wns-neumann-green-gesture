@@ -30,14 +30,14 @@ class Comment {
     cascade: true,
   })
   @JoinTable()
-  user_id: User;
+  author: User;
 
   @Field(() => Group)
   @ManyToOne(() => Group, (group) => group, {
     cascade: true,
   })
   @JoinTable()
-  group_id: Group;
+  group: Group;
 }
 
 @InputType()
