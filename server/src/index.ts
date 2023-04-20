@@ -40,16 +40,15 @@ async function start(): Promise<void> {
       if (typeof token === "string") {
         const decoded = jwt.verify(token, env.JWT_PRIVATE_KEY) as JWTPayload;
         if (typeof decoded === "object") {
-          const currentUser = await datasource
-            .getRepository(User)
-            .findOne({
-              where: { id: decoded.userId },
-              relations: {
-                groups: true,
-                createdGroups: true,
-                createdEcoActions: true,
-              },
-            });
+          const currentUser = await datasource.getRepository(User).findOne({
+            where: { id: decoded.userId },
+            relations: {
+              groups: true,
+              createdGroups: true,
+              createdEcoActions: true,
+              friends: true,
+            },
+          });
           if (currentUser !== null) context.currentUser = currentUser;
           return true;
         }

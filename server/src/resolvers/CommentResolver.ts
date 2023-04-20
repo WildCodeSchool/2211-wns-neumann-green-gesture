@@ -1,3 +1,4 @@
+import { ApolloError } from "apollo-server-errors";
 import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import Comment, { CommentInputCreation } from "../entity/Comment";
 import User, { UserSubscriptionType } from "../entity/User";
@@ -21,7 +22,8 @@ export class CommentResolver {
     const group = await datasource
       .getRepository(Group)
       .findOneBy({ id: groupId });
-    if (group === null) throw new Error(`Group not found with id: ${groupId}`);
+    if (group === null)
+      throw new ApolloError(`Group not found with id: ${groupId}`, "NOT_FOUND");
 
     const newComment = await datasource.getRepository(Comment).save({
       message,
@@ -45,7 +47,8 @@ export class CommentResolver {
     const group = await datasource
       .getRepository(Group)
       .findOneBy({ id: groupId });
-    if (group === null) throw new Error(`Group not found with id: ${groupId}`);
+    if (group === null)
+      throw new ApolloError(`Group not found with id: ${groupId}`, "NOT_FOUND");
 
     const comments = await datasource.getRepository(Comment).find({
       where: {
