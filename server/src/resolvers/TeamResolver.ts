@@ -27,10 +27,18 @@ export class CommentResolver {
 
   // Accessible à l'admin
   @Query(() => [Team])
-  async getTeams(): Promise<Team[]> {
-    return await datasource
-      .getRepository(Team)
-      .find({ relations: { group: true, users: true } });
+  async getTeamByGroup(@Arg("groupId") groupId: number): Promise<Team[]> {
+    const teams = await datasource.getRepository(Team).find({
+      where: { group: { id: groupId } },
+      relations: { users: true, group: true },
+    });
+
+    if (teams !== null) {
+      console.log(teams);
+
+      return teams;
+    }
+    throw new Error("Group not found");
   }
 
   @Mutation(() => Team)
@@ -50,15 +58,20 @@ export class CommentResolver {
     if (team !== null && users.length > 0) {
       team.users = users;
       console.log(team);
-      const team1 = await datasource.getRepository(Team).save(team);
-      console.log(team1);
-      return team1;
-
-      //   return await datasource.getRepository(Team).findOne({
-      //     where: { id: teamId },
-      //     relations: { users: true, group: true },
-      //     });
+      return await datasource.getRepository(Team).save(team);
     }
     throw new Error("Team or users not found");
+  }
+
+  @Query(() => [User])
+  async getUsersByTeam(@Arg("teamId") teamId: number): Promise<User[]> {
+    const team = await datasource.getRepository(Team).findOne({
+      where: { id: teamId },
+      relations: { users: true, group: true },
+    });
+    if (team !== null) {
+      return team.users;
+    }
+    throw new Error("Team not found");
   }
 }

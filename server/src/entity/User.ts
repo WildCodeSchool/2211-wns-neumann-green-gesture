@@ -60,7 +60,7 @@ class User {
 
   @Field(() => [Group], { nullable: true })
   @ManyToMany(() => Group, (group) => group.users, {
-    onDelete: "CASCADE",
+    cascade: true,
   })
   groups?: Group[];
 
@@ -70,7 +70,7 @@ class User {
   })
   createdEcoActions?: EcoAction[];
 
-  @Field(() => Team)
+  @Field(() => Team, { nullable: true })
   @ManyToMany(() => Team, (team) => team.users, {
     cascade: true,
   })

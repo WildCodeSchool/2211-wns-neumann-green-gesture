@@ -45,7 +45,7 @@ class Group {
 
   @Field(() => [User])
   @ManyToMany(() => User, (user) => user.groups, {
-    cascade: true,
+    onDelete: "CASCADE",
   })
   @JoinTable()
   users: User[];

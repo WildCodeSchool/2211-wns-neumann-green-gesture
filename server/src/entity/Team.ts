@@ -28,7 +28,7 @@ export class Team {
   })
   group: Group;
 
-  @Field(() => User, { nullable: true })
+  @Field(() => [User], { nullable: true })
   @ManyToMany(() => User, (user) => user.teams)
   @JoinTable()
   users: User[];

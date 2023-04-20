@@ -94,7 +94,7 @@ export class GroupResolver {
     throw new Error("Group or ecoActions not found");
   }
 
-  // @Authorized<UserRole>([UserRole.ADMIN])
+  @Authorized<UserRole>([UserRole.ADMIN])
   @Query(() => [Group])
   async getGroups(): Promise<Group[]> {
     return await datasource.getRepository(Group).find({
