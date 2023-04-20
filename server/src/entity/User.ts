@@ -2,6 +2,7 @@ import { Field, InputType, ObjectType } from "type-graphql";
 import {
   Column,
   Entity,
+  JoinTable,
   ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -75,6 +76,12 @@ class User {
     cascade: true,
   })
   teams?: Team[];
+
+  // Association réflexives
+  @Field(() => [User], { defaultValue: [] })
+  @ManyToMany(() => User, (user) => user.friends)
+  @JoinTable()
+  friends: User[];
 }
 
 @InputType()

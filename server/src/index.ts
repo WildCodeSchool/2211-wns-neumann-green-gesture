@@ -47,6 +47,7 @@ async function start(): Promise<void> {
               createdGroups: true,
               createdEcoActions: true,
               teams: true,
+              friends: true,
             },
           });
           if (currentUser !== null) context.currentUser = currentUser;
