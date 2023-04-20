@@ -11,6 +11,7 @@ import { IsEmail, MaxLength, MinLength } from "class-validator";
 import { Options, argon2id, hash, verify } from "argon2";
 import Group from "./Group";
 import EcoAction from "./EcoAction";
+import { Team } from "./Team";
 
 export enum UserRole {
   ADMIN = "admin",
@@ -60,7 +61,7 @@ class User {
 
   @Field(() => [Group], { nullable: true })
   @ManyToMany(() => Group, (group) => group.users, {
-    onDelete: "CASCADE",
+    cascade: true,
   })
   groups?: Group[];
 
@@ -69,6 +70,12 @@ class User {
     cascade: true,
   })
   createdEcoActions?: EcoAction[];
+
+  @Field(() => Team, { nullable: true })
+  @ManyToMany(() => Team, (team) => team.users, {
+    cascade: true,
+  })
+  teams?: Team[];
 
   // Association réflexives
   @Field(() => [User], { defaultValue: [] })

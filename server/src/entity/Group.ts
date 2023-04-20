@@ -6,11 +6,13 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
 import EcoAction from "./EcoAction";
 
 import User from "./User";
+import { Team } from "./Team";
 
 @Entity()
 @ObjectType()
@@ -43,7 +45,7 @@ class Group {
 
   @Field(() => [User])
   @ManyToMany(() => User, (user) => user.groups, {
-    cascade: true,
+    onDelete: "CASCADE",
   })
   @JoinTable()
   users: User[];
@@ -52,6 +54,12 @@ class Group {
   @ManyToMany(() => EcoAction, (ecoAction) => ecoAction.groups)
   @JoinTable()
   ecoActions: EcoAction[];
+
+  @Field(() => [Team])
+  @OneToMany(() => Team, (team) => team.group, {
+    onDelete: "CASCADE",
+  })
+  teams: Team[];
 }
 
 @InputType()

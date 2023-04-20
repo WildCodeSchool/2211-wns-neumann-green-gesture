@@ -101,6 +101,7 @@ export class GroupResolver {
       relations: {
         author: true,
         users: true,
+        teams: true,
       },
     });
   }
