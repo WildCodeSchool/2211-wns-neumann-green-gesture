@@ -27,8 +27,8 @@ export class CommentResolver {
 
     const newComment = await datasource.getRepository(Comment).save({
       message,
-      user_id: currentUser as User,
-      group_id: group,
+      author: currentUser as User,
+      group,
       createdAt: new Date(),
     });
 
@@ -52,10 +52,10 @@ export class CommentResolver {
 
     const comments = await datasource.getRepository(Comment).find({
       where: {
-        group_id: { id: group.id },
+        group: { id: group.id },
       },
       relations: {
-        user_id: true,
+        author: true,
       },
     });
 
