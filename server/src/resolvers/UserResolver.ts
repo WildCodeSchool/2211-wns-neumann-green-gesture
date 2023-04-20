@@ -129,16 +129,12 @@ export class UserResolver {
   ): Promise<User> {
     const friend = await datasource
       .getRepository(User)
-      .findOne({ where: { id: friendId } });
+      .findOne({ where: { id: friendId }, relations: { friends: true } });
 
     if (friend === null) throw new ApolloError("friend not found", "NOT_FOUND");
 
     // const user = currentUser as User;
-    const user = (await datasource
-      .getRepository(User)
-      .findOne({ where: { id: 1 }, relations: { friends: true } })) as User;
-
-    console.log("user", user);
+    const user = currentUser as User;
 
     const alreadyIn = user.friends?.findIndex((f) => f.id === friend.id) > -1;
     if (alreadyIn) {
@@ -147,28 +143,11 @@ export class UserResolver {
 
     user.friends?.push(friend);
 
+    friend.friends?.push(user);
+
     await datasource.getRepository(User).save(user);
+    await datasource.getRepository(User).save(friend);
 
     return user;
-  }
-
-  // query user friends with left join
-  // @Authorized<UserSubscriptionType>([
-  //   UserSubscriptionType.PARTNER,
-  //   UserSubscriptionType.FREE,
-  // ])
-  @Query(() => [User])
-  async getFriends(@Ctx() { currentUser }: ContextType): Promise<User[]> {
-    // const user = currentUser as User;
-    const user = (await datasource
-      .getRepository(User)
-      .findOne({ where: { id: 1 }, relations: { friends: true } })) as User;
-
-    return await datasource
-      .getRepository(User)
-      .createQueryBuilder("user")
-      .leftJoinAndSelect("user.friends", "friends")
-      .where("user.id = :id", { id: user.id })
-      .getMany();
   }
 }
