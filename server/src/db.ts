@@ -4,6 +4,7 @@ import Group from "./entity/Group";
 import EcoAction from "./entity/EcoAction";
 import { env } from "./env";
 import Comment from "./entity/Comment";
+import { Team } from "./entity/Team";
 
 const datasource = new DataSource({
   type: "postgres",
@@ -13,7 +14,7 @@ const datasource = new DataSource({
   password: env.DB_PASS,
   database: env.DB_NAME,
   synchronize: true,
-  entities: [User, Group, EcoAction, Comment],
+  entities: [User, Group, EcoAction, Comment, Team],
 });
 
 export default datasource;

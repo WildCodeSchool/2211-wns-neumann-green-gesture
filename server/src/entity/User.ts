@@ -10,6 +10,7 @@ import { IsEmail, MaxLength, MinLength } from "class-validator";
 import { Options, argon2id, hash, verify } from "argon2";
 import Group from "./Group";
 import EcoAction from "./EcoAction";
+import { Team } from "./Team";
 
 export enum UserRole {
   ADMIN = "admin",
@@ -68,6 +69,12 @@ class User {
     cascade: true,
   })
   createdEcoActions?: EcoAction[];
+
+  @Field(() => Team)
+  @ManyToMany(() => Team, (team) => team.users, {
+    cascade: true,
+  })
+  teams?: Team[];
 }
 
 @InputType()
