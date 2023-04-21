@@ -8,7 +8,9 @@ import {
   Query,
   Resolver,
 } from "type-graphql";
-import datasource from "../db";
+import jwt from "jsonwebtoken";
+import { Not } from "typeorm";
+
 import User, {
   hashPassword,
   UserInputLogin,
@@ -16,10 +18,11 @@ import User, {
   UserSubscriptionType,
   verifyPassword,
 } from "../entity/User";
-import jwt from "jsonwebtoken";
+
+import datasource from "../db";
 import { env } from "../env";
 import { ContextType } from "..";
-import { Not } from "typeorm";
+import { Company } from "../entity/Company";
 
 @Resolver(User)
 export class UserResolver {
@@ -48,9 +51,10 @@ export class UserResolver {
 
   @Query(() => User)
   async getUserById(@Arg("id", () => Int) id: number): Promise<User> {
-    const user = await datasource
-      .getRepository(User)
-      .findOne({ where: { id }, relations: { friends: true } });
+    const user = await datasource.getRepository(User).findOne({
+      where: { id },
+      relations: { friends: true, company: true, createdCompany: true },
+    });
 
     if (user === null) throw new ApolloError("user not found", "NOT_FOUND");
 
@@ -65,13 +69,14 @@ export class UserResolver {
       lastName,
       email,
       password,
+      company,
       role,
       subscriptionType,
     }: UserInputSubscribe
   ): Promise<User> {
     const hashedPassword = await hashPassword(password);
 
-    return await datasource.getRepository(User).save({
+    const createdUser = await datasource.getRepository(User).save({
       firstName,
       lastName,
       email,
@@ -79,6 +84,25 @@ export class UserResolver {
       role,
       subscriptionType,
     });
+
+    if (company !== null && subscriptionType === UserSubscriptionType.PARTNER) {
+      const newCompany = await datasource.getRepository(Company).save({
+        name: company,
+        creator: createdUser,
+        users: [createdUser],
+      });
+
+      createdUser.createdCompany = newCompany;
+      createdUser.company = newCompany;
+
+      const createdPartnerUser = await datasource
+        .getRepository(User)
+        .save(createdUser);
+
+      return createdPartnerUser;
+    }
+
+    return createdUser;
   }
 
   @Mutation(() => String)

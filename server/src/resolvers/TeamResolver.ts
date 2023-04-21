@@ -7,7 +7,7 @@ import User from "../entity/User";
 import { In } from "typeorm";
 
 @Resolver(Team)
-export class CommentResolver {
+export class TeamResolver {
   // Accessible au partenaires
   @Mutation(() => Team)
   async createTeam(
