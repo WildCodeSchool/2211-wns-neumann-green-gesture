@@ -2,9 +2,12 @@ import { Field, InputType, ObjectType } from "type-graphql";
 import {
   Column,
   Entity,
+  JoinColumn,
   JoinTable,
   ManyToMany,
+  ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { IsEmail, MaxLength, MinLength } from "class-validator";
@@ -12,6 +15,7 @@ import { Options, argon2id, hash, verify } from "argon2";
 import Group from "./Group";
 import EcoAction from "./EcoAction";
 import { Team } from "./Team";
+import { Company } from "./Company";
 
 export enum UserRole {
   ADMIN = "admin",
@@ -52,6 +56,15 @@ class User {
   @Field()
   @Column({ default: UserSubscriptionType.FREE, enum: UserSubscriptionType })
   subscriptionType: string;
+
+  @Field(() => Company, { nullable: true })
+  @ManyToOne(() => Company, (company) => company.users, { cascade: true })
+  company?: Company;
+
+  @Field(() => Company, { nullable: true })
+  @OneToOne(() => Company, { cascade: true })
+  @JoinColumn()
+  createdCompany?: Company;
 
   @Field(() => [Group])
   @OneToMany(() => Group, (group) => group.author, {
@@ -102,10 +115,14 @@ export class UserInputSubscribe {
   @MinLength(8)
   password: string;
 
-  @Field({ nullable: true })
+  @Field({ nullable: true, defaultValue: null })
+  @MinLength(2)
+  company?: string;
+
+  @Field({ nullable: true, defaultValue: UserRole.USER })
   role?: string;
 
-  @Field({ nullable: true })
+  @Field({ nullable: true, defaultValue: UserSubscriptionType.FREE })
   subscriptionType?: string;
 }
 
