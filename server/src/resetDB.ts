@@ -1,7 +1,9 @@
 import datasource from "./db";
 import Comment from "./entity/Comment";
+import { Company } from "./entity/Company";
 import EcoAction from "./entity/EcoAction";
 import Group from "./entity/Group";
+import { Team } from "./entity/Team";
 import User, { hashPassword } from "./entity/User";
 
 async function resetDB(): Promise<void> {
@@ -34,6 +36,13 @@ async function resetDB(): Promise<void> {
     email: "partner@gmail.com",
     password: await hashPassword("testtest"),
     subscriptionType: "partner",
+  });
+
+  // create Company for userPartner
+  await datasource.getRepository(Company).save({
+    name: "Company 1",
+    creator: userPartner,
+    users: [userPartner, userFree],
   });
 
   // delete all eco actions in the database
@@ -88,6 +97,20 @@ async function resetDB(): Promise<void> {
       author: userPartner,
       users: [admin, userFree, userPartner],
       ecoActions,
+    },
+  ]);
+
+  // create Team for Green Gesture 3
+  await datasource.getRepository(Team).save([
+    {
+      name: "Team 1",
+      group: groups[2],
+      users: [admin],
+    },
+    {
+      name: "Team 2",
+      group: groups[2],
+      users: [userPartner, userFree],
     },
   ]);
 
