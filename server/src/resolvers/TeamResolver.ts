@@ -34,8 +34,6 @@ export class CommentResolver {
     });
 
     if (teams !== null) {
-      console.log(teams);
-
       return teams;
     }
     throw new Error("Group not found");
@@ -53,11 +51,9 @@ export class CommentResolver {
     const users = await datasource
       .getRepository(User)
       .findBy({ id: In(userIds) });
-    console.log(users);
 
     if (team !== null && users.length > 0) {
       team.users = users;
-      console.log(team);
       return await datasource.getRepository(Team).save(team);
     }
     throw new Error("Team or users not found");

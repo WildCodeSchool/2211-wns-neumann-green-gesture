@@ -9,33 +9,35 @@ import {
 } from "react-native";
 import { useLoginMutation } from "../gql/generated/schema";
 import client from "../gql/client";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as SecureStore from "expo-secure-store";
 import { useFocusEffect } from "@react-navigation/native";
 
 const Login = ({ navigation }: { navigation: any }) => {
-  const [email, setEmail] = useState("partner@gmail.com");
+  const [email, setEmail] = useState("admin@gmail.com");
   const [password, setPassword] = useState("testtest");
   const [errCredentials, setErrCredentials] = useState(false);
+  const [isLoadingProfile, setIsLoadingProfile] = useState(true);
 
-  // const [isLoggedIn, setIsLoggedIn] = useState(false);
-  // const isUserLoggedIn = async () => {
-  //   try {
-  //     const value = await AsyncStorage.getItem("@userToken");
-  //     setIsLoggedIn(true);
-  //     return value;
-  //   } catch (e) {
-  //     // error reading value
-  //   }
-  // };
+  const isUserLoggedIn = async () => {
+    try {
+      const token = await SecureStore.getItemAsync("userToken");
+      return token;
+    } catch (e) {
+      // error reading value
+    }
+  };
 
-  // useFocusEffect(
-  //   useCallback(() => async () => {
-  //     const isUserLogged = await isUserLoggedIn();
-  //     if (isUserLogged) {
-  //       navigation.navigate("Home");
-  //     }
-  //   }, [isLoggedIn])
-  // );
+  useFocusEffect(
+    useCallback(() => {
+      isUserLoggedIn().then((isUserLoggedIn) => {
+        if (isUserLoggedIn) {
+          navigation.navigate("Home");
+          return;
+        }
+        setIsLoadingProfile(false);
+      });
+    }, [])
+  );
 
   const [loginUser] = useLoginMutation();
 
@@ -46,8 +48,8 @@ const Login = ({ navigation }: { navigation: any }) => {
         variables: { loginData: { email: email.toLowerCase(), password } },
       });
 
-      await AsyncStorage.setItem(
-        "@userToken",
+      await SecureStore.setItemAsync(
+        "userToken",
         JSON.stringify(user?.data?.login)
       );
 
@@ -60,37 +62,43 @@ const Login = ({ navigation }: { navigation: any }) => {
     }
   };
   return (
-    <View style={styles.container}>
-      <StatusBar style="auto" />
-      <Text style={styles.connexion}>Se connecter</Text>
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.inputText}
-          keyboardType="email-address"
-          placeholder="Votre email..."
-          placeholderTextColor="#003f5c"
-          autoCapitalize="none"
-          onChangeText={(email) => setEmail(email)}
-          value={email}
-        />
-      </View>
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.inputText}
-          placeholder="Votre mot de passe..."
-          placeholderTextColor="#003f5c"
-          secureTextEntry={true}
-          onChangeText={(password) => setPassword(password)}
-          value={password}
-        />
-      </View>
-      <TouchableOpacity onPress={handleSubmit} style={styles.loginBtn}>
-        <Text style={styles.loginBtnTxt}>Se connecter</Text>
-      </TouchableOpacity>
-      {errCredentials && (
-        <Text style={styles.errCredentials}>Identifiants incorrects.</Text>
+    <>
+      {isLoadingProfile ? (
+        <Text>Chargement...</Text>
+      ) : (
+        <View style={styles.container}>
+          <StatusBar style="auto" />
+          <Text style={styles.connexion}>Se connecter</Text>
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.inputText}
+              keyboardType="email-address"
+              placeholder="Votre email..."
+              placeholderTextColor="#003f5c"
+              autoCapitalize="none"
+              onChangeText={(email) => setEmail(email)}
+              value={email}
+            />
+          </View>
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.inputText}
+              placeholder="Votre mot de passe..."
+              placeholderTextColor="#003f5c"
+              secureTextEntry={true}
+              onChangeText={(password) => setPassword(password)}
+              value={password}
+            />
+          </View>
+          <TouchableOpacity onPress={handleSubmit} style={styles.loginBtn}>
+            <Text style={styles.loginBtnTxt}>Se connecter</Text>
+          </TouchableOpacity>
+          {errCredentials && (
+            <Text style={styles.errCredentials}>Identifiants incorrects.</Text>
+          )}
+        </View>
       )}
-    </View>
+    </>
   );
 };
 
