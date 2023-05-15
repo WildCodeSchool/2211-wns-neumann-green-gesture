@@ -30,6 +30,19 @@ export type CommentInputCreation = {
   message: Scalars['String'];
 };
 
+export type Company = {
+  __typename?: 'Company';
+  creator: User;
+  id: Scalars['Float'];
+  name: Scalars['String'];
+  users: Array<User>;
+};
+
+export type CreateTeamInput = {
+  groupId: Scalars['Int'];
+  name: Scalars['String'];
+};
+
 export type EcoAction = {
   __typename?: 'EcoAction';
   author?: Maybe<User>;
@@ -53,6 +66,7 @@ export type Group = {
   id: Scalars['Float'];
   name: Scalars['String'];
   startDate: Scalars['DateTime'];
+  teams: Array<Team>;
   users: Array<User>;
 };
 
@@ -78,10 +92,14 @@ export type GroupInputCreation = {
 export type Mutation = {
   __typename?: 'Mutation';
   addEcoActionsToGroup: Group;
+  addFriend: User;
   addUserToGroup: Group;
+  addUsersToCompany: Company;
+  addUsersToTeam: Team;
   createComment: Comment;
   createEcoAction: EcoAction;
   createGroup: Group;
+  createTeam: Team;
   createUser: User;
   login: Scalars['String'];
   logout: Scalars['String'];
@@ -93,8 +111,24 @@ export type MutationAddEcoActionsToGroupArgs = {
 };
 
 
+export type MutationAddFriendArgs = {
+  friendId: Scalars['Int'];
+};
+
+
 export type MutationAddUserToGroupArgs = {
   data: GroupInputAddOneUser;
+};
+
+
+export type MutationAddUsersToCompanyArgs = {
+  companyId: Scalars['Int'];
+  users: Array<Scalars['Int']>;
+};
+
+
+export type MutationAddUsersToTeamArgs = {
+  data: TeamInputAddUsers;
 };
 
 
@@ -110,6 +144,11 @@ export type MutationCreateEcoActionArgs = {
 
 export type MutationCreateGroupArgs = {
   data: GroupInputCreation;
+};
+
+
+export type MutationCreateTeamArgs = {
+  data: CreateTeamInput;
 };
 
 
@@ -129,9 +168,12 @@ export type Query = {
   getFreeEcoActions: Array<EcoAction>;
   getGroup: Group;
   getGroups: Array<Group>;
+  getTeamByGroup: Array<Team>;
   getUserById: User;
   getUserEcoActions: Array<EcoAction>;
   getUserGroups: Array<Group>;
+  getUsers: Array<User>;
+  getUsersByTeam: Array<User>;
   users: Array<User>;
 };
 
@@ -146,22 +188,49 @@ export type QueryGetGroupArgs = {
 };
 
 
+export type QueryGetTeamByGroupArgs = {
+  groupId: Scalars['Float'];
+};
+
+
 export type QueryGetUserByIdArgs = {
   id: Scalars['Int'];
 };
 
+
+export type QueryGetUsersByTeamArgs = {
+  teamId: Scalars['Float'];
+};
+
+export type Team = {
+  __typename?: 'Team';
+  group: Group;
+  id: Scalars['Float'];
+  name: Scalars['String'];
+  users?: Maybe<Array<User>>;
+};
+
+export type TeamInputAddUsers = {
+  teamId: Scalars['Int'];
+  userIds: Array<Scalars['Int']>;
+};
+
 export type User = {
   __typename?: 'User';
+  company?: Maybe<Company>;
+  createdCompany?: Maybe<Company>;
   createdEcoActions: Array<EcoAction>;
   createdGroups: Array<Group>;
   email: Scalars['String'];
   firstName: Scalars['String'];
+  friends?: Maybe<Array<User>>;
   groups?: Maybe<Array<Group>>;
   id: Scalars['Float'];
   lastName: Scalars['String'];
   password: Scalars['String'];
   role: Scalars['String'];
   subscriptionType: Scalars['String'];
+  teams?: Maybe<Team>;
 };
 
 export type UserInputLogin = {
@@ -170,6 +239,7 @@ export type UserInputLogin = {
 };
 
 export type UserInputSubscribe = {
+  company?: InputMaybe<Scalars['String']>;
   email: Scalars['String'];
   firstName: Scalars['String'];
   lastName: Scalars['String'];
@@ -189,6 +259,11 @@ export type LoginMutationVariables = Exact<{
 
 
 export type LoginMutation = { __typename?: 'Mutation', login: string };
+
+export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type LogoutMutation = { __typename?: 'Mutation', logout: string };
 
 
 export const GetUserGroupsDocument = gql`
@@ -274,3 +349,33 @@ export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginM
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
 export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
+export const LogoutDocument = gql`
+    mutation logout {
+  logout
+}
+    `;
+export type LogoutMutationFn = Apollo.MutationFunction<LogoutMutation, LogoutMutationVariables>;
+
+/**
+ * __useLogoutMutation__
+ *
+ * To run a mutation, you first call `useLogoutMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLogoutMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [logoutMutation, { data, loading, error }] = useLogoutMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useLogoutMutation(baseOptions?: Apollo.MutationHookOptions<LogoutMutation, LogoutMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument, options);
+      }
+export type LogoutMutationHookResult = ReturnType<typeof useLogoutMutation>;
+export type LogoutMutationResult = Apollo.MutationResult<LogoutMutation>;
+export type LogoutMutationOptions = Apollo.BaseMutationOptions<LogoutMutation, LogoutMutationVariables>;
