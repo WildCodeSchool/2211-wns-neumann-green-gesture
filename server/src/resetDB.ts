@@ -5,11 +5,25 @@ import EcoAction from "./entity/EcoAction";
 import Group from "./entity/Group";
 import { Team } from "./entity/Team";
 import User, { hashPassword } from "./entity/User";
+import { UserEcoAction } from "./entity/UserEcoAction";
+import Validation from "./entity/Validation";
 
 async function resetDB(): Promise<void> {
   // start the connection to the database
   await datasource.initialize();
 
+  // delete all teams in the database
+  await datasource.getRepository(Team).delete({});
+  // delete all comments in the database
+  await datasource.getRepository(Comment).delete({});
+  // delete validations in the database
+  await datasource.getRepository(Validation).delete({});
+  // delete all eco actions in the database
+  await datasource.getRepository(EcoAction).delete({});
+  // delete all groups in the database
+  await datasource.getRepository(Group).delete({});
+  // delete userEcoActions in the database
+  await datasource.getRepository(UserEcoAction).delete({});
   // delete all users in the database
   await datasource.getRepository(User).delete({});
 
@@ -44,9 +58,6 @@ async function resetDB(): Promise<void> {
     creator: userPartner,
     users: [userPartner, userFree],
   });
-
-  // delete all eco actions in the database
-  await datasource.getRepository(EcoAction).delete({});
 
   // create new eco actions
   const ecoActions = await datasource.getRepository(EcoAction).save([
@@ -108,9 +119,6 @@ async function resetDB(): Promise<void> {
     },
   ]);
 
-  // delete all groups in the database
-  await datasource.getRepository(Group).delete({});
-
   // create new groups
   const groups = await datasource.getRepository(Group).save([
     {
@@ -156,6 +164,15 @@ async function resetDB(): Promise<void> {
     },
   ]);
 
+  // create new userEcoActions
+  await datasource.getRepository(UserEcoAction).save([
+    {
+      user: [userFree],
+      ecoAction: [ecoActions[0]],
+      validationId: ecoActions[0].validations[0].id,
+    },
+  ]);
+
   // create new comments
   // comments group 1
   await datasource.getRepository(Comment).save([
@@ -184,7 +201,6 @@ async function resetDB(): Promise<void> {
       createdAt: new Date(),
     },
   ]);
-
   // comments group 2
   await datasource.getRepository(Comment).save([
     {

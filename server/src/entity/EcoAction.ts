@@ -34,6 +34,10 @@ class EcoAction {
   })
   author?: User;
 
+  @Field(() => Number)
+  @Column({ default: 0 })
+  likes: number;
+
   @Field(() => [Group], { nullable: true })
   @ManyToMany(() => Group, (group) => group.ecoActions, {
     onDelete: "CASCADE",
@@ -47,7 +51,7 @@ class EcoAction {
   validations: Validation[];
 
   @Field(() => [UserEcoAction])
-  @ManyToOne(() => UserEcoAction, (userEcoAction) => userEcoAction.ecoAction, {
+  @ManyToMany(() => UserEcoAction, (userEcoAction) => userEcoAction.ecoAction, {
     cascade: true,
   })
   relatedUsers: EcoAction[];

@@ -52,8 +52,8 @@ export class GroupResolver {
     groupCreated.users.forEach((user) => {
       groupCreated.ecoActions.forEach(async (ecoAction) => {
         await datasource.getRepository(UserEcoAction).save({
-          user,
-          ecoAction,
+          user: [user],
+          ecoAction: [ecoAction],
         });
       });
     });
@@ -81,8 +81,8 @@ export class GroupResolver {
       group.users = [...group.users, user];
       group.ecoActions.forEach(async (ecoAction) => {
         await datasource.getRepository(UserEcoAction).save({
-          user,
-          ecoAction,
+          user: [user],
+          ecoAction: [ecoAction],
         });
       });
       return await datasource.getRepository(Group).save(group);

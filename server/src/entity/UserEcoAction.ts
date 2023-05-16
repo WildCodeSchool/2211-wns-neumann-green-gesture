@@ -2,8 +2,8 @@ import { Field, InputType, ObjectType } from "type-graphql";
 import {
   Column,
   Entity,
+  JoinTable,
   ManyToMany,
-  OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
 import User from "./User";
@@ -22,25 +22,27 @@ export class UserEcoAction {
   @ManyToMany(() => User, (user) => user.relatedEcoActions, {
     onDelete: "CASCADE",
   })
-  user: User;
+  @JoinTable()
+  user: User[];
 
   @Field(() => [EcoAction])
-  @OneToMany(() => EcoAction, (ecoAction) => ecoAction.relatedUsers, {
+  @ManyToMany(() => EcoAction, (ecoAction) => ecoAction.relatedUsers, {
     onDelete: "CASCADE",
   })
-  ecoAction: EcoAction;
+  @JoinTable()
+  ecoAction: EcoAction[];
 
   @Field({ nullable: true, defaultValue: null })
-  @Column()
+  @Column({ nullable: true })
   proof?: string;
 
-  @Field({ nullable: true, defaultValue: false })
-  @Column()
+  @Field()
+  @Column({ default: false })
   hasLiked?: boolean;
 
   @Field(() => Number, { nullable: true })
-  @Column()
-  validationId: number;
+  @Column({ nullable: true })
+  validationId?: number;
 }
 
 @InputType()
@@ -48,12 +50,24 @@ export class UserEcoActionInputAddProof {
   @Field()
   @MinLength(3)
   proof: string;
+
+  @Field()
+  ecoActionId: number;
+
+  @Field()
+  groupId: number;
 }
 
 @InputType()
 export class UserEcoActionInputAddLike {
   @Field()
   hasLiked: boolean;
+
+  @Field()
+  ecoActionId: number;
+
+  @Field()
+  groupId: number;
 }
 
 @InputType()
