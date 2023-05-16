@@ -1,14 +1,14 @@
-import { Arg, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Authorized, Mutation, Query, Resolver } from "type-graphql";
 import { CreateTeamInput, Team, TeamInputAddUsers } from "../entity/Team";
 import datasource from "../db";
 import Group from "../entity/Group";
 import { ApolloError } from "apollo-server-errors";
-import User from "../entity/User";
+import User, { UserSubscriptionType } from "../entity/User";
 import { In } from "typeorm";
 
 @Resolver(Team)
 export class TeamResolver {
-  // Accessible au partenaires
+  @Authorized<UserSubscriptionType>([UserSubscriptionType.PARTNER])
   @Mutation(() => Team)
   async createTeam(
     @Arg("data") { name, groupId }: CreateTeamInput
@@ -25,7 +25,7 @@ export class TeamResolver {
     });
   }
 
-  // Accessible à l'admin
+  @Authorized<UserSubscriptionType>([UserSubscriptionType.PARTNER])
   @Query(() => [Team])
   async getTeamByGroup(@Arg("groupId") groupId: number): Promise<Team[]> {
     const teams = await datasource.getRepository(Team).find({
@@ -39,6 +39,7 @@ export class TeamResolver {
     throw new Error("Group not found");
   }
 
+  @Authorized<UserSubscriptionType>([UserSubscriptionType.PARTNER])
   @Mutation(() => Team)
   async addUsersToTeam(
     @Arg("data") { teamId, userIds }: TeamInputAddUsers
@@ -59,6 +60,7 @@ export class TeamResolver {
     throw new Error("Team or users not found");
   }
 
+  @Authorized<UserSubscriptionType>([UserSubscriptionType.PARTNER])
   @Query(() => [User])
   async getUsersByTeam(@Arg("teamId") teamId: number): Promise<User[]> {
     const team = await datasource.getRepository(Team).findOne({
