@@ -54,15 +54,57 @@ async function resetDB(): Promise<void> {
       name: "EcoAction 1",
       description: "EcoAction 1 description",
       author: userPartner,
+      validations: [
+        {
+          name: "Validation 1",
+          points: 1,
+        },
+        {
+          name: "Validation 2",
+          points: 2,
+        },
+        {
+          name: "Validation 3",
+          points: 3,
+        },
+      ],
     },
     {
       name: "EcoAction 2",
       description: "EcoAction 2 description",
       author: userPartner,
+      validations: [
+        {
+          name: "Validation 1",
+          points: 1,
+        },
+        {
+          name: "Validation 2",
+          points: 2,
+        },
+        {
+          name: "Validation 3",
+          points: 3,
+        },
+      ],
     },
     {
       name: "EcoAction 3",
       description: "EcoAction 3 description",
+      validations: [
+        {
+          name: "Validation 1",
+          points: 1,
+        },
+        {
+          name: "Validation 2",
+          points: 2,
+        },
+        {
+          name: "Validation 3",
+          points: 3,
+        },
+      ],
     },
   ]);
 

@@ -5,11 +5,12 @@ import {
   Entity,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
 import Group from "./Group";
-// import Group from "./Group";
 import User from "./User";
+import Validation, { ValidationInputCreation } from "./Validation";
 
 @Entity()
 @ObjectType()
@@ -37,6 +38,12 @@ class EcoAction {
     onDelete: "CASCADE",
   })
   groups?: Group[];
+
+  @Field(() => [Validation])
+  @OneToMany(() => Validation, (validation) => validation.ecoAction, {
+    cascade: true,
+  })
+  validations: Validation[];
 }
 
 @InputType()
@@ -48,6 +55,9 @@ export class EcoActionInputCreation {
 
   @Field()
   description: string;
+
+  @Field(() => [ValidationInputCreation])
+  validations: ValidationInputCreation[];
 }
 
 export default EcoAction;

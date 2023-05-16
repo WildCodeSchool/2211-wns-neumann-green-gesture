@@ -12,13 +12,14 @@ export class EcoActionResolver {
   @Mutation(() => EcoAction)
   async createEcoAction(
     @Arg("data")
-    { name, description }: EcoActionInputCreation,
+    { name, description, validations }: EcoActionInputCreation,
     @Ctx() { currentUser }: ContextType
   ): Promise<Group> {
     return await datasource.getRepository(Group).save({
       name,
       description,
       author: currentUser,
+      validations,
     });
   }
 
@@ -35,6 +36,7 @@ export class EcoActionResolver {
       },
       relations: {
         author: true,
+        validations: true,
       },
     });
   }
@@ -48,6 +50,9 @@ export class EcoActionResolver {
     return await datasource.getRepository(EcoAction).find({
       where: {
         author: IsNull(),
+      },
+      relations: {
+        validations: true,
       },
     });
   }
