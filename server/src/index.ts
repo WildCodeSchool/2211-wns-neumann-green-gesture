@@ -46,6 +46,7 @@ async function start(): Promise<void> {
               groups: true,
               createdGroups: true,
               createdEcoActions: true,
+              relatedEcoActions: true,
               teams: true,
               friends: true,
               company: true,

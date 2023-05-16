@@ -9,6 +9,7 @@ import { ContextType } from "..";
 import User, { UserRole, UserSubscriptionType } from "../entity/User";
 import EcoAction from "../entity/EcoAction";
 import { In } from "typeorm";
+import { UserEcoAction } from "../entity/UserEcoAction";
 
 @Resolver(Group)
 export class GroupResolver {
@@ -38,7 +39,7 @@ export class GroupResolver {
       .getRepository(EcoAction)
       .findBy({ id: In(ecoActionsIds) });
 
-    return await datasource.getRepository(Group).save({
+    const groupCreated = await datasource.getRepository(Group).save({
       name,
       challengeName,
       startDate,
@@ -47,6 +48,17 @@ export class GroupResolver {
       users: [currentUser as User, ...participantUsers],
       ecoActions,
     });
+
+    groupCreated.users.forEach((user) => {
+      groupCreated.ecoActions.forEach(async (ecoAction) => {
+        await datasource.getRepository(UserEcoAction).save({
+          user: [user],
+          ecoAction: [ecoAction],
+        });
+      });
+    });
+
+    return groupCreated;
   }
 
   @Authorized<UserSubscriptionType>([
@@ -67,8 +79,15 @@ export class GroupResolver {
 
     if (group !== null && user !== null) {
       group.users = [...group.users, user];
+      group.ecoActions.forEach(async (ecoAction) => {
+        await datasource.getRepository(UserEcoAction).save({
+          user: [user],
+          ecoAction: [ecoAction],
+        });
+      });
       return await datasource.getRepository(Group).save(group);
     }
+
     throw new Error("Group or user not found");
   }
 

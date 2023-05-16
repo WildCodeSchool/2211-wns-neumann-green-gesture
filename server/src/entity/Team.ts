@@ -29,7 +29,9 @@ export class Team {
   group: Group;
 
   @Field(() => [User], { nullable: true })
-  @ManyToMany(() => User, (user) => user.teams)
+  @ManyToMany(() => User, (user) => user.teams, {
+    onDelete: "CASCADE",
+  })
   @JoinTable()
   users: User[];
 }
