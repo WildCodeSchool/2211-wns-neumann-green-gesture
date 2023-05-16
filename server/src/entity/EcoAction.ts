@@ -11,6 +11,7 @@ import {
 import Group from "./Group";
 import User from "./User";
 import Validation, { ValidationInputCreation } from "./Validation";
+import { UserEcoAction } from "./UserEcoAction";
 
 @Entity()
 @ObjectType()
@@ -44,6 +45,12 @@ class EcoAction {
     cascade: true,
   })
   validations: Validation[];
+
+  @Field(() => [UserEcoAction])
+  @ManyToOne(() => UserEcoAction, (userEcoAction) => userEcoAction.ecoAction, {
+    cascade: true,
+  })
+  relatedUsers: EcoAction[];
 }
 
 @InputType()

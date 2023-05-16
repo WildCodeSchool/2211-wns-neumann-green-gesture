@@ -16,6 +16,7 @@ import Group from "./Group";
 import EcoAction from "./EcoAction";
 import { Team } from "./Team";
 import { Company } from "./Company";
+import { UserEcoAction } from "./UserEcoAction";
 
 export enum UserRole {
   ADMIN = "admin",
@@ -83,6 +84,12 @@ class User {
     cascade: true,
   })
   createdEcoActions?: EcoAction[];
+
+  @Field(() => [UserEcoAction])
+  @ManyToMany(() => UserEcoAction, (userEcoAction) => userEcoAction.user, {
+    cascade: true,
+  })
+  relatedEcoActions?: UserEcoAction[];
 
   @Field(() => Team, { nullable: true })
   @ManyToMany(() => Team, (team) => team.users, {
