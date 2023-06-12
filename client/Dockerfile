@@ -12,6 +12,8 @@ COPY .npmrc .
 
 RUN pnpm i
 
+COPY postcss.config.js .
+COPY tailwind.config.js .
 COPY tsconfig.json .
 COPY tsconfig.node.json .
 COPY vite.config.ts .

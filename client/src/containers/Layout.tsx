@@ -1,13 +1,8 @@
-import { Box } from "@chakra-ui/react";
+
 import { PropsWithChildren } from "react";
-import NavBar from "../components/NavBar";
 
 function Layout({ children }: PropsWithChildren) {
-  return (
-    <Box minH="100vh">
-      <NavBar />
-      {children}
-    </Box>
+  return (<h1>Layout</h1>
   );
 }
 

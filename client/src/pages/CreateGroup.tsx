@@ -1,14 +1,7 @@
-import {
-  Stack,
-  FormControl,
-  FormLabel,
-  Input,
-  Box,
-  Button,
-  Center,
-} from "@chakra-ui/react";
+
 import { FormEvent, useState } from "react";
-import { RangeDatepicker } from "chakra-dayzed-datepicker";
+import { useNavigate } from "react-router-dom";
+
 
 import Layout from "../containers/Layout";
 import {
@@ -19,8 +12,7 @@ import {
   useGetUserEcoActionsQuery,
 } from "../gql/generated/schema";
 
-import { Select } from "chakra-react-select";
-import { useNavigate } from "react-router-dom";
+
 
 const MONTHS = [
   "Janvier",
@@ -110,86 +102,7 @@ function CreateGroup() {
   };
 
   return (
-    <Layout>
-      <Center h={"calc(100vh - 4rem)"}>
-        <Box
-          onSubmit={handleSubmit}
-          as="form"
-          sx={{
-            border: "1px solid black",
-            borderRadius: "5px",
-            padding: 4,
-            textAlign: "center",
-            width: "100%",
-            maxWidth: "700px",
-          }}
-        >
-          <Stack spacing={3} mt={4} paddingX={8}>
-            <FormControl>
-              <FormLabel htmlFor="groupName">Nom du groupe</FormLabel>
-              <Input
-                id="groupName"
-                name="groupName"
-                onChange={({ target }) => setGroupName(target.value)}
-                value={groupName}
-              />
-            </FormControl>
-
-            <FormControl>
-              <FormLabel htmlFor="challengeName">Nom du challenge</FormLabel>
-              <Input
-                id="challengeName"
-                name="challengeName"
-                onChange={({ target }) => setChallengeName(target.value)}
-                value={challengeName}
-              />
-            </FormControl>
-
-            <FormControl>
-              <FormLabel htmlFor="datePicker">Durée du challenge</FormLabel>
-              <RangeDatepicker
-                id="datePicker"
-                selectedDates={selectedDates}
-                onDateChange={setSelectedDates}
-                configs={{
-                  monthNames: MONTHS,
-                  dayNames: DAYS,
-                }}
-              />
-            </FormControl>
-
-            <FormControl>
-              <FormLabel>Sélectionnez vos éco-actions</FormLabel>
-              <Select
-                isMulti
-                name="colors"
-                options={ecoActionsList}
-                placeholder="Vos éco-actions disponibles..."
-                variant="outline"
-                closeMenuOnSelect={false}
-                noOptionsMessage={() => (
-                  <p>Il n'y a plus d'eco-actions disponibles !</p>
-                )}
-                onChange={handleSelectChange}
-              />
-            </FormControl>
-          </Stack>
-
-          <Button
-            type="submit"
-            sx={{
-              textTransform: "uppercase",
-              marginTop: 5,
-              marginBottom: 1,
-              bg: "accent",
-              color: "white",
-            }}
-          >
-            Je crée mon groupe
-          </Button>
-        </Box>
-      </Center>
-    </Layout>
+    <h1>Creation groupe</h1>
   );
 }
 
