@@ -7,13 +7,21 @@ export default {
   theme: {
     container: {
       center: true,
-      padding: "2rem",
+      padding: "calc(1rem - 1px)",
       screens: {
         "2xl": "1400px",
       },
     },
     extend: {
       colors: {
+        "dark-green": "var(--dark-green)",
+        "medium-green": "var(--medium-green)",
+        "light-green": "var(--light-green)",
+        "grey-green": "var(--grey-green)",
+        "white-green": "var(--white-green)",
+        "main-grey": "var(--main-grey)",
+        "accent-orange": "var(--accent-orange)",
+        "accent-blue": "var(--accent-blue)",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -47,14 +55,17 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-      },
-      borderRadius: {
-        lg: `var(--radius)`,
-        md: `calc(var(--radius) - 2px)`,
-        sm: "calc(var(--radius) - 4px)",
+        "card-alt": {
+          DEFAULT: "hsl(var(--card-alt))",
+          foreground: "hsl(var(--card-alt-foreground))",
+        },
+        "card-alt-2": {
+          DEFAULT: "hsl(var(--card-alt-2))",
+          foreground: "hsl(var(--card-alt-2-foreground))",
+        },
       },
       fontFamily: {
-        sans: ["var(--font-sans)", ...fontFamily.sans],
+        sans: ["Montserrat", "var(--font-sans)", ...fontFamily.sans],
       },
       keyframes: {
         "accordion-down": {

@@ -12,8 +12,6 @@ function Home() {
   return (
     <>
       <h1 className="text-3xl">Home</h1>
-      <Button variant="default">Test</Button>
-      <Button variant="secondary">Test</Button>
     </>
   );
 }
