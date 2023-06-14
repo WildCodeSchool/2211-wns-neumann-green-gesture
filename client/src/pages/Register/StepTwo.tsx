@@ -1,25 +1,30 @@
+import { motion } from "framer-motion";
 import RadioButtons, { Radio } from "@/components/RadioButtons";
 import { Button } from "@/components/ui/button";
 import { Formula } from "./Register";
+import StepBackButton from "@/components/StepBackButton";
 
 type StepTwoProps = {
   radios: Radio[];
-  formula: Formula;
   handleChangeFormula: (value: Formula) => void;
-  handleSubmit: () => void;
-  handleChangeStep: (step: number) => void;
+  handleGoBackInStep: () => void;
 };
 
 export const StepTwo = ({
   radios,
-  formula,
   handleChangeFormula,
-  handleSubmit,
-  handleChangeStep,
+  handleGoBackInStep,
 }: StepTwoProps) => {
   return (
-    <div className="flex flex-col items-center mx-5">
-      <img src="./src/assets/images/globe-formula.png" />
+    <motion.div
+      key={2}
+      initial={{ x: 300, opacity: 0 }}
+      animate={{ x: 0, opacity: 1, transition: { duration: 0.5 } }}
+      exit={{ x: -300, opacity: 0 }}
+      className="relative flex flex-col items-center px-5"
+    >
+      <StepBackButton onClick={handleGoBackInStep} />
+      <img src="./src/assets/images/globe-formula.png" className="w-48" />
       <h2 className="text-xl font-bold my-8">Sélectionnez votre formule</h2>
       <RadioButtons
         radios={radios}
@@ -30,12 +35,9 @@ export const StepTwo = ({
         Enregistrez votre entreprise, et créez des challenges en formant des
         équipes avec vos collaborateurs !
       </p>
-      <Button
-        className="w-full mt-7"
-        onClick={formula === "free" ? handleSubmit : () => handleChangeStep(2)}
-      >
+      <Button type="submit" className="w-full mt-7">
         Je finalise mon inscription
       </Button>
-    </div>
+    </motion.div>
   );
 };

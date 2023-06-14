@@ -1,21 +1,26 @@
-import { FormEvent, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import * as z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { AnimatePresence, motion } from "framer-motion";
 
 import {
   useCreateUserMutation,
   UsersDocument,
 } from "../../gql/generated/schema";
+import { Radio } from "@/components/RadioButtons";
 import { StepOne } from "./StepOne";
 import { StepTwo } from "./StepTwo";
-import { Radio } from "@/components/RadioButtons";
 import { StepThree } from "./StepThree";
+import { Form } from "@/components/ui/form";
 
 export type User = {
   firstName: string;
   lastName: string;
   email: string;
   password: string;
-  company: string;
+  company: string | undefined;
 };
 
 export type Formula = "free" | "partner";
@@ -25,7 +30,7 @@ const DEFAULT_USER = {
   lastName: "",
   email: "",
   password: "",
-  company: "",
+  company: undefined,
 };
 
 const DEFAULT_FORMULA_RADIOS: Radio[] = [
@@ -44,89 +49,106 @@ const DEFAULT_FORMULA_RADIOS: Radio[] = [
   },
 ];
 
+const formSchema = z.object({
+  firstName: z.string().min(2).max(50),
+  lastName: z.string().min(2).max(50),
+  email: z.string().min(6).email({ message: "Email invalide" }),
+  password: z.string().min(8).max(50),
+  company: z.string().max(50).optional(),
+});
+
 function Register() {
   const [createUser, { loading: processing }] = useCreateUserMutation();
-  const [user, setUser] = useState<User>(DEFAULT_USER);
-  const [step, setStep] = useState<number>(3);
+  const [step, setStep] = useState<number>(1);
   const [selectedFormula, setSelectedFormula] = useState<Formula>("free");
 
   const navigate = useNavigate();
 
-  const handleChangeStep = (step: number) => {
-    if (step === 1 && isFirstStepValid()) {
-      setStep(2);
-      return;
-    }
-    if (step === 2) {
-      setStep(3);
-      return;
-    }
-  };
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: DEFAULT_USER,
+    shouldFocusError: true,
+  });
 
-  const isFirstStepValid = () => {
-    return (
-      user.firstName.length > 3 &&
-      user.lastName.length > 3 &&
-      user.email.length >= 8 &&
-      user.password.length >= 8
-    );
+  const handleGoBackInStep = () => {
+    setStep((prevStep) => (prevStep === 1 ? 1 : prevStep - 1));
   };
 
   const handleChangeFormula = (value: Formula) => {
     setSelectedFormula(value);
   };
 
-  const handleSubmit = async () => {
-    try {
-      await createUser({
-        variables: {
-          data: {
-            email: user.email,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            password: user.password,
+  const handleSubmit = async (values: z.infer<typeof formSchema>) => {
+    if (step === 1) {
+      setStep(2);
+      return;
+    }
+
+    if (step === 2 && selectedFormula === "partner") {
+      setStep(3);
+      return;
+    }
+
+    if (step > 1) {
+      try {
+        await createUser({
+          variables: {
+            data: {
+              email: values.email,
+              firstName: values.firstName,
+              lastName: values.lastName,
+              password: values.password,
+              company: values.company,
+              subscriptionType: selectedFormula,
+            },
           },
-        },
-        refetchQueries: [{ query: UsersDocument }],
-      });
-      navigate("/");
-    } catch (err) {
-      console.error("err", err);
-    } finally {
-      setUser(DEFAULT_USER);
+          refetchQueries: [{ query: UsersDocument }],
+        });
+        form.clearErrors();
+        navigate("/");
+      } catch (err) {
+        console.error("err", err);
+        form.setError("email", {
+          type: "string",
+          message: "email déjà utilisé",
+        });
+        setStep(1);
+      }
     }
   };
 
-  const handleUpdateUser = (key: keyof User, value: string) => {
-    setUser({ ...user, [key]: value });
-  };
-
   return (
-    <div className="flex flex-col items-center h-full justify-center">
-      {step === 1 && (
-        <StepOne
-          user={user}
-          handleUpdateUser={handleUpdateUser}
-          handleChangeStep={handleChangeStep}
-        />
-      )}
-      {step === 2 && (
-        <StepTwo
-          radios={DEFAULT_FORMULA_RADIOS}
-          formula={selectedFormula}
-          handleChangeFormula={handleChangeFormula}
-          handleSubmit={handleSubmit}
-          handleChangeStep={handleChangeStep}
-        />
-      )}
-      {step === 3 && (
-        <StepThree
-          user={user}
-          handleUpdateUser={handleUpdateUser}
-          handleSubmit={handleSubmit}
-        />
-      )}
-    </div>
+    <AnimatePresence>
+      <motion.div
+        key={1}
+        initial={{ x: 300, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        exit={{ x: -300, opacity: 0 }}
+        className="py-8 h-full"
+      >
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(handleSubmit)}
+            className="flex flex-col items-center h-full justify-center"
+          >
+            {step === 1 && <StepOne control={form.control} />}
+            {step === 2 && (
+              <StepTwo
+                radios={DEFAULT_FORMULA_RADIOS}
+                handleChangeFormula={handleChangeFormula}
+                handleGoBackInStep={handleGoBackInStep}
+              />
+            )}
+            {step === 3 && (
+              <StepThree
+                control={form.control}
+                handleGoBackInStep={handleGoBackInStep}
+              />
+            )}
+          </form>
+        </Form>
+      </motion.div>
+    </AnimatePresence>
   );
 }
 

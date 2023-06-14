@@ -1,12 +1,23 @@
-import InputWithLabel from "@/components/InputWithLabel";
-import { User } from "./Register";
+import { Control } from "react-hook-form";
+import { motion } from "framer-motion";
+
 import { Button } from "@/components/ui/button";
 import RadioButtons, { Radio } from "@/components/RadioButtons";
+import CustomFormField from "@/components/CustomFormField";
+import StepBackButton from "@/components/StepBackButton";
 
 type StepThreeProps = {
-  user: User;
-  handleUpdateUser: (key: keyof User, value: string) => void;
-  handleSubmit: () => void;
+  control: Control<
+    {
+      firstName: string;
+      lastName: string;
+      email: string;
+      password: string;
+      company?: string | undefined;
+    },
+    any
+  >;
+  handleGoBackInStep: () => void;
 };
 
 const PAYMENT_METHODS_RADIOS: Radio[] = [
@@ -30,29 +41,25 @@ const PAYMENT_METHODS_RADIOS: Radio[] = [
   },
 ];
 
-export const StepThree = ({
-  user,
-  handleUpdateUser,
-  handleSubmit,
-}: StepThreeProps) => {
-  const handleOnClick = () => {
-    if (user.company.length > 3) {
-      handleSubmit();
-    }
-  };
-
+export const StepThree = ({ control, handleGoBackInStep }: StepThreeProps) => {
   return (
-    <div className="flex flex-col items-center w-full px-5">
-      <img src="./src/assets/images/earth-money.png" className="w-[200px]" />
+    <motion.div
+      key={3}
+      initial={{ x: 300, opacity: 0 }}
+      animate={{ x: 0, opacity: 1, transition: { duration: 0.5 } }}
+      exit={{ x: -300, opacity: 0 }}
+      className="flex flex-col items-center w-full px-5"
+    >
+      <StepBackButton onClick={handleGoBackInStep} />
+      <img src="./src/assets/images/earth-money.png" className="w-40" />
       <h2 className="text-xl font-bold mb-7">Plus qu'une étape !</h2>
-      <InputWithLabel
-        idForLabel="company"
+      <CustomFormField
+        control={control}
         label="Nom de l'entreprise"
+        name="company"
         placeholder="Green Gesture"
-        onChange={(e) => handleUpdateUser("company", e.target.value)}
-        value={user.company}
       />
-      <div className="w-full mt-4">
+      <div className="w-full mt-8">
         <p className="text-sm font-semibold mb-2">Moyen de paiement</p>
         <RadioButtons
           radios={PAYMENT_METHODS_RADIOS}
@@ -60,9 +67,9 @@ export const StepThree = ({
           defaultValue="paypal"
         />
       </div>
-      <Button className="w-full mt-7" onClick={handleOnClick}>
+      <Button type="submit" className="w-full mt-8">
         Je procède au paiement
       </Button>
-    </div>
+    </motion.div>
   );
 };
