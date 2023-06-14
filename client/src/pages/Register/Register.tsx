@@ -80,6 +80,14 @@ function Register() {
       return;
     }
 
+    if (step === 3 && values.company === undefined) {
+      form.setError("company", {
+        type: "string",
+        message: "Veuillez renseigner le nom de votre entreprise",
+      });
+      return;
+    }
+
     if (step > 1) {
       try {
         await createUser({
