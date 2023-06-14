@@ -5,7 +5,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import NewGroup from "./pages/CreateGroup";
 import Profile from "./pages/Profile";
-import Register from "./pages/Register";
+import Register from "./pages/Register/Register";
 
 function App() {
   const isLoggedIn = window.localStorage.getItem("gg_logged") === "isLogged";
