@@ -5,18 +5,10 @@ import { Button } from "@/components/ui/button";
 import RadioButtons, { Radio } from "@/components/RadioButtons";
 import CustomFormField from "@/components/CustomFormField";
 import StepBackButton from "@/components/StepBackButton";
+import { User } from "@/types/global";
 
 type StepThreeProps = {
-  control: Control<
-    {
-      firstName: string;
-      lastName: string;
-      email: string;
-      password: string;
-      company?: string | undefined;
-    },
-    any
-  >;
+  control: Control<User, any>;
   handleGoBackInStep: () => void;
 };
 

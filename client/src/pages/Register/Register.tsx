@@ -14,16 +14,7 @@ import { StepOne } from "./StepOne";
 import { StepTwo } from "./StepTwo";
 import { StepThree } from "./StepThree";
 import { Form } from "@/components/ui/form";
-
-export type User = {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-  company: string | undefined;
-};
-
-export type Formula = "free" | "partner";
+import { Formula } from "@/types/global";
 
 const DEFAULT_USER = {
   firstName: "",
