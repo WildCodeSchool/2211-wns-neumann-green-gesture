@@ -50,7 +50,11 @@ function Home() {
         </>
       ) : (
         <div className="flex flex-col-reverse flex-end bg-card rounded-lg p-3 h-32">
-          <Button variant="secondary" onClick={() => navigate("/create-group")}>
+          <Button
+            variant="secondary"
+            onClick={() => navigate("/create-group")}
+            data-testid="no-challenge"
+          >
             Créer mon premier challenge
           </Button>
         </div>

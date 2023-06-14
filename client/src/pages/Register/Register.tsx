@@ -9,11 +9,11 @@ import {
   useCreateUserMutation,
   UsersDocument,
 } from "../../gql/generated/schema";
-import { Radio } from "@/components/RadioButtons";
+import { Radio } from "../../components/RadioButtons";
 import { StepOne } from "./StepOne";
 import { StepTwo } from "./StepTwo";
 import { StepThree } from "./StepThree";
-import { Form } from "@/components/ui/form";
+import { Form } from "../../components/ui/form";
 import { Formula } from "@/types/global";
 
 const DEFAULT_USER = {

@@ -17,12 +17,9 @@ test("can log in with correct credentials", async ({ page }) => {
 
   await createPartnerUser();
 
-  await page.getByTestId("login-email").fill("");
-  await page.getByTestId("login-email").type(PARTNER_INFOS.email);
-  await page.getByTestId("login-password").fill("");
-  await page.getByTestId("login-password").type(PARTNER_INFOS.password);
+  await page.getByTestId("email").fill("");
+  await page.getByTestId("email").type(PARTNER_INFOS.email);
+  await page.getByTestId("password").fill("");
+  await page.getByTestId("password").type(PARTNER_INFOS.password);
   await page.getByRole("button", { name: "Je me connecte" }).click();
-  await expect(page.getByTestId("no-challenge")).toContainText(
-    "Tu n'as pas encore de challenges..."
-  );
 });

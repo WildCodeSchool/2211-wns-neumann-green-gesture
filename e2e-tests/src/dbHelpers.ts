@@ -5,7 +5,7 @@ import { hash } from "argon2";
 export const PARTNER_INFOS = {
   firstName: "first",
   lastName: "last",
-  email: "partner@gmail.com",
+  email: "test@gmail.com",
   password: "testtest",
 };
 
