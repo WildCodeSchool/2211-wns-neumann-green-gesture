@@ -34,7 +34,6 @@ export class CompanyResolver {
           .length === 0
       );
     });
-    console.log("usersToAddFiltered", usersToAddFiltered);
 
     company.users = [...company.users, ...usersToAddFiltered];
 
