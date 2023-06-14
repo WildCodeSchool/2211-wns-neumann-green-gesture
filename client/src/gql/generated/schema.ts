@@ -16,18 +16,49 @@ export type Scalars = {
   DateTime: any;
 };
 
+export type Comment = {
+  __typename?: 'Comment';
+  author: User;
+  createdAt: Scalars['DateTime'];
+  group: Group;
+  id: Scalars['Float'];
+  message: Scalars['String'];
+};
+
+export type CommentInputCreation = {
+  groupId: Scalars['Float'];
+  message: Scalars['String'];
+};
+
+export type Company = {
+  __typename?: 'Company';
+  creator: User;
+  id: Scalars['Float'];
+  name: Scalars['String'];
+  users: Array<User>;
+};
+
+export type CreateTeamInput = {
+  groupId: Scalars['Int'];
+  name: Scalars['String'];
+};
+
 export type EcoAction = {
   __typename?: 'EcoAction';
   author?: Maybe<User>;
   description: Scalars['String'];
   groups?: Maybe<Array<Group>>;
   id: Scalars['Float'];
+  likes: Scalars['Float'];
   name: Scalars['String'];
+  relatedUsers: Array<UserEcoAction>;
+  validations: Array<Validation>;
 };
 
 export type EcoActionInputCreation = {
   description: Scalars['String'];
   name: Scalars['String'];
+  validations: Array<ValidationInputCreation>;
 };
 
 export type Group = {
@@ -39,6 +70,7 @@ export type Group = {
   id: Scalars['Float'];
   name: Scalars['String'];
   startDate: Scalars['DateTime'];
+  teams: Array<Team>;
   users: Array<User>;
 };
 
@@ -64,10 +96,17 @@ export type GroupInputCreation = {
 export type Mutation = {
   __typename?: 'Mutation';
   addEcoActionsToGroup: Group;
+  addFriend: User;
+  addProof: Scalars['String'];
   addUserToGroup: Group;
+  addUsersToCompany: Company;
+  addUsersToTeam: Team;
+  createComment: Comment;
   createEcoAction: EcoAction;
   createGroup: Group;
+  createTeam: Team;
   createUser: User;
+  likeEcoAction: Scalars['String'];
   login: Scalars['String'];
   logout: Scalars['String'];
 };
@@ -78,8 +117,34 @@ export type MutationAddEcoActionsToGroupArgs = {
 };
 
 
+export type MutationAddFriendArgs = {
+  friendId: Scalars['Int'];
+};
+
+
+export type MutationAddProofArgs = {
+  data: UserEcoActionInputAddProof;
+};
+
+
 export type MutationAddUserToGroupArgs = {
   data: GroupInputAddOneUser;
+};
+
+
+export type MutationAddUsersToCompanyArgs = {
+  companyId: Scalars['Int'];
+  users: Array<Scalars['Int']>;
+};
+
+
+export type MutationAddUsersToTeamArgs = {
+  data: TeamInputAddUsers;
+};
+
+
+export type MutationCreateCommentArgs = {
+  data: CommentInputCreation;
 };
 
 
@@ -93,8 +158,18 @@ export type MutationCreateGroupArgs = {
 };
 
 
+export type MutationCreateTeamArgs = {
+  data: CreateTeamInput;
+};
+
+
 export type MutationCreateUserArgs = {
   data: UserInputSubscribe;
+};
+
+
+export type MutationLikeEcoActionArgs = {
+  data: UserEcoActionInputAddLike;
 };
 
 
@@ -104,14 +179,24 @@ export type MutationLoginArgs = {
 
 export type Query = {
   __typename?: 'Query';
+  getCommentsForGroup: Array<Comment>;
   getCurrentUser: User;
   getFreeEcoActions: Array<EcoAction>;
   getGroup: Group;
   getGroups: Array<Group>;
+  getTeamByGroup: Array<Team>;
   getUserById: User;
+  getUserEcoAction: Array<UserEcoAction>;
   getUserEcoActions: Array<EcoAction>;
   getUserGroups: Array<Group>;
+  getUsers: Array<User>;
+  getUsersByTeam: Array<User>;
   users: Array<User>;
+};
+
+
+export type QueryGetCommentsForGroupArgs = {
+  groupId: Scalars['Float'];
 };
 
 
@@ -120,22 +205,83 @@ export type QueryGetGroupArgs = {
 };
 
 
+export type QueryGetTeamByGroupArgs = {
+  groupId: Scalars['Float'];
+};
+
+
 export type QueryGetUserByIdArgs = {
   id: Scalars['Int'];
 };
 
+
+export type QueryGetUserEcoActionArgs = {
+  ecoActionId: Scalars['Float'];
+  groupId: Scalars['Float'];
+};
+
+
+export type QueryGetUsersByTeamArgs = {
+  teamId: Scalars['Float'];
+};
+
+export type Team = {
+  __typename?: 'Team';
+  group: Group;
+  id: Scalars['Float'];
+  name: Scalars['String'];
+  users?: Maybe<Array<User>>;
+};
+
+export type TeamInputAddUsers = {
+  teamId: Scalars['Int'];
+  userIds: Array<Scalars['Int']>;
+};
+
 export type User = {
   __typename?: 'User';
+  company?: Maybe<Company>;
+  createdCompany?: Maybe<Company>;
   createdEcoActions: Array<EcoAction>;
   createdGroups: Array<Group>;
   email: Scalars['String'];
   firstName: Scalars['String'];
+  friends?: Maybe<Array<User>>;
   groups?: Maybe<Array<Group>>;
   id: Scalars['Float'];
   lastName: Scalars['String'];
   password: Scalars['String'];
+  relatedEcoActions: Array<UserEcoAction>;
   role: Scalars['String'];
   subscriptionType: Scalars['String'];
+  teams?: Maybe<Team>;
+};
+
+export type UserEcoAction = {
+  __typename?: 'UserEcoAction';
+  ecoAction: Array<EcoAction>;
+  hasLiked: Scalars['Boolean'];
+  id: Scalars['Float'];
+  proof?: Maybe<Scalars['String']>;
+  user: Array<User>;
+  validationId?: Maybe<Scalars['Float']>;
+};
+
+export type UserEcoActionInputAddLike = {
+  ecoActionId: Scalars['Float'];
+  groupId: Scalars['Float'];
+  hasLiked: Scalars['Boolean'];
+};
+
+export type UserEcoActionInputAddProof = {
+  ecoActionId: Scalars['Float'];
+  groupId: Scalars['Float'];
+  proof: Scalars['String'];
+};
+
+export type UserEcoActionInputAddValidation = {
+  validationId: Scalars['Float'];
+  validationPoints: Scalars['Float'];
 };
 
 export type UserInputLogin = {
@@ -144,12 +290,26 @@ export type UserInputLogin = {
 };
 
 export type UserInputSubscribe = {
+  company?: InputMaybe<Scalars['String']>;
   email: Scalars['String'];
   firstName: Scalars['String'];
   lastName: Scalars['String'];
   password: Scalars['String'];
   role?: InputMaybe<Scalars['String']>;
   subscriptionType?: InputMaybe<Scalars['String']>;
+};
+
+export type Validation = {
+  __typename?: 'Validation';
+  ecoAction: Array<EcoAction>;
+  id: Scalars['Float'];
+  name: Scalars['String'];
+  points: Scalars['Float'];
+};
+
+export type ValidationInputCreation = {
+  name: Scalars['String'];
+  points: Scalars['Float'];
 };
 
 export type CreateGroupMutationVariables = Exact<{
@@ -162,7 +322,7 @@ export type CreateGroupMutation = { __typename?: 'Mutation', createGroup: { __ty
 export type GetCurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetCurrentUserQuery = { __typename?: 'Query', getCurrentUser: { __typename?: 'User', id: number, firstName: string, lastName: string, email: string, role: string, subscriptionType: string, groups?: Array<{ __typename?: 'Group', startDate: any, endDate: any, name: string, challengeName: string, id: number }> | null, createdEcoActions: Array<{ __typename?: 'EcoAction', id: number, name: string, description: string }> } };
+export type GetCurrentUserQuery = { __typename?: 'Query', getCurrentUser: { __typename?: 'User', id: number, firstName: string, lastName: string, email: string, role: string, subscriptionType: string, groups?: Array<{ __typename?: 'Group', startDate: any, endDate: any, name: string, challengeName: string, id: number }> | null, createdEcoActions: Array<{ __typename?: 'EcoAction', id: number, name: string, description: string }>, company?: { __typename?: 'Company', id: number, name: string, users: Array<{ __typename?: 'User', id: number }> } | null } };
 
 export type GetFreeEcoActionsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -272,6 +432,13 @@ export const GetCurrentUserDocument = gql`
       id
       name
       description
+    }
+    company {
+      id
+      name
+      users {
+        id
+      }
     }
   }
 }
