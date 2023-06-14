@@ -67,6 +67,9 @@ export default {
       fontFamily: {
         sans: ["Montserrat", "var(--font-sans)", ...fontFamily.sans],
       },
+      fontSize: {
+        "2xs": "0.625rem",
+      },
       keyframes: {
         "accordion-down": {
           from: { height: 0 },

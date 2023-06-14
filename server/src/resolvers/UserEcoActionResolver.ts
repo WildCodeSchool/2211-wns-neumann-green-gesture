@@ -43,7 +43,6 @@ export class UserEcoActionResolver {
         user: true,
       },
     });
-    console.log({ res });
 
     return res;
   }

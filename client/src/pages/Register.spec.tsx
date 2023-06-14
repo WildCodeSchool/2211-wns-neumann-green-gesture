@@ -1,7 +1,7 @@
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
 import { MockedProvider } from "@apollo/client/testing";
-import Register from "./Register";
+import Register from "./Register/Register";
 
 describe("Register component", () => {
   beforeEach(() =>
