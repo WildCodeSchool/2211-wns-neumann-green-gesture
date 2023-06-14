@@ -1,3 +1,4 @@
+import { Formula } from "@/pages/Register/Register";
 import { Label } from "./ui/label";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 
@@ -9,19 +10,26 @@ export type Radio = {
   hint?: string;
 };
 
-type FormuleRadioButtonsProps = {
+type RadioButtonsProps = {
   radios: Radio[];
+  onChange: (value: Formula) => void;
+  defaultValue: string;
 };
 
-function FormuleRadioButtons({ radios }: FormuleRadioButtonsProps) {
+function RadioButtons({ radios, onChange, defaultValue }: RadioButtonsProps) {
   return (
-    <RadioGroup className="space-y-4">
-      {radios.map((radio) => (
+    <RadioGroup
+      className="space-y-4 w-full"
+      onValueChange={onChange}
+      defaultValue={defaultValue}
+    >
+      {radios.map((radio, idx) => (
         <Label
           htmlFor={radio.id}
           className={`flex items-center justify-between w-full rounded-3xl px-5 py-3 ${
             radio.type === "primary" ? "bg-light-green" : "bg-accent-blue"
           }`}
+          key={idx}
         >
           <div className="space-x-3 flex flex-1 items-center">
             <RadioGroupItem
@@ -41,7 +49,7 @@ function FormuleRadioButtons({ radios }: FormuleRadioButtonsProps) {
           </div>
           {radio.hint && (
             <div className="flex-end">
-              <p className="font-normal">{radio.hint}</p>
+              <p className="font-normal text-white-green">{radio.hint}</p>
             </div>
           )}
         </Label>
@@ -50,4 +58,4 @@ function FormuleRadioButtons({ radios }: FormuleRadioButtonsProps) {
   );
 }
 
-export default FormuleRadioButtons;
+export default RadioButtons;
