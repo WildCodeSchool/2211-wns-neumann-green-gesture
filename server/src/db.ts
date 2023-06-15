@@ -18,14 +18,14 @@ const datasource = new DataSource({
   database: env.DB_NAME,
   synchronize: true,
   entities: [
-    User,
-    Group,
-    EcoAction,
-    Comment,
     Team,
-    Company,
+    Comment,
     Validation,
     UserEcoAction,
+    EcoAction,
+    Group,
+    Company,
+    User,
   ],
 });
 

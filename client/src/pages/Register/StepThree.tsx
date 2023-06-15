@@ -1,10 +1,10 @@
 import { Control } from "react-hook-form";
 import { motion } from "framer-motion";
 
-import { Button } from "@/components/ui/button";
-import RadioButtons, { Radio } from "@/components/RadioButtons";
-import CustomFormField from "@/components/CustomFormField";
-import StepBackButton from "@/components/StepBackButton";
+import { Button } from "../../components/ui/button";
+import RadioButtons, { Radio } from "../../components/RadioButtons";
+import CustomFormField from "../../components/CustomFormField";
+import StepBackButton from "../../components/StepBackButton";
 import { User } from "@/types/global";
 
 type StepThreeProps = {

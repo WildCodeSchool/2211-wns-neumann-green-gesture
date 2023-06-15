@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
-import RadioButtons, { Radio } from "@/components/RadioButtons";
-import { Button } from "@/components/ui/button";
-import StepBackButton from "@/components/StepBackButton";
+import RadioButtons, { Radio } from "../../components/RadioButtons";
+import { Button } from "../../components/ui/button";
+import StepBackButton from "../../components/StepBackButton";
 import { Formula } from "@/types/global";
 
 type StepTwoProps = {
