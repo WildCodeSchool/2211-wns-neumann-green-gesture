@@ -1,18 +1,14 @@
-import {
-  useGetCurrentUserQuery,
-  useLoginMutation,
-  useLogoutMutation,
-} from "@/gql/generated/schema";
+import { useGetCurrentUserQuery } from "@/gql/generated/schema";
 
 import Layout from "../containers/Layout";
 import { Badge } from "../components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Replace, Users2, Variable } from "lucide-react";
+import { ArrowRight, Users2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 function Profile() {
   const navigate = useNavigate();
-  const { data, loading, error } = useGetCurrentUserQuery();
+  const { data, loading } = useGetCurrentUserQuery();
 
   const currentUser = data?.getCurrentUser;
 

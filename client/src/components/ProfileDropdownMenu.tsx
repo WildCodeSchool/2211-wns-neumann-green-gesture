@@ -14,13 +14,10 @@ import {
 import { Button } from "./ui/button";
 
 function ProfileDropDownMenu() {
-  const navigate = useNavigate();
   const [logout] = useLogoutMutation();
   const handleLogout = async () => {
     try {
       await logout();
-      window.localStorage.removeItem("gg_logged");
-      navigate("/login");
     } catch (err) {
       console.error("err", err);
     } finally {
