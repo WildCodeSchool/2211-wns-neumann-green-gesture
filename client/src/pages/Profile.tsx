@@ -15,7 +15,7 @@ function Profile() {
   if (loading) return <div>Loading ...</div>;
 
   return (
-    <Layout>
+    <div>
       <div className="h-full">
         <div className="flex justify-around pt-5">
           <h1 className="font-sans text-2xl font-bold">
@@ -83,7 +83,7 @@ function Profile() {
           </div>
         </div>
       </div>
-    </Layout>
+    </div>
   );
 }
 

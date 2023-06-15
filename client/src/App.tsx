@@ -7,6 +7,7 @@ import NewGroup from "./pages/CreateGroup";
 import Profile from "./pages/Profile";
 import Register from "./pages/Register/Register";
 import { useGetCurrentUserQuery } from "./gql/generated/schema";
+import Layout from "./containers/Layout";
 
 function App() {
   const { data: currentUser, loading } = useGetCurrentUserQuery({
@@ -31,10 +32,12 @@ function App() {
           />
         }
       >
-        <Route path="/" element={<Home />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/create-group" element={<NewGroup />} />
-        <Route path="/group/:id" element={<SingleGroup />} />
+        <Route element={<Layout />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/create-group" element={<NewGroup />} />
+          <Route path="/group/:id" element={<SingleGroup />} />
+        </Route>
       </Route>
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
