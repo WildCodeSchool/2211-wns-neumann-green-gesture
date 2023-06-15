@@ -15,7 +15,6 @@ function Home() {
   const freeEcoActions = dataFreeEcoActions?.getFreeEcoActions || [];
   const navigate = useNavigate();
   refetch();
-  console.log(freeEcoActions);
 
   const items = Array.from({ length: 20 }).map((_, i) => ({
     id: i,
