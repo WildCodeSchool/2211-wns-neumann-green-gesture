@@ -1,25 +1,21 @@
-import {
-  useGetCurrentUserQuery,
-  useLoginMutation,
-  useLogoutMutation,
-} from "@/gql/generated/schema";
+import { useGetCurrentUserQuery } from "@/gql/generated/schema";
 
 import Layout from "../containers/Layout";
 import { Badge } from "../components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Replace, Users2, Variable } from "lucide-react";
+import { ArrowRight, Users2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 function Profile() {
   const navigate = useNavigate();
-  const { data, loading, error } = useGetCurrentUserQuery();
+  const { data, loading } = useGetCurrentUserQuery();
 
   const currentUser = data?.getCurrentUser;
 
   if (loading) return <div>Loading ...</div>;
 
   return (
-    <div>
+    <Layout>
       <div className="h-full">
         <div className="flex justify-around pt-5">
           <h1 className="font-sans text-2xl font-bold">
@@ -87,7 +83,7 @@ function Profile() {
           </div>
         </div>
       </div>
-    </div>
+    </Layout>
   );
 }
 
