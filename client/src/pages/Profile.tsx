@@ -5,6 +5,7 @@ import { Badge } from "../components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Users2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { Loading } from "./Loading";
 
 function Profile() {
   const navigate = useNavigate();
@@ -12,7 +13,7 @@ function Profile() {
 
   const currentUser = data?.getCurrentUser;
 
-  if (loading) return <div>Loading ...</div>;
+  if (loading) return <Loading />;
 
   return (
     <div>
