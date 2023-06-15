@@ -8,6 +8,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "./ui/sheet";
+import { Notification } from "./ui/notification";
 
 function Notifications() {
   const notifs = [1];
@@ -28,8 +29,17 @@ function Notifications() {
             <SheetDescription>Aucune notifications...</SheetDescription>
           )}
         </SheetHeader>
-        <div className="space-y-4 mt-6">
-          <div className="shadow-main px-4 py-3 rounded-xl">Test de notif</div>
+        <div className="space-y-4 mt-4">
+          <Notification
+            icon={<Bell />}
+            title="Je suis le titre"
+            message={
+              <div className="flex gap-4">
+                <Button variant="secondary">Accepter</Button>
+                <Button variant="destructive">Décliner</Button>
+              </div>
+            }
+          />
         </div>
       </SheetContent>
     </Sheet>
