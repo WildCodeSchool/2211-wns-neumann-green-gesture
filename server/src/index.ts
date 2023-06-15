@@ -49,7 +49,7 @@ async function start(): Promise<void> {
               relatedEcoActions: true,
               teams: true,
               friends: true,
-              company: true,
+              company: { users: true },
               createdCompany: true,
             },
           });
