@@ -42,6 +42,7 @@ async function resetDB(): Promise<void> {
     lastName: "Free",
     email: "user@gmail.com",
     password: await hashPassword("testtest"),
+    friends: [admin],
   });
 
   const userPartner = await datasource.getRepository(User).save({
@@ -50,6 +51,7 @@ async function resetDB(): Promise<void> {
     email: "partner@gmail.com",
     password: await hashPassword("testtest"),
     subscriptionType: "partner",
+    friends: [admin],
   });
 
   // create Company for userPartner

@@ -16,14 +16,9 @@ function Home() {
   const navigate = useNavigate();
   refetch();
 
-  const items = Array.from({ length: 20 }).map((_, i) => ({
-    id: i,
-    src: `https://picsum.photos/500?idx=${i}`,
-  }));
-
   return (
     <div className="flex flex-col m-5">
-      {groups.length > 1 ? (
+      {groups.length > 0 ? (
         <>
           <h3 className="font-semibold mb-3">Mes challenges en cours</h3>
           <div className="flex overflow-scroll snap-mandatory gap-3">

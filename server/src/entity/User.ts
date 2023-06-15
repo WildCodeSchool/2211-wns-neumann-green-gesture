@@ -99,7 +99,9 @@ class User {
 
   // Association réflexives
   @Field(() => [User], { defaultValue: [] })
-  @ManyToMany(() => User, (user) => user.friends)
+  @ManyToMany(() => User, (user) => user.friends, {
+    onDelete: "CASCADE",
+  })
   @JoinTable()
   friends: User[];
 }
