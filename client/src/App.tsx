@@ -6,6 +6,7 @@ import Login from "./pages/Login";
 import NewGroup from "./pages/CreateGroup";
 import Profile from "./pages/Profile";
 import Register from "./pages/Register/Register";
+import Layout from "./containers/Layout";
 
 function App() {
   const isLoggedIn = window.localStorage.getItem("gg_logged") === "isLogged";
@@ -22,10 +23,12 @@ function App() {
           <ProtectedRoute isAllowed={isLoggedIn} redirectPath="/login" />
         }
       > */}
-      <Route path="/" element={<Home />} />
-      <Route path="/profile" element={<Profile />} />
-      <Route path="/create-group" element={<NewGroup />} />
-      <Route path="/group/:id" element={<SingleGroup />} />
+      <Route element={<Layout />}>
+        <Route path="/" element={<Home />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/create-group" element={<NewGroup />} />
+        <Route path="/group/:id" element={<SingleGroup />} />
+      </Route>
       {/* </Route> */}
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>

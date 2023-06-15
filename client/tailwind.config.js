@@ -70,6 +70,9 @@ export default {
       fontSize: {
         "2xs": "0.625rem",
       },
+      boxShadow: {
+        main: "0 2px 8px 0 rgba(0, 0, 0, 0.10)",
+      },
       keyframes: {
         "accordion-down": {
           from: { height: 0 },

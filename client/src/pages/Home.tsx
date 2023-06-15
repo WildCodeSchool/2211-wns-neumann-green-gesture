@@ -29,7 +29,10 @@ function Home() {
           <h3 className="font-semibold mb-3">Mes challenges en cours</h3>
           <div className="flex overflow-scroll snap-mandatory gap-3">
             {groups.map((group) => (
-              <div className="flex flex-col justify-between bg-card rounded-xl h-[125px] min-w-[125px] cursor-pointer p-2">
+              <div
+                key={group.id}
+                className="flex flex-col justify-between bg-card rounded-xl h-[125px] min-w-[125px] cursor-pointer p-2"
+              >
                 <Link to={`/group/${group.id}`}>
                   <div>
                     <h4 className="text-2xs font-semibold">
@@ -61,7 +64,10 @@ function Home() {
 
         <div className="flex overflow-scroll snap-mandatory gap-3 w-full">
           {freeEcoActions?.map((ecoAction) => (
-            <div className="flex flex-col items-center bg-card rounded-xl h-[125px] min-w-full cursor-pointer p-2">
+            <div
+              key={ecoAction.id}
+              className="flex flex-col items-center bg-card rounded-xl h-[125px] min-w-full cursor-pointer p-2"
+            >
               <Link to={`/eco-action/${ecoAction.id}`}>
                 <div>
                   <h4 className="text-center text-2xs font-semibold mb-3">
