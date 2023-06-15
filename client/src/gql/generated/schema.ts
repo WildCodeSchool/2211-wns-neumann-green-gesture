@@ -190,6 +190,7 @@ export type Query = {
   getUserEcoActions: Array<EcoAction>;
   getUserGroups: Array<Group>;
   getUsers: Array<User>;
+  getUsersByName: Array<User>;
   getUsersByTeam: Array<User>;
   users: Array<User>;
 };
@@ -218,6 +219,11 @@ export type QueryGetUserByIdArgs = {
 export type QueryGetUserEcoActionArgs = {
   ecoActionId: Scalars['Float'];
   groupId: Scalars['Float'];
+};
+
+
+export type QueryGetUsersByNameArgs = {
+  name: Scalars['String'];
 };
 
 
@@ -312,6 +318,13 @@ export type ValidationInputCreation = {
   points: Scalars['Float'];
 };
 
+export type AddFriendMutationVariables = Exact<{
+  friendId: Scalars['Int'];
+}>;
+
+
+export type AddFriendMutation = { __typename?: 'Mutation', addFriend: { __typename?: 'User', id: number } };
+
 export type CreateGroupMutationVariables = Exact<{
   data: GroupInputCreation;
 }>;
@@ -322,7 +335,7 @@ export type CreateGroupMutation = { __typename?: 'Mutation', createGroup: { __ty
 export type GetCurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetCurrentUserQuery = { __typename?: 'Query', getCurrentUser: { __typename?: 'User', id: number, firstName: string, lastName: string, email: string, role: string, subscriptionType: string, groups?: Array<{ __typename?: 'Group', startDate: any, endDate: any, name: string, challengeName: string, id: number }> | null, createdEcoActions: Array<{ __typename?: 'EcoAction', id: number, name: string, description: string }>, company?: { __typename?: 'Company', id: number, name: string, users: Array<{ __typename?: 'User', id: number }> } | null } };
+export type GetCurrentUserQuery = { __typename?: 'Query', getCurrentUser: { __typename?: 'User', id: number, firstName: string, lastName: string, email: string, role: string, subscriptionType: string, groups?: Array<{ __typename?: 'Group', startDate: any, endDate: any, name: string, challengeName: string, id: number }> | null, createdEcoActions: Array<{ __typename?: 'EcoAction', id: number, name: string, description: string }>, company?: { __typename?: 'Company', id: number, name: string, users: Array<{ __typename?: 'User', id: number }> } | null, friends?: Array<{ __typename?: 'User', firstName: string, lastName: string }> | null } };
 
 export type GetFreeEcoActionsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -358,6 +371,13 @@ export type UsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type UsersQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', id: number, firstName: string, lastName: string, email: string, password: string, role: string, subscriptionType: string }> };
 
+export type GetUsersByNameQueryVariables = Exact<{
+  name: Scalars['String'];
+}>;
+
+
+export type GetUsersByNameQuery = { __typename?: 'Query', getUsersByName: Array<{ __typename?: 'User', id: number, firstName: string, lastName: string }> };
+
 export type LoginMutationVariables = Exact<{
   loginData: UserInputLogin;
 }>;
@@ -378,6 +398,39 @@ export type CreateUserMutationVariables = Exact<{
 export type CreateUserMutation = { __typename?: 'Mutation', createUser: { __typename?: 'User', email: string, firstName: string, lastName: string, password: string } };
 
 
+export const AddFriendDocument = gql`
+    mutation addFriend($friendId: Int!) {
+  addFriend(friendId: $friendId) {
+    id
+  }
+}
+    `;
+export type AddFriendMutationFn = Apollo.MutationFunction<AddFriendMutation, AddFriendMutationVariables>;
+
+/**
+ * __useAddFriendMutation__
+ *
+ * To run a mutation, you first call `useAddFriendMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddFriendMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addFriendMutation, { data, loading, error }] = useAddFriendMutation({
+ *   variables: {
+ *      friendId: // value for 'friendId'
+ *   },
+ * });
+ */
+export function useAddFriendMutation(baseOptions?: Apollo.MutationHookOptions<AddFriendMutation, AddFriendMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddFriendMutation, AddFriendMutationVariables>(AddFriendDocument, options);
+      }
+export type AddFriendMutationHookResult = ReturnType<typeof useAddFriendMutation>;
+export type AddFriendMutationResult = Apollo.MutationResult<AddFriendMutation>;
+export type AddFriendMutationOptions = Apollo.BaseMutationOptions<AddFriendMutation, AddFriendMutationVariables>;
 export const CreateGroupDocument = gql`
     mutation CreateGroup($data: GroupInputCreation!) {
   createGroup(data: $data) {
@@ -439,6 +492,10 @@ export const GetCurrentUserDocument = gql`
       users {
         id
       }
+    }
+    friends {
+      firstName
+      lastName
     }
   }
 }
@@ -739,6 +796,43 @@ export function useUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<User
 export type UsersQueryHookResult = ReturnType<typeof useUsersQuery>;
 export type UsersLazyQueryHookResult = ReturnType<typeof useUsersLazyQuery>;
 export type UsersQueryResult = Apollo.QueryResult<UsersQuery, UsersQueryVariables>;
+export const GetUsersByNameDocument = gql`
+    query GetUsersByName($name: String!) {
+  getUsersByName(name: $name) {
+    id
+    firstName
+    lastName
+  }
+}
+    `;
+
+/**
+ * __useGetUsersByNameQuery__
+ *
+ * To run a query within a React component, call `useGetUsersByNameQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUsersByNameQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUsersByNameQuery({
+ *   variables: {
+ *      name: // value for 'name'
+ *   },
+ * });
+ */
+export function useGetUsersByNameQuery(baseOptions: Apollo.QueryHookOptions<GetUsersByNameQuery, GetUsersByNameQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetUsersByNameQuery, GetUsersByNameQueryVariables>(GetUsersByNameDocument, options);
+      }
+export function useGetUsersByNameLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUsersByNameQuery, GetUsersByNameQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetUsersByNameQuery, GetUsersByNameQueryVariables>(GetUsersByNameDocument, options);
+        }
+export type GetUsersByNameQueryHookResult = ReturnType<typeof useGetUsersByNameQuery>;
+export type GetUsersByNameLazyQueryHookResult = ReturnType<typeof useGetUsersByNameLazyQuery>;
+export type GetUsersByNameQueryResult = Apollo.QueryResult<GetUsersByNameQuery, GetUsersByNameQueryVariables>;
 export const LoginDocument = gql`
     mutation Login($loginData: UserInputLogin!) {
   login(data: $loginData)

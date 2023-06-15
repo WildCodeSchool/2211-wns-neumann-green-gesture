@@ -47,10 +47,12 @@ function ProfileDropDownMenu() {
               <span>Mes challenges</span>
             </DropdownMenuItem>
           </Link>
-          <DropdownMenuItem onClick={() => {}}>
-            <Users className="mr-2 h-4 w-4" />
-            <span>Mes amis</span>
-          </DropdownMenuItem>
+          <Link to="/friends">
+            <DropdownMenuItem>
+              <Users className="mr-2 h-4 w-4" />
+              <span>Mes amis</span>
+            </DropdownMenuItem>
+          </Link>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleLogout}>

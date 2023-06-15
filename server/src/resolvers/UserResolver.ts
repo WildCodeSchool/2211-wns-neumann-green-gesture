@@ -61,6 +61,40 @@ export class UserResolver {
     return user;
   }
 
+  @Authorized<UserSubscriptionType>([
+    UserSubscriptionType.PARTNER,
+    UserSubscriptionType.FREE,
+  ])
+  @Query(() => [User])
+  async getUsersByName(
+    @Ctx() { currentUser }: { currentUser: User },
+    @Arg("name", () => String) name: string
+  ): Promise<User[]> {
+    if (name.length < 1) return [];
+
+    const foundUsers = await datasource
+      .getRepository(User)
+      .createQueryBuilder("user")
+      .where("lower(user.firstName) LIKE lower(:searchTerm)", {
+        searchTerm: `%${name}%`,
+      })
+      .orWhere("lower(user.lastName) LIKE lower(:searchTerm)", {
+        searchTerm: `%${name}%`,
+      })
+      .getMany();
+
+    const currentFriends = currentUser.friends.map((friend) => friend.id);
+    console.log(currentUser.id);
+    console.log(foundUsers);
+    const searchedUsers = foundUsers.filter(
+      (foundUser) =>
+        !currentFriends.includes(foundUser.id) &&
+        foundUser.id !== currentUser.id
+    );
+
+    return searchedUsers;
+  }
+
   @Mutation(() => User)
   async createUser(
     @Arg("data")
@@ -141,11 +175,10 @@ export class UserResolver {
     return currentUser as User;
   }
 
-  // Mutation to add a user to friends list
-  // @Authorized<UserSubscriptionType>([
-  //   UserSubscriptionType.PARTNER,
-  //   UserSubscriptionType.FREE,
-  // ])
+  @Authorized<UserSubscriptionType>([
+    UserSubscriptionType.PARTNER,
+    UserSubscriptionType.FREE,
+  ])
   @Mutation(() => User)
   async addFriend(
     @Arg("friendId", () => Int) friendId: number,
