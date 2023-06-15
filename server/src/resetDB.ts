@@ -144,8 +144,8 @@ async function resetDB(): Promise<void> {
     {
       name: "GreenGesture 3",
       challengeName: "Challenge 3",
-      startDate: "2016-01-25T10:10:10.555555",
-      endDate: "2020-01-25T10:10:10.555555",
+      startDate: "2023-06-25T10:10:10.555555",
+      endDate: "2023-06-25T23:30:10.555555",
       author: userPartner,
       users: [admin, userFree, userPartner],
       ecoActions,

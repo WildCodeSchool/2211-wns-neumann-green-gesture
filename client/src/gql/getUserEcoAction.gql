@@ -1,0 +1,7 @@
+query GetUserEcoAction($ecoActionId: Float!, $groupId: Float!) {
+  getUserEcoAction(ecoActionId: $ecoActionId, groupId: $groupId) {
+    id
+    hasLiked
+    proof
+  }
+}

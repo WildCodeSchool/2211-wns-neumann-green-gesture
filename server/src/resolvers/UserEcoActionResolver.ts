@@ -13,10 +13,10 @@ import EcoAction from "../entity/EcoAction";
 @Resolver(UserEcoAction)
 export class UserEcoActionResolver {
   // Query for getting user's userEcoAction
-  @Authorized<UserSubscriptionType>([
-    UserSubscriptionType.FREE,
-    UserSubscriptionType.PARTNER,
-  ])
+  // @Authorized<UserSubscriptionType>([
+  //   UserSubscriptionType.FREE,
+  //   UserSubscriptionType.PARTNER,
+  // ])
   @Query(() => [UserEcoAction])
   async getUserEcoAction(
     @Arg("ecoActionId") ecoActionId: number,
@@ -39,6 +39,7 @@ export class UserEcoActionResolver {
         ecoAction: {
           groups: true,
           validations: true,
+          relatedUsers: true,
         },
         user: true,
       },
@@ -91,10 +92,10 @@ export class UserEcoActionResolver {
   }
 
   // Mutation for liking an ecoAction
-  @Authorized<UserSubscriptionType>([
-    UserSubscriptionType.FREE,
-    UserSubscriptionType.PARTNER,
-  ])
+  // @Authorized<UserSubscriptionType>([
+  //   UserSubscriptionType.FREE,
+  //   UserSubscriptionType.PARTNER,
+  // ])
   @Mutation(() => String)
   async likeEcoAction(
     @Arg("data")
