@@ -5,99 +5,101 @@ export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
+export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
 const defaultOptions = {} as const;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: string;
-  String: string;
-  Boolean: boolean;
-  Int: number;
-  Float: number;
-  DateTime: any;
+  ID: { input: string | number; output: string; }
+  String: { input: string; output: string; }
+  Boolean: { input: boolean; output: boolean; }
+  Int: { input: number; output: number; }
+  Float: { input: number; output: number; }
+  DateTime: { input: any; output: any; }
 };
 
 export type Comment = {
   __typename?: 'Comment';
   author: User;
-  createdAt: Scalars['DateTime'];
+  createdAt: Scalars['DateTime']['output'];
   group: Group;
-  id: Scalars['Float'];
-  message: Scalars['String'];
+  id: Scalars['Float']['output'];
+  message: Scalars['String']['output'];
 };
 
 export type CommentInputCreation = {
-  groupId: Scalars['Float'];
-  message: Scalars['String'];
+  groupId: Scalars['Float']['input'];
+  message: Scalars['String']['input'];
 };
 
 export type Company = {
   __typename?: 'Company';
   creator: User;
-  id: Scalars['Float'];
-  name: Scalars['String'];
+  id: Scalars['Float']['output'];
+  name: Scalars['String']['output'];
   users: Array<User>;
 };
 
 export type CreateTeamInput = {
-  groupId: Scalars['Int'];
-  name: Scalars['String'];
+  groupId: Scalars['Int']['input'];
+  name: Scalars['String']['input'];
 };
 
 export type EcoAction = {
   __typename?: 'EcoAction';
   author?: Maybe<User>;
-  description: Scalars['String'];
+  description: Scalars['String']['output'];
   groups?: Maybe<Array<Group>>;
-  id: Scalars['Float'];
-  likes: Scalars['Float'];
-  name: Scalars['String'];
+  id: Scalars['Float']['output'];
+  likes: Scalars['Float']['output'];
+  name: Scalars['String']['output'];
   relatedUsers: Array<UserEcoAction>;
   validations: Array<Validation>;
 };
 
 export type EcoActionInputCreation = {
-  description: Scalars['String'];
-  name: Scalars['String'];
+  description: Scalars['String']['input'];
+  name: Scalars['String']['input'];
   validations: Array<ValidationInputCreation>;
 };
 
 export type Group = {
   __typename?: 'Group';
   author: User;
-  challengeName: Scalars['String'];
+  challengeName: Scalars['String']['output'];
   ecoActions: Array<EcoAction>;
-  endDate: Scalars['DateTime'];
-  id: Scalars['Float'];
-  name: Scalars['String'];
-  startDate: Scalars['DateTime'];
+  endDate: Scalars['DateTime']['output'];
+  id: Scalars['Float']['output'];
+  name: Scalars['String']['output'];
+  startDate: Scalars['DateTime']['output'];
   teams: Array<Team>;
   users: Array<User>;
 };
 
 export type GroupInputAddEcoActions = {
-  ecoActionIds: Array<Scalars['Int']>;
-  groupId: Scalars['Float'];
+  ecoActionIds: Array<Scalars['Int']['input']>;
+  groupId: Scalars['Float']['input'];
 };
 
 export type GroupInputAddOneUser = {
-  groupId: Scalars['Float'];
-  userId: Scalars['Int'];
+  groupId: Scalars['Float']['input'];
+  userId: Scalars['Int']['input'];
 };
 
 export type GroupInputCreation = {
-  challengeName: Scalars['String'];
-  ecoActionsIds: Array<Scalars['Int']>;
-  endDate: Scalars['DateTime'];
-  name: Scalars['String'];
-  participants: Array<Scalars['Int']>;
-  startDate: Scalars['DateTime'];
+  challengeName: Scalars['String']['input'];
+  ecoActionsIds: Array<Scalars['Int']['input']>;
+  endDate: Scalars['DateTime']['input'];
+  name: Scalars['String']['input'];
+  participants: Array<Scalars['Int']['input']>;
+  startDate: Scalars['DateTime']['input'];
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
   addEcoActionsToGroup: Group;
   addFriend: User;
-  addProof: Scalars['String'];
+  addProof: Scalars['String']['output'];
   addUserToGroup: Group;
   addUsersToCompany: Company;
   addUsersToTeam: Team;
@@ -106,9 +108,9 @@ export type Mutation = {
   createGroup: Group;
   createTeam: Team;
   createUser: User;
-  likeEcoAction: Scalars['String'];
-  login: Scalars['String'];
-  logout: Scalars['String'];
+  likeEcoAction: Scalars['String']['output'];
+  login: Scalars['String']['output'];
+  logout: Scalars['String']['output'];
 };
 
 
@@ -118,7 +120,7 @@ export type MutationAddEcoActionsToGroupArgs = {
 
 
 export type MutationAddFriendArgs = {
-  friendId: Scalars['Int'];
+  friendId: Scalars['Int']['input'];
 };
 
 
@@ -133,8 +135,8 @@ export type MutationAddUserToGroupArgs = {
 
 
 export type MutationAddUsersToCompanyArgs = {
-  companyId: Scalars['Int'];
-  users: Array<Scalars['Int']>;
+  companyId: Scalars['Int']['input'];
+  users: Array<Scalars['Int']['input']>;
 };
 
 
@@ -184,64 +186,76 @@ export type Query = {
   getFreeEcoActions: Array<EcoAction>;
   getGroup: Group;
   getGroups: Array<Group>;
+  getMaxValidationPoints: Validation;
   getTeamByGroup: Array<Team>;
   getUserById: User;
-  getUserEcoAction: Array<UserEcoAction>;
+  getUserEcoAction: UserEcoAction;
   getUserEcoActions: Array<EcoAction>;
   getUserGroups: Array<Group>;
   getUsers: Array<User>;
   getUsersByName: Array<User>;
   getUsersByTeam: Array<User>;
+  getValidation: Validation;
   users: Array<User>;
 };
 
 
 export type QueryGetCommentsForGroupArgs = {
-  groupId: Scalars['Float'];
+  groupId: Scalars['Float']['input'];
 };
 
 
 export type QueryGetGroupArgs = {
-  groupId: Scalars['Float'];
+  groupId: Scalars['Float']['input'];
+};
+
+
+export type QueryGetMaxValidationPointsArgs = {
+  ecoActionId: Scalars['Int']['input'];
 };
 
 
 export type QueryGetTeamByGroupArgs = {
-  groupId: Scalars['Float'];
+  groupId: Scalars['Float']['input'];
 };
 
 
 export type QueryGetUserByIdArgs = {
-  id: Scalars['Int'];
+  id: Scalars['Int']['input'];
 };
 
 
 export type QueryGetUserEcoActionArgs = {
-  ecoActionId: Scalars['Float'];
-  groupId: Scalars['Float'];
+  ecoActionId: Scalars['Float']['input'];
+  groupId: Scalars['Float']['input'];
 };
 
 
 export type QueryGetUsersByNameArgs = {
-  name: Scalars['String'];
+  name: Scalars['String']['input'];
 };
 
 
 export type QueryGetUsersByTeamArgs = {
-  teamId: Scalars['Float'];
+  teamId: Scalars['Float']['input'];
+};
+
+
+export type QueryGetValidationArgs = {
+  id: Scalars['Int']['input'];
 };
 
 export type Team = {
   __typename?: 'Team';
   group: Group;
-  id: Scalars['Float'];
-  name: Scalars['String'];
+  id: Scalars['Float']['output'];
+  name: Scalars['String']['output'];
   users?: Maybe<Array<User>>;
 };
 
 export type TeamInputAddUsers = {
-  teamId: Scalars['Int'];
-  userIds: Array<Scalars['Int']>;
+  teamId: Scalars['Int']['input'];
+  userIds: Array<Scalars['Int']['input']>;
 };
 
 export type User = {
@@ -250,76 +264,76 @@ export type User = {
   createdCompany?: Maybe<Company>;
   createdEcoActions: Array<EcoAction>;
   createdGroups: Array<Group>;
-  email: Scalars['String'];
-  firstName: Scalars['String'];
+  email: Scalars['String']['output'];
+  firstName: Scalars['String']['output'];
   friends?: Maybe<Array<User>>;
   groups?: Maybe<Array<Group>>;
-  id: Scalars['Float'];
-  lastName: Scalars['String'];
-  password: Scalars['String'];
+  id: Scalars['Float']['output'];
+  lastName: Scalars['String']['output'];
+  password: Scalars['String']['output'];
   relatedEcoActions: Array<UserEcoAction>;
-  role: Scalars['String'];
-  subscriptionType: Scalars['String'];
+  role: Scalars['String']['output'];
+  subscriptionType: Scalars['String']['output'];
   teams?: Maybe<Team>;
 };
 
 export type UserEcoAction = {
   __typename?: 'UserEcoAction';
   ecoAction: Array<EcoAction>;
-  hasLiked: Scalars['Boolean'];
-  id: Scalars['Float'];
-  proof?: Maybe<Scalars['String']>;
+  hasLiked: Scalars['Boolean']['output'];
+  id: Scalars['Float']['output'];
+  proof?: Maybe<Scalars['String']['output']>;
   user: Array<User>;
-  validationId?: Maybe<Scalars['Float']>;
+  validationId?: Maybe<Scalars['Float']['output']>;
 };
 
 export type UserEcoActionInputAddLike = {
-  ecoActionId: Scalars['Float'];
-  groupId: Scalars['Float'];
-  hasLiked: Scalars['Boolean'];
+  ecoActionId: Scalars['Float']['input'];
+  groupId: Scalars['Float']['input'];
+  hasLiked: Scalars['Boolean']['input'];
 };
 
 export type UserEcoActionInputAddProof = {
-  ecoActionId: Scalars['Float'];
-  groupId: Scalars['Float'];
-  proof: Scalars['String'];
+  ecoActionId: Scalars['Float']['input'];
+  groupId: Scalars['Float']['input'];
+  proof: Scalars['String']['input'];
 };
 
 export type UserEcoActionInputAddValidation = {
-  validationId: Scalars['Float'];
-  validationPoints: Scalars['Float'];
+  validationId: Scalars['Float']['input'];
+  validationPoints: Scalars['Float']['input'];
 };
 
 export type UserInputLogin = {
-  email: Scalars['String'];
-  password: Scalars['String'];
+  email: Scalars['String']['input'];
+  password: Scalars['String']['input'];
 };
 
 export type UserInputSubscribe = {
-  company?: InputMaybe<Scalars['String']>;
-  email: Scalars['String'];
-  firstName: Scalars['String'];
-  lastName: Scalars['String'];
-  password: Scalars['String'];
-  role?: InputMaybe<Scalars['String']>;
-  subscriptionType?: InputMaybe<Scalars['String']>;
+  company?: InputMaybe<Scalars['String']['input']>;
+  email: Scalars['String']['input'];
+  firstName: Scalars['String']['input'];
+  lastName: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+  role?: InputMaybe<Scalars['String']['input']>;
+  subscriptionType?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type Validation = {
   __typename?: 'Validation';
   ecoAction: Array<EcoAction>;
-  id: Scalars['Float'];
-  name: Scalars['String'];
-  points: Scalars['Float'];
+  id: Scalars['Float']['output'];
+  name: Scalars['String']['output'];
+  points: Scalars['Float']['output'];
 };
 
 export type ValidationInputCreation = {
-  name: Scalars['String'];
-  points: Scalars['Float'];
+  name: Scalars['String']['input'];
+  points: Scalars['Float']['input'];
 };
 
 export type AddFriendMutationVariables = Exact<{
-  friendId: Scalars['Int'];
+  friendId: Scalars['Int']['input'];
 }>;
 
 
@@ -333,7 +347,7 @@ export type CreateGroupMutationVariables = Exact<{
 export type CreateGroupMutation = { __typename?: 'Mutation', createGroup: { __typename?: 'Group', id: number, name: string } };
 
 export type GetCommentsForGroupQueryVariables = Exact<{
-  groupId: Scalars['Float'];
+  groupId: Scalars['Float']['input'];
 }>;
 
 
@@ -350,26 +364,33 @@ export type GetFreeEcoActionsQueryVariables = Exact<{ [key: string]: never; }>;
 export type GetFreeEcoActionsQuery = { __typename?: 'Query', getFreeEcoActions: Array<{ __typename?: 'EcoAction', description: string, id: number, name: string }> };
 
 export type GetGroupQueryVariables = Exact<{
-  groupId: Scalars['Float'];
+  groupId: Scalars['Float']['input'];
 }>;
 
 
-export type GetGroupQuery = { __typename?: 'Query', getGroup: { __typename?: 'Group', id: number, name: string, challengeName: string, startDate: any, endDate: any, author: { __typename?: 'User', id: number, firstName: string, lastName: string }, users: Array<{ __typename?: 'User', id: number, firstName: string, lastName: string }>, ecoActions: Array<{ __typename?: 'EcoAction', id: number, name: string, description: string, likes: number, validations: Array<{ __typename?: 'Validation', points: number, id: number }> }>, teams: Array<{ __typename?: 'Team', id: number, users?: Array<{ __typename?: 'User', id: number, firstName: string, lastName: string }> | null }> } };
+export type GetGroupQuery = { __typename?: 'Query', getGroup: { __typename?: 'Group', id: number, name: string, challengeName: string, startDate: any, endDate: any, author: { __typename?: 'User', id: number, firstName: string, lastName: string }, users: Array<{ __typename?: 'User', id: number, firstName: string, lastName: string }>, ecoActions: Array<{ __typename?: 'EcoAction', id: number, name: string, description: string, likes: number, validations: Array<{ __typename?: 'Validation', points: number, id: number }> }>, teams: Array<{ __typename?: 'Team', id: number, name: string, users?: Array<{ __typename?: 'User', id: number, firstName: string, lastName: string }> | null }> } };
+
+export type GetMaxValidationPointsQueryVariables = Exact<{
+  ecoActionId: Scalars['Int']['input'];
+}>;
+
+
+export type GetMaxValidationPointsQuery = { __typename?: 'Query', getMaxValidationPoints: { __typename?: 'Validation', id: number, points: number } };
 
 export type GetUserByIdQueryVariables = Exact<{
-  getUserById: Scalars['Int'];
+  getUserById: Scalars['Int']['input'];
 }>;
 
 
 export type GetUserByIdQuery = { __typename?: 'Query', getUserById: { __typename?: 'User', id: number, firstName: string, lastName: string, email: string, password: string, role: string, subscriptionType: string } };
 
 export type GetUserEcoActionQueryVariables = Exact<{
-  ecoActionId: Scalars['Float'];
-  groupId: Scalars['Float'];
+  ecoActionId: Scalars['Float']['input'];
+  groupId: Scalars['Float']['input'];
 }>;
 
 
-export type GetUserEcoActionQuery = { __typename?: 'Query', getUserEcoAction: Array<{ __typename?: 'UserEcoAction', id: number, hasLiked: boolean, proof?: string | null }> };
+export type GetUserEcoActionQuery = { __typename?: 'Query', getUserEcoAction: { __typename?: 'UserEcoAction', id: number, hasLiked: boolean, proof?: string | null, validationId?: number | null } };
 
 export type GetUserEcoActionsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -387,11 +408,25 @@ export type UsersQueryVariables = Exact<{ [key: string]: never; }>;
 export type UsersQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', id: number, firstName: string, lastName: string, email: string, password: string, role: string, subscriptionType: string }> };
 
 export type GetUsersByNameQueryVariables = Exact<{
-  name: Scalars['String'];
+  name: Scalars['String']['input'];
 }>;
 
 
 export type GetUsersByNameQuery = { __typename?: 'Query', getUsersByName: Array<{ __typename?: 'User', id: number, firstName: string, lastName: string }> };
+
+export type GetValidationQueryVariables = Exact<{
+  getValidationId: Scalars['Int']['input'];
+}>;
+
+
+export type GetValidationQuery = { __typename?: 'Query', getValidation: { __typename?: 'Validation', id: number, points: number } };
+
+export type LikeEcoActionMutationVariables = Exact<{
+  data: UserEcoActionInputAddLike;
+}>;
+
+
+export type LikeEcoActionMutation = { __typename?: 'Mutation', likeEcoAction: string };
 
 export type LoginMutationVariables = Exact<{
   loginData: UserInputLogin;
@@ -650,6 +685,7 @@ export const GetGroupDocument = gql`
     }
     teams {
       id
+      name
       users {
         id
         firstName
@@ -687,6 +723,42 @@ export function useGetGroupLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<G
 export type GetGroupQueryHookResult = ReturnType<typeof useGetGroupQuery>;
 export type GetGroupLazyQueryHookResult = ReturnType<typeof useGetGroupLazyQuery>;
 export type GetGroupQueryResult = Apollo.QueryResult<GetGroupQuery, GetGroupQueryVariables>;
+export const GetMaxValidationPointsDocument = gql`
+    query GetMaxValidationPoints($ecoActionId: Int!) {
+  getMaxValidationPoints(ecoActionId: $ecoActionId) {
+    id
+    points
+  }
+}
+    `;
+
+/**
+ * __useGetMaxValidationPointsQuery__
+ *
+ * To run a query within a React component, call `useGetMaxValidationPointsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMaxValidationPointsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetMaxValidationPointsQuery({
+ *   variables: {
+ *      ecoActionId: // value for 'ecoActionId'
+ *   },
+ * });
+ */
+export function useGetMaxValidationPointsQuery(baseOptions: Apollo.QueryHookOptions<GetMaxValidationPointsQuery, GetMaxValidationPointsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetMaxValidationPointsQuery, GetMaxValidationPointsQueryVariables>(GetMaxValidationPointsDocument, options);
+      }
+export function useGetMaxValidationPointsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMaxValidationPointsQuery, GetMaxValidationPointsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetMaxValidationPointsQuery, GetMaxValidationPointsQueryVariables>(GetMaxValidationPointsDocument, options);
+        }
+export type GetMaxValidationPointsQueryHookResult = ReturnType<typeof useGetMaxValidationPointsQuery>;
+export type GetMaxValidationPointsLazyQueryHookResult = ReturnType<typeof useGetMaxValidationPointsLazyQuery>;
+export type GetMaxValidationPointsQueryResult = Apollo.QueryResult<GetMaxValidationPointsQuery, GetMaxValidationPointsQueryVariables>;
 export const GetUserByIdDocument = gql`
     query GetUserById($getUserById: Int!) {
   getUserById(id: $getUserById) {
@@ -734,6 +806,7 @@ export const GetUserEcoActionDocument = gql`
     id
     hasLiked
     proof
+    validationId
   }
 }
     `;
@@ -936,6 +1009,73 @@ export function useGetUsersByNameLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type GetUsersByNameQueryHookResult = ReturnType<typeof useGetUsersByNameQuery>;
 export type GetUsersByNameLazyQueryHookResult = ReturnType<typeof useGetUsersByNameLazyQuery>;
 export type GetUsersByNameQueryResult = Apollo.QueryResult<GetUsersByNameQuery, GetUsersByNameQueryVariables>;
+export const GetValidationDocument = gql`
+    query GetValidation($getValidationId: Int!) {
+  getValidation(id: $getValidationId) {
+    id
+    points
+  }
+}
+    `;
+
+/**
+ * __useGetValidationQuery__
+ *
+ * To run a query within a React component, call `useGetValidationQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetValidationQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetValidationQuery({
+ *   variables: {
+ *      getValidationId: // value for 'getValidationId'
+ *   },
+ * });
+ */
+export function useGetValidationQuery(baseOptions: Apollo.QueryHookOptions<GetValidationQuery, GetValidationQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetValidationQuery, GetValidationQueryVariables>(GetValidationDocument, options);
+      }
+export function useGetValidationLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetValidationQuery, GetValidationQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetValidationQuery, GetValidationQueryVariables>(GetValidationDocument, options);
+        }
+export type GetValidationQueryHookResult = ReturnType<typeof useGetValidationQuery>;
+export type GetValidationLazyQueryHookResult = ReturnType<typeof useGetValidationLazyQuery>;
+export type GetValidationQueryResult = Apollo.QueryResult<GetValidationQuery, GetValidationQueryVariables>;
+export const LikeEcoActionDocument = gql`
+    mutation LikeEcoAction($data: UserEcoActionInputAddLike!) {
+  likeEcoAction(data: $data)
+}
+    `;
+export type LikeEcoActionMutationFn = Apollo.MutationFunction<LikeEcoActionMutation, LikeEcoActionMutationVariables>;
+
+/**
+ * __useLikeEcoActionMutation__
+ *
+ * To run a mutation, you first call `useLikeEcoActionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLikeEcoActionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [likeEcoActionMutation, { data, loading, error }] = useLikeEcoActionMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useLikeEcoActionMutation(baseOptions?: Apollo.MutationHookOptions<LikeEcoActionMutation, LikeEcoActionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<LikeEcoActionMutation, LikeEcoActionMutationVariables>(LikeEcoActionDocument, options);
+      }
+export type LikeEcoActionMutationHookResult = ReturnType<typeof useLikeEcoActionMutation>;
+export type LikeEcoActionMutationResult = Apollo.MutationResult<LikeEcoActionMutation>;
+export type LikeEcoActionMutationOptions = Apollo.BaseMutationOptions<LikeEcoActionMutation, LikeEcoActionMutationVariables>;
 export const LoginDocument = gql`
     mutation Login($loginData: UserInputLogin!) {
   login(data: $loginData)

@@ -27,6 +27,7 @@ query GetGroup($groupId: Float!) {
     }
     teams {
       id
+      name
       users {
         id
         firstName

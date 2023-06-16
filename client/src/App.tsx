@@ -10,7 +10,7 @@ import { useGetCurrentUserQuery } from "./gql/generated/schema";
 import Layout from "./containers/Layout";
 import { Loading } from "./pages/Loading";
 import { FriendList } from "./pages/FriendList";
-import ChallengeDetail from "./pages/ChallengeDetail/ChallengeDetail";
+import SingleEcoAction from "./pages/SingleEcoAction";
 
 function App() {
   const { data: currentUser, loading } = useGetCurrentUserQuery({
@@ -41,7 +41,10 @@ function App() {
           <Route path="/friends" element={<FriendList />} />
           <Route path="/create-group" element={<NewGroup />} />
           <Route path="/group/:id" element={<SingleGroup />} />
-          <Route path="/challenge/:id" element={<ChallengeDetail />} />
+          <Route
+            path="/single-ecoaction/:id/:id"
+            element={<SingleEcoAction />}
+          />
         </Route>
       </Route>
       <Route path="*" element={<Navigate to="/" />} />

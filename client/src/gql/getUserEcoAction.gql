@@ -3,5 +3,6 @@ query GetUserEcoAction($ecoActionId: Float!, $groupId: Float!) {
     id
     hasLiked
     proof
+    validationId
   }
 }
