@@ -1,4 +1,4 @@
-import { Formula } from "@/pages/Register/Register";
+import { Formula } from "@/types/global";
 import { Label } from "./ui/label";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 
@@ -12,16 +12,23 @@ export type Radio = {
 
 type RadioButtonsProps = {
   radios: Radio[];
+  selectedFormula: Formula;
   onChange: (value: Formula) => void;
   defaultValue: string;
 };
 
-function RadioButtons({ radios, onChange, defaultValue }: RadioButtonsProps) {
+function RadioButtons({
+  radios,
+  selectedFormula,
+  onChange,
+  defaultValue,
+}: RadioButtonsProps) {
   return (
     <RadioGroup
       className="space-y-4 w-full"
       onValueChange={onChange}
       defaultValue={defaultValue}
+      value={selectedFormula}
     >
       {radios.map((radio, idx) => (
         <Label

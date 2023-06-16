@@ -51,8 +51,6 @@ function CreateGroup() {
 
   const isPartner = currentUser?.subscriptionType === "partner";
 
-  console.log("currentUser", currentUser);
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: DEFAULT_GROUP,
@@ -68,8 +66,6 @@ function CreateGroup() {
   };
 
   const handleSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log("values", values);
-
     if (step === 1) {
       setStep(2);
       return;

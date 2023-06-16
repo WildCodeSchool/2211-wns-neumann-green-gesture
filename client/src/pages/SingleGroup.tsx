@@ -58,7 +58,7 @@ const SingleGroup = () => {
           </div>
           <div className="flex justify-between items-center pt-3">
             <Badge variant={"terciary"} className={"px-5"}>
-              {challenge?.users.length ?? 0} partisipants
+              {challenge?.users.length ?? 0} participants
             </Badge>
             <Badge variant={"terciary"} className={"px-5"}>
               {comments?.length} commentaires
