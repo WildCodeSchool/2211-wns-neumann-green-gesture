@@ -13,39 +13,44 @@ import EcoAction from "../entity/EcoAction";
 @Resolver(UserEcoAction)
 export class UserEcoActionResolver {
   // Query for getting user's userEcoAction
-  // @Authorized<UserSubscriptionType>([
-  //   UserSubscriptionType.FREE,
-  //   UserSubscriptionType.PARTNER,
-  // ])
-  @Query(() => [UserEcoAction])
+  @Authorized<UserSubscriptionType>([
+    UserSubscriptionType.FREE,
+    UserSubscriptionType.PARTNER,
+  ])
+  @Query(() => UserEcoAction)
   async getUserEcoAction(
     @Arg("ecoActionId") ecoActionId: number,
     @Arg("groupId") groupId: number,
     @Ctx() { currentUser }: ContextType
-  ): Promise<UserEcoAction[]> {
-    const res = await datasource.getRepository(UserEcoAction).find({
-      where: {
-        user: {
-          id: currentUser?.id,
-        },
-        ecoAction: {
-          id: ecoActionId,
-          groups: {
-            id: groupId,
+  ): Promise<UserEcoAction> {
+    const userEcoAction = await datasource
+      .getRepository(UserEcoAction)
+      .findOne({
+        where: {
+          user: {
+            id: currentUser?.id,
+          },
+          ecoAction: {
+            id: ecoActionId,
+            groups: {
+              id: groupId,
+            },
           },
         },
-      },
-      relations: {
-        ecoAction: {
-          groups: true,
-          validations: true,
-          relatedUsers: true,
+        relations: {
+          ecoAction: {
+            groups: true,
+            validations: true,
+            relatedUsers: true,
+          },
+          user: true,
         },
-        user: true,
-      },
-    });
+      });
 
-    return res;
+    if (userEcoAction === null)
+      throw new ApolloError("UserEcoAction not found");
+
+    return userEcoAction;
   }
 
   // Mutation for adding a proof to an ecoAction
@@ -92,10 +97,10 @@ export class UserEcoActionResolver {
   }
 
   // Mutation for liking an ecoAction
-  // @Authorized<UserSubscriptionType>([
-  //   UserSubscriptionType.FREE,
-  //   UserSubscriptionType.PARTNER,
-  // ])
+  @Authorized<UserSubscriptionType>([
+    UserSubscriptionType.FREE,
+    UserSubscriptionType.PARTNER,
+  ])
   @Mutation(() => String)
   async likeEcoAction(
     @Arg("data")

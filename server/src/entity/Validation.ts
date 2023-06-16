@@ -18,7 +18,7 @@ class Validation {
   @Column()
   points: number;
 
-  @Field(() => [EcoAction])
+  @Field(() => EcoAction)
   @ManyToOne(() => EcoAction, (ecoAction) => ecoAction.validations, {
     onDelete: "CASCADE",
   })

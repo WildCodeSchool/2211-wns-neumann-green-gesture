@@ -173,6 +173,46 @@ async function resetDB(): Promise<void> {
       ecoAction: [ecoActions[0]],
       validationId: ecoActions[0].validations[0].id,
     },
+    {
+      user: [userPartner],
+      ecoAction: [ecoActions[0]],
+      validationId: ecoActions[0].validations[0].id,
+    },
+    {
+      user: [admin],
+      ecoAction: [ecoActions[0]],
+      validationId: ecoActions[0].validations[0].id,
+    },
+    {
+      user: [userFree],
+      ecoAction: [ecoActions[1]],
+      validationId: ecoActions[1].validations[0].id,
+    },
+    {
+      user: [userPartner],
+      ecoAction: [ecoActions[1]],
+      validationId: ecoActions[1].validations[0].id,
+    },
+    {
+      user: [admin],
+      ecoAction: [ecoActions[1]],
+      validationId: ecoActions[1].validations[0].id,
+    },
+    {
+      user: [userFree],
+      ecoAction: [ecoActions[2]],
+      validationId: ecoActions[2].validations[0].id,
+    },
+    {
+      user: [userPartner],
+      ecoAction: [ecoActions[2]],
+      validationId: ecoActions[2].validations[0].id,
+    },
+    {
+      user: [admin],
+      ecoAction: [ecoActions[2]],
+      validationId: ecoActions[2].validations[0].id,
+    },
   ]);
 
   // create new comments
