@@ -369,7 +369,7 @@ export type GetCommentsForGroupQuery = { __typename?: 'Query', getCommentsForGro
 export type GetCurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetCurrentUserQuery = { __typename?: 'Query', getCurrentUser: { __typename?: 'User', id: number, firstName: string, lastName: string, email: string, role: string, subscriptionType: string, friends?: Array<{ __typename?: 'User', id: number, firstName: string, lastName: string, email: string }> | null, groups?: Array<{ __typename?: 'Group', startDate: any, endDate: any, name: string, challengeName: string, id: number }> | null, createdEcoActions: Array<{ __typename?: 'EcoAction', id: number, name: string, description: string }>, company?: { __typename?: 'Company', id: number, name: string, users: Array<{ __typename?: 'User', id: number }> } | null } };
+export type GetCurrentUserQuery = { __typename?: 'Query', getCurrentUser: { __typename?: 'User', id: number, firstName: string, lastName: string, email: string, role: string, subscriptionType: string, friends?: Array<{ __typename?: 'User', id: number, firstName: string, lastName: string, email: string, groups?: Array<{ __typename?: 'Group', id: number }> | null }> | null, groups?: Array<{ __typename?: 'Group', startDate: any, endDate: any, name: string, challengeName: string, id: number }> | null, createdEcoActions: Array<{ __typename?: 'EcoAction', id: number, name: string, description: string }>, company?: { __typename?: 'Company', id: number, name: string, users: Array<{ __typename?: 'User', id: number }> } | null } };
 
 export type GetFreeEcoActionsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -629,6 +629,9 @@ export const GetCurrentUserDocument = gql`
       firstName
       lastName
       email
+      groups {
+        id
+      }
     }
     groups {
       startDate
