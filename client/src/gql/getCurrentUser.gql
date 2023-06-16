@@ -6,6 +6,12 @@ query GetCurrentUser {
     email
     role
     subscriptionType
+    friends {
+      id
+      firstName
+      lastName
+      email
+    }
     groups {
       startDate
       endDate

@@ -1,4 +1,5 @@
 export type User = {
+  id: number;
   firstName: string;
   lastName: string;
   email: string;
@@ -7,3 +8,11 @@ export type User = {
 };
 
 export type Formula = "free" | "partner";
+
+export type GroupeCreationType = {
+  name: string;
+  challengeName: string;
+  dates: { from: Date; to: Date };
+  participants: number[];
+  ecoActionsIds: number[];
+};

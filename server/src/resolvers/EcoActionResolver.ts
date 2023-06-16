@@ -56,4 +56,21 @@ export class EcoActionResolver {
       },
     });
   }
+
+  @Authorized<UserSubscriptionType>([
+    UserSubscriptionType.PARTNER,
+    UserSubscriptionType.FREE,
+  ])
+  @Query(() => [EcoAction])
+  async getPopularFreeEcoActions(): Promise<EcoAction[]> {
+    return await datasource.getRepository(EcoAction).find({
+      where: {
+        author: IsNull(),
+      },
+      take: 5,
+      relations: {
+        validations: true,
+      },
+    });
+  }
 }

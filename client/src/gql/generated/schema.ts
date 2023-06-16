@@ -39,8 +39,13 @@ export type Company = {
 };
 
 export type CreateTeamInput = {
-  groupId: Scalars['Int'];
   name: Scalars['String'];
+  userIds: Array<Scalars['Int']>;
+};
+
+export type CreateTeamsInput = {
+  groupId: Scalars['Int'];
+  teams: Array<CreateTeamInput>;
 };
 
 export type EcoAction = {
@@ -104,7 +109,7 @@ export type Mutation = {
   createComment: Comment;
   createEcoAction: EcoAction;
   createGroup: Group;
-  createTeam: Team;
+  createTeams: Team;
   createUser: User;
   likeEcoAction: Scalars['String'];
   login: Scalars['String'];
@@ -158,8 +163,8 @@ export type MutationCreateGroupArgs = {
 };
 
 
-export type MutationCreateTeamArgs = {
-  data: CreateTeamInput;
+export type MutationCreateTeamsArgs = {
+  data: CreateTeamsInput;
 };
 
 
@@ -184,6 +189,7 @@ export type Query = {
   getFreeEcoActions: Array<EcoAction>;
   getGroup: Group;
   getGroups: Array<Group>;
+  getPopularFreeEcoActions: Array<EcoAction>;
   getTeamByGroup: Array<Team>;
   getUserById: User;
   getUserEcoAction: Array<UserEcoAction>;
@@ -319,15 +325,22 @@ export type CreateGroupMutationVariables = Exact<{
 
 export type CreateGroupMutation = { __typename?: 'Mutation', createGroup: { __typename?: 'Group', id: number, name: string } };
 
+export type CreateTeamsMutationVariables = Exact<{
+  data: CreateTeamsInput;
+}>;
+
+
+export type CreateTeamsMutation = { __typename?: 'Mutation', createTeams: { __typename?: 'Team', id: number, name: string, users?: Array<{ __typename?: 'User', id: number, firstName: string, lastName: string, email: string }> | null } };
+
 export type GetCurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetCurrentUserQuery = { __typename?: 'Query', getCurrentUser: { __typename?: 'User', id: number, firstName: string, lastName: string, email: string, role: string, subscriptionType: string, groups?: Array<{ __typename?: 'Group', startDate: any, endDate: any, name: string, challengeName: string, id: number }> | null, createdEcoActions: Array<{ __typename?: 'EcoAction', id: number, name: string, description: string }>, company?: { __typename?: 'Company', id: number, name: string, users: Array<{ __typename?: 'User', id: number }> } | null } };
+export type GetCurrentUserQuery = { __typename?: 'Query', getCurrentUser: { __typename?: 'User', id: number, firstName: string, lastName: string, email: string, role: string, subscriptionType: string, friends?: Array<{ __typename?: 'User', id: number, firstName: string, lastName: string, email: string }> | null, groups?: Array<{ __typename?: 'Group', startDate: any, endDate: any, name: string, challengeName: string, id: number }> | null, createdEcoActions: Array<{ __typename?: 'EcoAction', id: number, name: string, description: string }>, company?: { __typename?: 'Company', id: number, name: string, users: Array<{ __typename?: 'User', id: number }> } | null } };
 
 export type GetFreeEcoActionsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetFreeEcoActionsQuery = { __typename?: 'Query', getFreeEcoActions: Array<{ __typename?: 'EcoAction', description: string, id: number, name: string }> };
+export type GetFreeEcoActionsQuery = { __typename?: 'Query', getFreeEcoActions: Array<{ __typename?: 'EcoAction', id: number, name: string, description: string, likes: number }> };
 
 export type GetGroupQueryVariables = Exact<{
   groupId: Scalars['Float'];
@@ -335,6 +348,11 @@ export type GetGroupQueryVariables = Exact<{
 
 
 export type GetGroupQuery = { __typename?: 'Query', getGroup: { __typename?: 'Group', challengeName: string, endDate: any, id: number, name: string, startDate: any, author: { __typename?: 'User', id: number, firstName: string, lastName: string }, ecoActions: Array<{ __typename?: 'EcoAction', id: number, name: string, description: string, author?: { __typename?: 'User', id: number, firstName: string, lastName: string } | null }>, users: Array<{ __typename?: 'User', id: number, firstName: string, lastName: string }> } };
+
+export type GetPopularFreeEcoActionsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetPopularFreeEcoActionsQuery = { __typename?: 'Query', getPopularFreeEcoActions: Array<{ __typename?: 'EcoAction', id: number, name: string, likes: number, description: string }> };
 
 export type GetUserByIdQueryVariables = Exact<{
   getUserById: Scalars['Int'];
@@ -412,6 +430,46 @@ export function useCreateGroupMutation(baseOptions?: Apollo.MutationHookOptions<
 export type CreateGroupMutationHookResult = ReturnType<typeof useCreateGroupMutation>;
 export type CreateGroupMutationResult = Apollo.MutationResult<CreateGroupMutation>;
 export type CreateGroupMutationOptions = Apollo.BaseMutationOptions<CreateGroupMutation, CreateGroupMutationVariables>;
+export const CreateTeamsDocument = gql`
+    mutation CreateTeams($data: CreateTeamsInput!) {
+  createTeams(data: $data) {
+    id
+    name
+    users {
+      id
+      firstName
+      lastName
+      email
+    }
+  }
+}
+    `;
+export type CreateTeamsMutationFn = Apollo.MutationFunction<CreateTeamsMutation, CreateTeamsMutationVariables>;
+
+/**
+ * __useCreateTeamsMutation__
+ *
+ * To run a mutation, you first call `useCreateTeamsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateTeamsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createTeamsMutation, { data, loading, error }] = useCreateTeamsMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useCreateTeamsMutation(baseOptions?: Apollo.MutationHookOptions<CreateTeamsMutation, CreateTeamsMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateTeamsMutation, CreateTeamsMutationVariables>(CreateTeamsDocument, options);
+      }
+export type CreateTeamsMutationHookResult = ReturnType<typeof useCreateTeamsMutation>;
+export type CreateTeamsMutationResult = Apollo.MutationResult<CreateTeamsMutation>;
+export type CreateTeamsMutationOptions = Apollo.BaseMutationOptions<CreateTeamsMutation, CreateTeamsMutationVariables>;
 export const GetCurrentUserDocument = gql`
     query GetCurrentUser {
   getCurrentUser {
@@ -421,6 +479,12 @@ export const GetCurrentUserDocument = gql`
     email
     role
     subscriptionType
+    friends {
+      id
+      firstName
+      lastName
+      email
+    }
     groups {
       startDate
       endDate
@@ -473,9 +537,10 @@ export type GetCurrentUserQueryResult = Apollo.QueryResult<GetCurrentUserQuery, 
 export const GetFreeEcoActionsDocument = gql`
     query GetFreeEcoActions {
   getFreeEcoActions {
-    description
     id
     name
+    description
+    likes
   }
 }
     `;
@@ -565,6 +630,43 @@ export function useGetGroupLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<G
 export type GetGroupQueryHookResult = ReturnType<typeof useGetGroupQuery>;
 export type GetGroupLazyQueryHookResult = ReturnType<typeof useGetGroupLazyQuery>;
 export type GetGroupQueryResult = Apollo.QueryResult<GetGroupQuery, GetGroupQueryVariables>;
+export const GetPopularFreeEcoActionsDocument = gql`
+    query GetPopularFreeEcoActions {
+  getPopularFreeEcoActions {
+    id
+    name
+    likes
+    description
+  }
+}
+    `;
+
+/**
+ * __useGetPopularFreeEcoActionsQuery__
+ *
+ * To run a query within a React component, call `useGetPopularFreeEcoActionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPopularFreeEcoActionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPopularFreeEcoActionsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetPopularFreeEcoActionsQuery(baseOptions?: Apollo.QueryHookOptions<GetPopularFreeEcoActionsQuery, GetPopularFreeEcoActionsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPopularFreeEcoActionsQuery, GetPopularFreeEcoActionsQueryVariables>(GetPopularFreeEcoActionsDocument, options);
+      }
+export function useGetPopularFreeEcoActionsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPopularFreeEcoActionsQuery, GetPopularFreeEcoActionsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPopularFreeEcoActionsQuery, GetPopularFreeEcoActionsQueryVariables>(GetPopularFreeEcoActionsDocument, options);
+        }
+export type GetPopularFreeEcoActionsQueryHookResult = ReturnType<typeof useGetPopularFreeEcoActionsQuery>;
+export type GetPopularFreeEcoActionsLazyQueryHookResult = ReturnType<typeof useGetPopularFreeEcoActionsLazyQuery>;
+export type GetPopularFreeEcoActionsQueryResult = Apollo.QueryResult<GetPopularFreeEcoActionsQuery, GetPopularFreeEcoActionsQueryVariables>;
 export const GetUserByIdDocument = gql`
     query GetUserById($getUserById: Int!) {
   getUserById(id: $getUserById) {

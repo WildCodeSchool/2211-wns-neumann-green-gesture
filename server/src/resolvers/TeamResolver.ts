@@ -1,5 +1,5 @@
 import { Arg, Authorized, Mutation, Query, Resolver } from "type-graphql";
-import { CreateTeamInput, Team, TeamInputAddUsers } from "../entity/Team";
+import { CreateTeamsInput, Team, TeamInputAddUsers } from "../entity/Team";
 import datasource from "../db";
 import Group from "../entity/Group";
 import { ApolloError } from "apollo-server-errors";
@@ -10,19 +10,26 @@ import { In } from "typeorm";
 export class TeamResolver {
   @Authorized<UserSubscriptionType>([UserSubscriptionType.PARTNER])
   @Mutation(() => Team)
-  async createTeam(
-    @Arg("data") { name, groupId }: CreateTeamInput
-  ): Promise<Team> {
+  async createTeams(
+    @Arg("data") { groupId, teams }: CreateTeamsInput
+  ): Promise<Team[]> {
     const group = await datasource
       .getRepository(Group)
       .findOneBy({ id: groupId });
-
     if (group === null) throw new ApolloError("Group not found", "NOT_FOUND");
 
-    return await datasource.getRepository(Team).save({
-      name,
-      group,
-    });
+    const teamsToSave = await Promise.all(
+      teams.map(async (team) => ({
+        group,
+        name: team.name,
+        users: await datasource
+          .getRepository(User)
+          .find({ where: { id: In(team.userIds) } }),
+      }))
+    );
+    const createdTeams = await datasource.getRepository(Team).save(teamsToSave);
+
+    return createdTeams;
   }
 
   @Authorized<UserSubscriptionType>([UserSubscriptionType.PARTNER])
