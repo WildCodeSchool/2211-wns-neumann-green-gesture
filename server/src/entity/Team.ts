@@ -43,8 +43,18 @@ export class CreateTeamInput {
   @MaxLength(150)
   name: string;
 
+  @Field(() => [Int])
+  userIds: number[];
+}
+
+// InputType for creating multiple teams at once with users in them
+@InputType()
+export class CreateTeamsInput {
   @Field(() => Int)
   groupId: number;
+
+  @Field(() => [CreateTeamInput])
+  teams: CreateTeamInput[];
 }
 
 @InputType()

@@ -10,8 +10,8 @@ import {
 import { Input } from "./ui/input";
 
 interface CustomFormFieldProps {
-  control: Control<any>;
-  name: "firstName" | "lastName" | "email" | "password" | "company";
+  control: Control<any[] | any>;
+  name: string;
   label: string;
   placeholder?: string;
   type?: string;
