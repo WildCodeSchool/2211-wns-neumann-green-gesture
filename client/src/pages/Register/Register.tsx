@@ -14,9 +14,9 @@ import { StepOne } from "./StepOne";
 import { StepTwo } from "./StepTwo";
 import { StepThree } from "./StepThree";
 import { Form } from "../../components/ui/form";
-import { Formula } from "@/types/global";
+import { Formula, User } from "@/types/global";
 
-const DEFAULT_USER = {
+const DEFAULT_USER: Omit<User, "id"> = {
   firstName: "",
   lastName: "",
   email: "",
@@ -104,7 +104,8 @@ function Register() {
           refetchQueries: [{ query: UsersDocument }],
         });
         form.clearErrors();
-        navigate("/");
+        window.location.reload();
+        // navigate("/");
       } catch (err) {
         console.error("err", err);
         form.setError("email", {
@@ -134,6 +135,7 @@ function Register() {
             {step === 2 && (
               <StepTwo
                 radios={DEFAULT_FORMULA_RADIOS}
+                selectedFormula={selectedFormula}
                 handleChangeFormula={handleChangeFormula}
                 handleGoBackInStep={handleGoBackInStep}
               />

@@ -6,12 +6,14 @@ import { Formula } from "@/types/global";
 
 type StepTwoProps = {
   radios: Radio[];
+  selectedFormula: Formula;
   handleChangeFormula: (value: Formula) => void;
   handleGoBackInStep: () => void;
 };
 
 export const StepTwo = ({
   radios,
+  selectedFormula,
   handleChangeFormula,
   handleGoBackInStep,
 }: StepTwoProps) => {
@@ -28,6 +30,7 @@ export const StepTwo = ({
       <h2 className="text-xl font-bold my-8">Sélectionnez votre formule</h2>
       <RadioButtons
         radios={radios}
+        selectedFormula={selectedFormula}
         onChange={(value) => handleChangeFormula(value as Formula)}
         defaultValue="free"
       />

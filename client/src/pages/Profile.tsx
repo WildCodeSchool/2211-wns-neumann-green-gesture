@@ -52,36 +52,40 @@ function Profile() {
               <p className="mt-2 ms-4 text-xs">{currentUser?.email}</p>
             </div>
           </div>
-          <div className="mt-8">
-            <h2 className="font-sans text-xl font-semibold">Mon entreprise</h2>
-            <div>
-              <div className="mt-4">
-                <h5 className="font-sans text-sm font-semibold">
-                  Nom de l'entreprise
-                </h5>
-                <p className="mt-2 ms-4 text-xs">
-                  {currentUser?.company?.name ?? "Aucune entreprise"}
-                </p>
-              </div>
-              <div className="mt-4">
-                <h5 className="font-sans text-sm font-semibold">
-                  Nombre d'utilisateurs de l'entreprise
-                </h5>
-                <div className="flex items-center justify-start">
-                  <p className="font-bold text-lg">
-                    {currentUser?.company?.users?.length ?? 0} utilisateurs
+          {currentUser?.subscriptionType === "partner" && (
+            <div className="mt-8">
+              <h2 className="font-sans text-xl font-semibold">
+                Mon entreprise
+              </h2>
+              <div>
+                <div className="mt-4">
+                  <h5 className="font-sans text-sm font-semibold">
+                    Nom de l'entreprise
+                  </h5>
+                  <p className="mt-2 ms-4 text-xs">
+                    {currentUser?.company?.name ?? "Aucune entreprise"}
                   </p>
-                  <Button
-                    variant={"link"}
-                    onClick={() => navigate("#", { replace: true })}
-                    className="text-xs"
-                  >
-                    voir les utilisateurs <Users2 className="ms-1" />
-                  </Button>
+                </div>
+                <div className="mt-4">
+                  <h5 className="font-sans text-sm font-semibold">
+                    Nombre d'utilisateurs de l'entreprise
+                  </h5>
+                  <div className="flex items-center justify-start">
+                    <p className="font-bold text-lg">
+                      {currentUser?.company?.users?.length ?? 0} utilisateurs
+                    </p>
+                    <Button
+                      variant={"link"}
+                      onClick={() => navigate("#", { replace: true })}
+                      className="text-xs"
+                    >
+                      voir les utilisateurs <Users2 className="ms-1" />
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>

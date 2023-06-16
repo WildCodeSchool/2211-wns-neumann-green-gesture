@@ -106,7 +106,8 @@ export class UserResolver {
       company,
       role,
       subscriptionType,
-    }: UserInputSubscribe
+    }: UserInputSubscribe,
+    @Ctx() { res }: ContextType
   ): Promise<User> {
     const hashedPassword = await hashPassword(password);
 
@@ -133,8 +134,25 @@ export class UserResolver {
         .getRepository(User)
         .save(createdUser);
 
+      const token = jwt.sign(
+        { userId: createdPartnerUser.id },
+        env.JWT_PRIVATE_KEY
+      );
+
+      res.cookie("token", token, {
+        httpOnly: true,
+        secure: env.NODE_ENV === "production",
+      });
+
       return createdPartnerUser;
     }
+
+    const token = jwt.sign({ userId: createdUser.id }, env.JWT_PRIVATE_KEY);
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: env.NODE_ENV === "production",
+    });
 
     return createdUser;
   }
