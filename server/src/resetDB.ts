@@ -144,8 +144,8 @@ async function resetDB(): Promise<void> {
     {
       name: "GreenGesture 3",
       challengeName: "Challenge 3",
-      startDate: "2016-01-25T10:10:10.555555",
-      endDate: "2020-01-25T10:10:10.555555",
+      startDate: "2023-06-25T10:10:10.555555",
+      endDate: "2023-06-25T23:30:10.555555",
       author: userPartner,
       users: [admin, userFree, userPartner],
       ecoActions,
@@ -172,6 +172,46 @@ async function resetDB(): Promise<void> {
       user: [userFree],
       ecoAction: [ecoActions[0]],
       validationId: ecoActions[0].validations[0].id,
+    },
+    {
+      user: [userPartner],
+      ecoAction: [ecoActions[0]],
+      validationId: ecoActions[0].validations[0].id,
+    },
+    {
+      user: [admin],
+      ecoAction: [ecoActions[0]],
+      validationId: ecoActions[0].validations[0].id,
+    },
+    {
+      user: [userFree],
+      ecoAction: [ecoActions[1]],
+      validationId: ecoActions[1].validations[0].id,
+    },
+    {
+      user: [userPartner],
+      ecoAction: [ecoActions[1]],
+      validationId: ecoActions[1].validations[0].id,
+    },
+    {
+      user: [admin],
+      ecoAction: [ecoActions[1]],
+      validationId: ecoActions[1].validations[0].id,
+    },
+    {
+      user: [userFree],
+      ecoAction: [ecoActions[2]],
+      validationId: ecoActions[2].validations[0].id,
+    },
+    {
+      user: [userPartner],
+      ecoAction: [ecoActions[2]],
+      validationId: ecoActions[2].validations[0].id,
+    },
+    {
+      user: [admin],
+      ecoAction: [ecoActions[2]],
+      validationId: ecoActions[2].validations[0].id,
     },
   ]);
 

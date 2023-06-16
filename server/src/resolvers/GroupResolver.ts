@@ -153,10 +153,10 @@ export class GroupResolver {
   }
 
   // Query to get one group by his groupId
-  @Authorized<UserSubscriptionType>([
-    UserSubscriptionType.PARTNER,
-    UserSubscriptionType.FREE,
-  ])
+  // @Authorized<UserSubscriptionType>([
+  //   UserSubscriptionType.PARTNER,
+  //   UserSubscriptionType.FREE,
+  // ])
   @Query(() => Group)
   async getGroup(@Arg("groupId") groupId: number): Promise<Group> {
     const res = await datasource.getRepository(Group).findOne({
@@ -164,7 +164,8 @@ export class GroupResolver {
       relations: {
         author: true,
         users: true,
-        ecoActions: true,
+        ecoActions: { validations: true },
+        teams: { users: true },
       },
     });
 
