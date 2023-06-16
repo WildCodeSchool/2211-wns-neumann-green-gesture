@@ -8,13 +8,15 @@ import Profile from "./pages/Profile";
 import Register from "./pages/Register/Register";
 import { useGetCurrentUserQuery } from "./gql/generated/schema";
 import Layout from "./containers/Layout";
+import { Loading } from "./pages/Loading";
+import { FriendList } from "./pages/FriendList";
 
 function App() {
   const { data: currentUser, loading } = useGetCurrentUserQuery({
     errorPolicy: "ignore",
   });
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <Loading />;
 
   return (
     <Routes>
@@ -35,6 +37,7 @@ function App() {
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/friends" element={<FriendList />} />
           <Route path="/create-group" element={<CreateGroup />} />
           <Route path="/group/:id" element={<SingleGroup />} />
         </Route>

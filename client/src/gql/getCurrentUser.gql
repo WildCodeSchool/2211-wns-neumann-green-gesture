@@ -31,5 +31,9 @@ query GetCurrentUser {
         id
       }
     }
+    friends {
+      firstName
+      lastName
+    }
   }
 }

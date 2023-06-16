@@ -67,6 +67,7 @@ function Login() {
               name="email"
               type="email"
               placeholder="tom-sawyer@gmail.com"
+              data-testid="email"
             />
             <CustomFormField
               control={form.control}
@@ -74,6 +75,7 @@ function Login() {
               name="password"
               type="password"
               placeholder="mot de passe"
+              data-testid="password"
             />
             {form.formState.errors.root && (
               <p className="text-xs text-destructive text-center">

@@ -18,12 +18,12 @@ async function resetDB(): Promise<void> {
   await datasource.getRepository(Comment).delete({});
   // delete validations in the database
   await datasource.getRepository(Validation).delete({});
+  // delete userEcoActions in the database
+  await datasource.getRepository(UserEcoAction).delete({});
   // delete all eco actions in the database
   await datasource.getRepository(EcoAction).delete({});
   // delete all groups in the database
   await datasource.getRepository(Group).delete({});
-  // delete userEcoActions in the database
-  await datasource.getRepository(UserEcoAction).delete({});
   // delete all users in the database
   await datasource.getRepository(User).delete({});
 
@@ -42,6 +42,7 @@ async function resetDB(): Promise<void> {
     lastName: "Free",
     email: "user@gmail.com",
     password: await hashPassword("testtest"),
+    friends: [admin],
   });
 
   const userPartner = await datasource.getRepository(User).save({
@@ -50,6 +51,7 @@ async function resetDB(): Promise<void> {
     email: "partner@gmail.com",
     password: await hashPassword("testtest"),
     subscriptionType: "partner",
+    friends: [admin],
   });
 
   // create Company for userPartner

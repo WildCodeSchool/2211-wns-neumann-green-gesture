@@ -15,16 +15,10 @@ function Home() {
   const freeEcoActions = dataFreeEcoActions?.getFreeEcoActions || [];
   const navigate = useNavigate();
   refetch();
-  console.log(freeEcoActions);
-
-  const items = Array.from({ length: 20 }).map((_, i) => ({
-    id: i,
-    src: `https://picsum.photos/500?idx=${i}`,
-  }));
 
   return (
     <div className="flex flex-col m-5">
-      {groups.length > 1 ? (
+      {groups.length > 0 ? (
         <>
           <h3 className="font-semibold mb-3">Mes challenges en cours</h3>
           <div className="flex overflow-scroll snap-mandatory gap-3">
@@ -53,7 +47,11 @@ function Home() {
         </>
       ) : (
         <div className="flex flex-col-reverse flex-end bg-card rounded-lg p-3 h-32">
-          <Button variant="secondary" onClick={() => navigate("/create-group")}>
+          <Button
+            variant="secondary"
+            onClick={() => navigate("/create-group")}
+            data-testid="no-challenge"
+          >
             Créer mon premier challenge
           </Button>
         </div>
