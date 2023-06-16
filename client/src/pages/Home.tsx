@@ -1,4 +1,3 @@
-import Layout from "../containers/Layout";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
@@ -23,25 +22,24 @@ function Home() {
           <h3 className="font-semibold mb-3">Mes challenges en cours</h3>
           <div className="flex overflow-scroll snap-mandatory gap-3">
             {groups.map((group) => (
-              <div
+              <Link
                 key={group.id}
+                to={`/group/${group.id}`}
                 className="flex flex-col justify-between bg-card rounded-xl h-[125px] min-w-[125px] cursor-pointer p-2"
               >
-                <Link to={`/group/${group.id}`}>
-                  <div>
-                    <h4 className="text-2xs font-semibold">
-                      {group.challengeName}
-                    </h4>
-                    <p className="text-2xs">
-                      Fini dans{" "}
-                      <span className="font-semibold">{group.endDate}</span>
-                    </p>
-                  </div>
-                  <div className="flex flex-row-reverse">
-                    <p className="text-2xs font-semibold">15/45 points</p>
-                  </div>
-                </Link>
-              </div>
+                <div>
+                  <h4 className="text-2xs font-semibold">
+                    {group.challengeName}
+                  </h4>
+                  <p className="text-2xs">
+                    Fini dans{" "}
+                    <span className="font-semibold">{group.endDate}</span>
+                  </p>
+                </div>
+                <div className="flex flex-row-reverse">
+                  <p className="text-2xs font-semibold">1/3 points</p>
+                </div>
+              </Link>
             ))}
           </div>
         </>
@@ -68,7 +66,7 @@ function Home() {
             >
               <Link to={`/eco-action/${ecoAction.id}`}>
                 <div>
-                  <h4 className="text-center text-2xs font-semibold mb-3">
+                  <h4 className="text-center font-semibold mb-3">
                     {ecoAction.name}
                   </h4>
                   <p className="text-2xs text-center">
@@ -82,11 +80,26 @@ function Home() {
       </div>
 
       <div className="mt-8">
-        <h3 className="font-semibold">Éco-gestes les plus populaires</h3>
-        {/* {freeEcoActions?.map((ecoAction) => (
-          <p>{ecoAction.name}</p>
-        ))} */}
-        <div className="bg-card rounded-lg h-32 mt-3"></div>
+        <h3 className="font-semibold mb-3">Éco-gestes les plus populaires</h3>
+        <div className="flex overflow-scroll snap-mandatory gap-3 w-full">
+          {freeEcoActions?.map((ecoAction) => (
+            <div
+              key={ecoAction.id}
+              className="flex flex-col items-center bg-card rounded-xl h-[125px] min-w-full cursor-pointer p-2"
+            >
+              <Link to={`/eco-action/${ecoAction.id}`}>
+                <div>
+                  <h4 className="text-center font-semibold mb-3">
+                    {ecoAction.name}
+                  </h4>
+                  <p className="text-2xs text-center">
+                    {ecoAction.description}
+                  </p>
+                </div>
+              </Link>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
