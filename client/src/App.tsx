@@ -3,7 +3,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import SingleGroup from "./pages/SingleGroup";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
-import NewGroup from "./pages/CreateGroup";
+import CreateGroup from "./pages/CreateGroup/CreateGroup";
 import Profile from "./pages/Profile";
 import Register from "./pages/Register/Register";
 import { useGetCurrentUserQuery } from "./gql/generated/schema";
@@ -38,7 +38,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/friends" element={<FriendList />} />
-          <Route path="/create-group" element={<NewGroup />} />
+          <Route path="/create-group" element={<CreateGroup />} />
           <Route path="/group/:id" element={<SingleGroup />} />
         </Route>
       </Route>
