@@ -5,8 +5,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useCreateTeamsMutation } from "@/gql/generated/schema";
 import { Button } from "../../components/ui/button";
-import { Form } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import CustomFormField from "@/components/CustomFormField";
+import { Input } from "@/components/ui/input";
 
 type StepFourProps = {
   groupId: number | null;
@@ -25,12 +33,12 @@ const DEFAULT_TEAMS: Team[] = [
   },
 ];
 
-const formSchema = z.array(
-  z.object({
+const formSchema = z
+  .object({
     name: z.string().min(3).max(150),
     participants: z.array(z.number()),
   })
-);
+  .array();
 
 function StepFour({ groupId, handleGoBackInStep }: StepFourProps) {
   const [teams, setteams] = useState<Team[]>(DEFAULT_TEAMS);
@@ -54,14 +62,12 @@ function StepFour({ groupId, handleGoBackInStep }: StepFourProps) {
         <p className="font-medium">Création des équipes</p>
       </div>
 
-      <div className="py-4 h-full">
+      <div className="py-4">
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(handleSubmit)}
-            className="flex flex-col h-full justify-center"
-          >
-            <div className="space-y-4 w-full mt-5">
-              <>Gestion de l'ajout des équipes ici</>
+          <form onSubmit={form.handleSubmit(handleSubmit)}>
+            <div className="space-y-4 mt-5">
+              <p>Gestion de l'ajout des équipes ici</p>
+              <p>Changer le process pour ajouter une équipe à la fois</p>
             </div>
 
             <div className="flex items-center gap-1 mt-10">

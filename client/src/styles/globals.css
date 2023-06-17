@@ -109,4 +109,8 @@
   .elevate-box {
     @apply shadow-main p-4 rounded-2xl;
   }
+
+  .eco-geste-drawer {
+    min-height: calc(100vh - 64px);
+  }
 }

@@ -34,7 +34,7 @@ function Home() {
               {groups.map((group) => (
                 <Link
                   key={group.id}
-                  to={`/group/${group.id}`}
+                  to={`/groups/${group.id}`}
                   className="flex flex-col justify-between bg-card rounded-xl h-[125px] min-w-[150px] cursor-pointer p-2 elevate-box"
                 >
                   <div>

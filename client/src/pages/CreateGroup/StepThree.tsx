@@ -33,22 +33,17 @@ function StepThree({
         render={({ field }) => (
           <div className="space-y-4 w-full mt-7">
             <p className="font-semibold text-base">Vos amis</p>
-            <div className="space-y-3">
+            <div className="space-y-3 md:space-y-0 md:flex md:items-center">
               {friends.length > 0 &&
                 friends.map((friend) => (
                   <div
                     key={friend.id}
-                    className="flex items-center justify-between space-x-4 py-1 px-4 bg-card text-card-foreground text-sm font-medium rounded-3xl"
+                    className="flex items-center justify-between w-full md:w-auto space-x-4 py-2 px-4 bg-card text-card-foreground text-sm font-medium rounded-3xl"
                   >
-                    <span>Tom Sawyer</span>
+                    <span>
+                      {friend.firstName} {friend.lastName}
+                    </span>
                     <div className="flex items-center space-x-2">
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        className="p-1 h-auto"
-                      >
-                        <Eye size="24" />
-                      </Button>
                       <FormControl>
                         <Checkbox
                           className="h-6 w-6 rounded-xl border-2"

@@ -110,12 +110,9 @@ function CreateGroup() {
   };
 
   return (
-    <div className="py-4 h-full px-4">
+    <>
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(handleSubmit)}
-          className="flex flex-col h-full justify-center"
-        >
+        <form onSubmit={form.handleSubmit(handleSubmit)}>
           {step === 1 && (
             <StepOne
               control={form.control}
@@ -144,7 +141,7 @@ function CreateGroup() {
       {step === 4 && (
         <StepFour groupId={groupId} handleGoBackInStep={handleGoBackInStep} />
       )}
-    </div>
+    </>
   );
 }
 

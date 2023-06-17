@@ -40,11 +40,10 @@ function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/friends" element={<FriendList />} />
           <Route path="/create-group" element={<CreateGroup />} />
-          <Route path="/group/:id" element={<SingleGroup />} />
-          <Route
-            path="/single-ecoaction/:id/:id"
-            element={<SingleEcoAction />}
-          />
+          <Route path="/groups" element={<h1>Groups / Challenges</h1>} />
+          <Route path="/groups/:id" element={<SingleGroup />} />
+          <Route path="/eco-actions" element={<h1>Eco-actions</h1>} />
+          <Route path="/eco-actions/:id/" element={<SingleEcoAction />} />
         </Route>
       </Route>
       <Route path="*" element={<Navigate to="/" />} />

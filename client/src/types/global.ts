@@ -16,3 +16,11 @@ export type GroupeCreationType = {
   participants: number[];
   ecoActionsIds: number[];
 };
+
+export type EcoActionType = {
+  id: number;
+  name: string;
+  likes: number;
+  description: string;
+  author?: Partial<User>;
+};
