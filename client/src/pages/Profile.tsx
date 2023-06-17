@@ -28,7 +28,7 @@ function Profile() {
       {/* BUTTONS */}
       <div className="flex items-center flex-wrap gap-2 my-8">
         <Button className="flex w-full sm:w-auto" asChild={true}>
-          <Link to="/challenges?own=true">
+          <Link to="/groups?own=true">
             Mes challenges <ArrowRight className="ms-3" />
           </Link>
         </Button>
