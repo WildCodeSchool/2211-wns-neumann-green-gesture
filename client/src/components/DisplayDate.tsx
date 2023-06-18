@@ -3,9 +3,14 @@ import React, { useEffect, useState } from "react";
 interface DateProps {
   startDate: string;
   endDate: string;
+  size?: "xs" | "sm" | "md" | "lg" | "xl";
 }
 
-const DisplayDate: React.FC<DateProps> = ({ startDate, endDate }) => {
+const DisplayDate: React.FC<DateProps> = ({
+  startDate,
+  endDate,
+  size = "sm",
+}) => {
   const [prefix, setPrefix] = useState("Commence dans");
   const [status, setStatus] = useState("");
 
@@ -54,10 +59,10 @@ const DisplayDate: React.FC<DateProps> = ({ startDate, endDate }) => {
   }, [startDate, endDate]);
 
   return (
-    <div className="flex flex-col justify-center items-center">
-      <div className=" text-xs">{prefix}</div>
-      <div>{status}</div>
-    </div>
+    <p className={`text-${size}`}>
+      {prefix}
+      <span className="font-bold">{status}</span>
+    </p>
   );
 };
 

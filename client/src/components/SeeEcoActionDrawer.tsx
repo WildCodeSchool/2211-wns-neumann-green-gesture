@@ -8,14 +8,14 @@ import {
   SheetTrigger,
 } from "./ui/sheet";
 import { Button } from "./ui/button";
-import { EcoActionType, User } from "@/types/global";
+import { EcoActionType } from "@/types/global";
 
-interface SeeEcoGesteActionProps {
+interface SeeEcoActionProps {
   component: React.ReactNode;
   ecoAction: EcoActionType;
 }
 
-function SeeEcoActionDrawer({ component, ecoAction }: SeeEcoGesteActionProps) {
+function SeeEcoActionDrawer({ component, ecoAction }: SeeEcoActionProps) {
   return (
     <Sheet>
       <SheetTrigger asChild={true}>

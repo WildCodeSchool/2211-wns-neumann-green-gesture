@@ -8,6 +8,7 @@ import {
 } from "../gql/generated/schema";
 import { Button } from "@/components/ui/button";
 import { challengeCountDown } from "@/lib/utils";
+import DisplayDate from "@/components/DisplayDate";
 
 function Home() {
   const { data: userData } = useGetCurrentUserQuery();
@@ -41,14 +42,11 @@ function Home() {
                     <h4 className="text-xs font-semibold">
                       {group.challengeName}
                     </h4>
-                    <p className="text-2xs">
-                      Fini dans{" "}
-                      <span className="font-semibold">
-                        {challengeCountDown(group.startDate, group.endDate, {
-                          format: ["days"],
-                        })}
-                      </span>
-                    </p>
+                    <DisplayDate
+                      startDate={group.startDate}
+                      endDate={group.endDate}
+                      size="xs"
+                    />
                   </div>
                   <div className="flex flex-row-reverse">
                     <p className="text-2xs font-semibold">1/3 points</p>
