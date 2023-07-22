@@ -32,7 +32,7 @@ function StepThree({
         name="participants"
         render={({ field }) => (
           <div className="space-y-4 w-full mt-7">
-            <p className="font-semibold text-base">Vos amis</p>
+            <p className="font-semibold text-base">Invitez vos amis</p>
             <div className="space-y-3 md:space-y-0 md:flex md:items-center">
               {friends.length > 0 &&
                 friends.map((friend) => (

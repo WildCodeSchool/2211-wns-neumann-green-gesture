@@ -12,7 +12,7 @@ export type Radio = {
 
 type RadioButtonsProps = {
   radios: Radio[];
-  selectedFormula: Formula;
+  selectedFormula?: Formula;
   onChange: (value: Formula) => void;
   defaultValue: string;
 };

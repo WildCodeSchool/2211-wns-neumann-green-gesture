@@ -45,7 +45,7 @@ function Home() {
                     <DisplayDate
                       startDate={group.startDate}
                       endDate={group.endDate}
-                      size="xs"
+                      size="2xs"
                     />
                   </div>
                   <div className="flex flex-row-reverse">

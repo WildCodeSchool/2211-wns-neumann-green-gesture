@@ -26,7 +26,7 @@ function StepOne({
         <p className="font-medium">Configuration</p>
       </div>
 
-      <div className="space-y-6 w-full mt-7">
+      <div className="space-y-5 w-full mt-7">
         <CustomFormField
           control={control}
           label="Nom du groupe"

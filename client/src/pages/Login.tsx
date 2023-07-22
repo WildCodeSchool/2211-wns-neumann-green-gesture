@@ -76,6 +76,7 @@ function Login() {
               type="password"
               placeholder="mot de passe"
               data-testid="password"
+              isPassword={true}
             />
             {form.formState.errors.root && (
               <p className="text-xs text-destructive text-center">

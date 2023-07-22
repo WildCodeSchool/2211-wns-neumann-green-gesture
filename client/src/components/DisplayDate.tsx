@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 interface DateProps {
   startDate: string;
   endDate: string;
-  size?: "xs" | "sm" | "md" | "lg" | "xl";
+  size?: "2xs" | "xs" | "sm" | "md" | "lg" | "xl";
 }
 
 const DisplayDate: React.FC<DateProps> = ({
