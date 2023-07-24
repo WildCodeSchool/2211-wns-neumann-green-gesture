@@ -14,7 +14,7 @@ import { StepOne } from "./StepOne";
 import { StepTwo } from "./StepTwo";
 import { StepThree } from "./StepThree";
 import { Form } from "../../components/ui/form";
-import { Formula, User } from "@/types/global";
+import { Formula, User } from "../../types/global";
 
 const DEFAULT_USER: Omit<User, "id"> = {
   firstName: "",

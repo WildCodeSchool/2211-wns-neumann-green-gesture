@@ -1,9 +1,9 @@
 import { Control } from "react-hook-form";
+import { Link } from "react-router-dom";
 
 import { Button } from "../../components/ui/button";
 import CustomFormField from "../../components/CustomFormField";
-import { Link } from "react-router-dom";
-import { User } from "@/types/global";
+import { User } from "../../types/global";
 
 type StepOneProps = {
   control: Control<Omit<User, "id">, any>;
