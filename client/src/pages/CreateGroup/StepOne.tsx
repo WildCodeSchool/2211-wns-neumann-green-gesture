@@ -20,13 +20,13 @@ function StepOne({
   handleIsTeamChallenge,
 }: StepOneProps) {
   return (
-    <div>
+    <>
       <div className="-space-y-1">
         <h1 className="font-bold text-2xl">Étape 1</h1>
         <p className="font-medium">Configuration</p>
       </div>
 
-      <div className="space-y-6 w-full mt-7">
+      <div className="space-y-5 w-full mt-7">
         <CustomFormField
           control={control}
           label="Nom du groupe"
@@ -42,8 +42,9 @@ function StepOne({
         <DatePickerWithRange control={control} />
         {isPartner && (
           <div className="flex items-center space-x-4">
-            <Label>Challenge par équipes :</Label>
+            <Label htmlFor="team">Challenge par équipes :</Label>
             <Checkbox
+              id="team"
               checked={isTeamChallenge}
               onCheckedChange={handleIsTeamChallenge}
             />
@@ -53,7 +54,7 @@ function StepOne({
       <Button type="submit" className="mt-10 w-full">
         Suivant
       </Button>
-    </div>
+    </>
   );
 }
 

@@ -23,7 +23,7 @@ export const StepTwo = ({
       initial={{ x: 300, opacity: 0 }}
       animate={{ x: 0, opacity: 1, transition: { duration: 0.5 } }}
       exit={{ x: -300, opacity: 0 }}
-      className="relative flex flex-col items-center px-5"
+      className="relative flex flex-col pt-8 items-center px-5 w-full"
     >
       <StepBackButton onClick={handleGoBackInStep} />
       <img src="./src/assets/images/globe-formula.png" className="w-48" />
@@ -35,11 +35,12 @@ export const StepTwo = ({
         defaultValue="free"
       />
       <p className="text-sm text-center mt-7">
-        Enregistrez votre entreprise, et créez des challenges en formant des
-        équipes avec vos collaborateurs !
+        {selectedFormula === "partner"
+          ? "Enregistrez votre entreprise, et créez des challenges en formant des équipes avec vos collaborateurs !"
+          : "Participez à des challenges fun et écolo avec vos amis !"}
       </p>
       <Button type="submit" className="w-full mt-7">
-        Je finalise mon inscription
+        {selectedFormula === "partner" ? "Suivant" : "Je m'inscris"}
       </Button>
     </motion.div>
   );

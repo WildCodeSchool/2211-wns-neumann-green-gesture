@@ -72,6 +72,7 @@ const sheetVariants = cva(
         sm: "",
         lg: "",
         xl: "",
+        "eco-geste": "",
         full: "",
       },
     },
@@ -100,6 +101,11 @@ const sheetVariants = cva(
         position: ["top", "bottom"],
         size: "xl",
         class: "h-5/6",
+      },
+      {
+        position: ["top", "bottom"],
+        size: "eco-geste",
+        class: "eco-geste-drawer",
       },
       {
         position: ["top", "bottom"],

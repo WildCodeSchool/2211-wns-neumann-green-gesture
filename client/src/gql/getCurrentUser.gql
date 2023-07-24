@@ -11,6 +11,9 @@ query GetCurrentUser {
       firstName
       lastName
       email
+      groups {
+        id
+      }
     }
     groups {
       startDate

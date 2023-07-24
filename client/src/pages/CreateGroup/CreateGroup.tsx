@@ -14,6 +14,7 @@ import StepOne from "./StepOne";
 import StepTwo from "./StepTwo";
 import StepThree from "./StepThree";
 import StepFour from "./StepFour";
+import { Progress } from "@/components/ui/progress";
 
 const DEFAULT_GROUP = {
   name: "",
@@ -27,12 +28,14 @@ const DEFAULT_GROUP = {
 };
 
 const formSchema = z.object({
-  name: z.string().min(3).max(150),
-  challengeName: z.string().min(3).max(150),
-  dates: z.object({
-    from: z.date(),
-    to: z.date(),
-  }),
+  name: z.string().min(3, "3 caractères minium").max(150),
+  challengeName: z.string().min(3, "3 caractères minium").max(150),
+  dates: z
+    .object({
+      from: z.date(),
+      to: z.date(),
+    })
+    .required(),
   participants: z.array(z.number()),
   ecoActionsIds: z.array(z.number()),
 });
@@ -50,6 +53,8 @@ function CreateGroup() {
   const currentUser = data?.getCurrentUser;
 
   const isPartner = currentUser?.subscriptionType === "partner";
+  const maxSteps = isTeamChallenge ? 4 : 3;
+  const progressValue = (100 / maxSteps) * step;
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -110,12 +115,14 @@ function CreateGroup() {
   };
 
   return (
-    <div className="py-4 h-full px-4">
+    <>
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(handleSubmit)}
-          className="flex flex-col h-full justify-center"
-        >
+        <form onSubmit={form.handleSubmit(handleSubmit)}>
+          <Progress
+            value={progressValue}
+            max={maxSteps}
+            className="h-4 mt-2 mb-4"
+          />
           {step === 1 && (
             <StepOne
               control={form.control}
@@ -144,7 +151,7 @@ function CreateGroup() {
       {step === 4 && (
         <StepFour groupId={groupId} handleGoBackInStep={handleGoBackInStep} />
       )}
-    </div>
+    </>
   );
 }
 

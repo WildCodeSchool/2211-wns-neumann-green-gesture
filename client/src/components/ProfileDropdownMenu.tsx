@@ -41,7 +41,7 @@ function ProfileDropDownMenu() {
               <span>Mon profil</span>
             </DropdownMenuItem>
           </Link>
-          <Link to="/my-challenges">
+          <Link to="/groups">
             <DropdownMenuItem>
               <Goal className="mr-2 h-4 w-4" />
               <span>Mes challenges</span>

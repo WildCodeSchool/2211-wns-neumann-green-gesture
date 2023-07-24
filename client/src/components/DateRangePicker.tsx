@@ -34,7 +34,7 @@ export function DatePickerWithRange({
                   id="date"
                   variant="outline"
                   className={cn(
-                    "w-full justify-start text-left capitalize font-normal",
+                    "w-full justify-start text-left capitalize font-normal hover:bg-white",
                     !field.value && "text-muted-foreground"
                   )}
                 >
@@ -61,7 +61,7 @@ export function DatePickerWithRange({
                 <Calendar
                   initialFocus
                   mode="range"
-                  fromDate={new Date()}
+                  fromDate={field.value?.from || new Date()}
                   fixedWeeks={true}
                   showOutsideDays={true}
                   selected={field.value as DateRange}
