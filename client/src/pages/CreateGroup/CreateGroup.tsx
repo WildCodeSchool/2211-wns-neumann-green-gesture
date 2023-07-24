@@ -28,16 +28,16 @@ const DEFAULT_GROUP = {
 };
 
 const formSchema = z.object({
-  name: z.string().min(3, "3 charactères minium").max(150),
-  challengeName: z.string().min(3, "3 charactères minium").max(150),
+  name: z.string().min(3, "3 caractères minium").max(150),
+  challengeName: z.string().min(3, "3 caractères minium").max(150),
   dates: z
     .object({
       from: z.date(),
       to: z.date(),
     })
     .required(),
-  participants: z.array(z.number()).min(1, "1 participant minimum"),
-  ecoActionsIds: z.array(z.number()).min(1, "1 eco-action minimum"),
+  participants: z.array(z.number()),
+  ecoActionsIds: z.array(z.number()),
 });
 
 function CreateGroup() {

@@ -35,7 +35,7 @@ const DEFAULT_TEAMS: Team[] = [
 
 const formSchema = z
   .object({
-    name: z.string().min(3, "3 charactères minium").max(150),
+    name: z.string().min(3, "3 caractères minium").max(150),
     participants: z.array(z.number()).min(1, "1 participant minimum"),
   })
   .array()

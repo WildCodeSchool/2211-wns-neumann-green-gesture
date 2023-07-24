@@ -41,10 +41,10 @@ const DEFAULT_FORMULA_RADIOS: Radio[] = [
 ];
 
 const formSchema = z.object({
-  firstName: z.string().min(2, "2 charactères minium").max(50),
-  lastName: z.string().min(2, "2 charactères minium").max(50),
+  firstName: z.string().min(2, "2 caractères minium").max(50),
+  lastName: z.string().min(2, "2 caractères minium").max(50),
   email: z.string().email({ message: "Email invalide" }),
-  password: z.string().min(8, "8 charactères minium").max(50),
+  password: z.string().min(8, "8 caractères minium").max(50),
   company: z.string().max(50).optional(),
 });
 
