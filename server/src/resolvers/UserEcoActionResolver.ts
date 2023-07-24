@@ -144,7 +144,7 @@ export class UserEcoActionResolver {
     if (ecoAction === null) {
       throw new ApolloError("EcoAction not found");
     }
-    ecoAction.likes = +ecoAction.likes + 1;
+    ecoAction.likes = hasLiked ? +ecoAction.likes + 1 : +ecoAction.likes - 1;
     await datasource.getRepository(EcoAction).save(ecoAction);
 
     return "Your like has been added";

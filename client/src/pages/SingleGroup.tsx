@@ -1,5 +1,5 @@
 import DisplayDate from "@/components/DisplayDate";
-import EcoCarde from "@/components/EcoCarde";
+import EcoCarde from "@/components/EcoCard";
 import { Badge } from "@/components/ui/badge";
 import {
   useGetCommentsForGroupQuery,

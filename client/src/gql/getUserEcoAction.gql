@@ -4,5 +4,10 @@ query GetUserEcoAction($ecoActionId: Float!, $groupId: Float!) {
     hasLiked
     proof
     validationId
+    ecoAction {
+      name
+      description
+      likes
+    }
   }
 }

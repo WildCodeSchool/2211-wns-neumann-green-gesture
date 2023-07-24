@@ -42,7 +42,7 @@ function App() {
           <Route path="/create-group" element={<CreateGroup />} />
           <Route path="/group/:id" element={<SingleGroup />} />
           <Route
-            path="/single-ecoaction/:id/:id"
+            path="/single-ecoaction/:ecoActionId/:groupId"
             element={<SingleEcoAction />}
           />
         </Route>

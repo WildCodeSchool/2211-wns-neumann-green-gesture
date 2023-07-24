@@ -10,19 +10,14 @@ import { Heart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Loading } from "@/pages/Loading";
 
-interface EcoCardeProps {
+interface EcoCardProps {
   name: string;
   description: string;
   ecoActionId: number;
   groupId: number;
 }
 
-const EcoCarde = ({
-  name,
-  description,
-  ecoActionId,
-  groupId,
-}: EcoCardeProps) => {
+const EcoCard = ({ name, description, ecoActionId, groupId }: EcoCardProps) => {
   const navigate = useNavigate();
 
   const { data, loading, refetch } = useGetUserEcoActionQuery({
@@ -32,11 +27,9 @@ const EcoCarde = ({
 
   const { data: validationData, loading: validationLoading } =
     useGetValidationQuery({
-      skip: !ecoAction?.validationId,
-      variables: { getValidationId: ecoAction?.validationId },
+      variables: { getValidationId: ecoAction?.validationId || 0 },
     });
   const validation = validationData?.getValidation;
-  console.log(ecoAction);
 
   const { data: maxPointsData, loading: maxPointsLoading } =
     useGetMaxValidationPointsQuery({
@@ -47,8 +40,6 @@ const EcoCarde = ({
   const [LikeEcoAction] = useLikeEcoActionMutation();
 
   const handleLike = async () => {
-    console.log(ecoAction);
-
     try {
       await LikeEcoAction({
         variables: {
@@ -77,14 +68,14 @@ const EcoCarde = ({
         exit={{ x: 300, opacity: 0 }}
         className="h-full"
       >
-        <div
-          className="w-[100%] rounded-xl bg-grey-green my-5 px-3 pb-4 pt-2 hover:shadow-2xl transition ease-in-out delay-90"
-          // onClick={() =>
-          //   navigate(`/single-ecoaction/${ecoActionId}/${groupId}`)
-          // }
-        >
+        <div className="w-[100%] rounded-xl bg-grey-green my-5 px-3 pb-4 pt-2 hover:shadow-2xl transition ease-in-out delay-90">
           <div className="flex flex-row justify-between items-center">
-            <h3 className="font-sans text-xs">
+            <h3
+              className="font-sans text-xs"
+              onClick={() =>
+                navigate(`/single-ecoaction/${ecoActionId}/${groupId}}`)
+              }
+            >
               {name} {validation?.points} / {maxPoints?.points}
             </h3>
             <Heart
@@ -92,11 +83,18 @@ const EcoCarde = ({
               onClick={() => handleLike()}
             />
           </div>
-          <p className="font-sans text-2xs">{description}</p>
+          <p
+            className="font-sans text-2xs"
+            onClick={() =>
+              navigate(`/single-ecoaction/${ecoActionId}/${groupId}}`)
+            }
+          >
+            {description}
+          </p>
         </div>
       </motion.div>
     </AnimatePresence>
   );
 };
 
-export default EcoCarde;
+export default EcoCard;
