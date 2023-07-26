@@ -1,8 +1,10 @@
 import { motion } from "framer-motion";
+
+import { Formula } from "@/types/global";
+import GlobeImg from "../../assets/images/register.png";
 import RadioButtons, { Radio } from "../../components/RadioButtons";
 import { Button } from "../../components/ui/button";
 import StepBackButton from "../../components/StepBackButton";
-import { Formula } from "@/types/global";
 
 type StepTwoProps = {
   radios: Radio[];
@@ -26,7 +28,7 @@ export const StepTwo = ({
       className="relative flex flex-col pt-8 items-center px-5 w-full"
     >
       <StepBackButton onClick={handleGoBackInStep} />
-      <img src="./src/assets/images/globe-formula.png" className="w-48" />
+      <img src={GlobeImg} className="w-48" />
       <h2 className="text-xl font-bold my-8">Sélectionnez votre formule</h2>
       <RadioButtons
         radios={radios}

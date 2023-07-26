@@ -1,2 +1,6 @@
 .DS_Store
 .vscode/*
+
+logs
+.env.production
+.env.staging

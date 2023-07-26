@@ -8,7 +8,8 @@
     "start": "ts-node-dev --poll src/index.ts",
     "build": "tsc",
     "start:prod": "node build/index.js",
-    "resetDB": "ts-node-dev src/resetDB.ts"
+    "resetDB": "ts-node-dev src/resetDB.ts",
+    "populateDB": "ts-node-dev src/populateDB.ts"
   },
   "keywords": [],
   "author": "",

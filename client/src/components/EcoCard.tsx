@@ -27,7 +27,7 @@ const EcoCard = ({ name, description, ecoActionId, groupId }: EcoCardProps) => {
   const { data: validationData, loading: validationLoading } =
     useGetValidationQuery({
       skip: !ecoAction?.validationId,
-      variables: { getValidationId: ecoAction?.validationId },
+      variables: { getValidationId: ecoAction?.validationId! },
     });
   const validation = validationData?.getValidation;
 

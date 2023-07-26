@@ -2,13 +2,20 @@ import "reflect-metadata";
 import { ApolloServer } from "apollo-server";
 import { ApolloServerPluginLandingPageLocalDefault } from "apollo-server-core";
 import { buildSchema } from "type-graphql";
-import { join } from "path";
 import datasource from "./db";
 import jwt from "jsonwebtoken";
 import express from "express";
 import { env } from "./env";
 import User from "./entity/User";
 import cookie from "cookie";
+import { UserResolver } from "./resolvers/UserResolver";
+import { CommentResolver } from "./resolvers/CommentResolver";
+import { CompanyResolver } from "./resolvers/CompanyResolver";
+import { EcoActionResolver } from "./resolvers/EcoActionResolver";
+import { GroupResolver } from "./resolvers/GroupResolver";
+import { TeamResolver } from "./resolvers/TeamResolver";
+import { UserEcoActionResolver } from "./resolvers/UserEcoActionResolver";
+import { ValidationResolver } from "./resolvers/ValidationResolver";
 
 export interface JWTPayload {
   userId: number;
@@ -24,7 +31,16 @@ async function start(): Promise<void> {
   await datasource.initialize();
 
   const schema = await buildSchema({
-    resolvers: [join(__dirname, "/resolvers/*.ts")],
+    resolvers: [
+      UserResolver,
+      CommentResolver,
+      CompanyResolver,
+      EcoActionResolver,
+      GroupResolver,
+      TeamResolver,
+      UserEcoActionResolver,
+      ValidationResolver,
+    ],
     validate: {
       forbidUnknownValues: false,
     },
