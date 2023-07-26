@@ -1,0 +1,140 @@
+import { useGetCurrentUserQuery } from "@/gql/generated/schema";
+import { ArrowRight, Plus, Eye } from "lucide-react";
+import { Link } from "react-router-dom";
+
+import { Badge } from "../components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Loading } from "./Loading";
+
+function Profile() {
+  const { data, loading } = useGetCurrentUserQuery();
+
+  const currentUser = data?.getCurrentUser;
+
+  if (loading) return <Loading />;
+
+  return (
+    <>
+      <div className="flex items-center flex-wrap gap-2">
+        <h1 className="text-2xl font-bold">
+          Bienvenue, {currentUser?.firstName} {currentUser?.lastName}
+        </h1>
+        {currentUser?.subscriptionType === "partner" && (
+          <Badge variant="accent" className="text-sm font-semibold">
+            Partner
+          </Badge>
+        )}
+      </div>
+      {/* BUTTONS */}
+      <div className="flex items-center flex-wrap gap-2 my-8">
+        <Button className="flex w-full sm:w-auto" asChild={true}>
+          <Link to="/groups?own=true">
+            Mes challenges <ArrowRight className="ms-3" />
+          </Link>
+        </Button>
+        <Button
+          variant="outline"
+          className="flex w-full sm:w-auto"
+          asChild={true}
+        >
+          <Link to="/eco-actions?own=true">
+            Mes eco-gestes <ArrowRight className="ms-3" />
+          </Link>
+        </Button>
+      </div>
+      {/* PROFILE */}
+      <div className="space-y-8">
+        {/* PERSONNAL INFOS */}
+        <div>
+          <h2 className="text-xl font-semibold mb-2">
+            Mes informations personnelles
+          </h2>
+          <div className="elevate-box space-y-4">
+            <div>
+              <h5 className="text-sm font-semibold">Nom</h5>
+              <p className="mt-1 text-xs">{currentUser?.lastName}</p>
+            </div>
+            <div>
+              <h5 className="text-sm font-semibold">Prénom</h5>
+              <p className="mt-1 text-xs">{currentUser?.firstName}</p>
+            </div>
+            <div>
+              <h5 className="text-sm font-semibold">Email</h5>
+              <p className="mt-1 text-xs">{currentUser?.email}</p>
+            </div>
+          </div>
+        </div>
+        {/* COMPANY */}
+        {currentUser?.subscriptionType === "partner" && (
+          <div>
+            <h2 className="text-xl font-semibold mb-2">Mon entreprise</h2>
+            <div className="elevate-box space-y-4">
+              <div>
+                <h5 className="text-sm font-semibold">Nom de l'entreprise</h5>
+                <p className="mt-1 text-xs">
+                  {currentUser?.company?.name ?? "Aucune entreprise"}
+                </p>
+              </div>
+              <div>
+                <h5 className="text-sm font-semibold">
+                  Nombre d'utilisateurs de l'entreprise
+                </h5>
+                <div className="flex items-center gap-1">
+                  <p className="font-bold text-base">
+                    {currentUser?.company?.users?.length ?? 0} utilisateurs
+                  </p>
+                  <Button
+                    variant="link"
+                    onClick={() => {}}
+                    className="p-2 h-auto"
+                    title="Voir les utilisateurs"
+                  >
+                    <Eye color="#224820" size={18} />
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+        {/* FRIENDS */}
+        <div>
+          <div className="flex items-center mb-2">
+            <h2 className="text-xl font-semibold me-3">Mes amis</h2>
+            <Button
+              asChild={true}
+              variant="accent-orange"
+              className="rounded-full p-1 h-auto"
+              title="Ajouter un ami"
+            >
+              <Link to="/friends">
+                <Plus color="#e8eede" size={15} />
+              </Link>
+            </Button>
+          </div>
+          <div className="elevate-box space-y-4">
+            {currentUser?.friends?.length === 0 && (
+              <p className="text-sm font-medium">Pas encore d'amis...</p>
+            )}
+            {currentUser?.friends?.map((friend) => (
+              <div
+                key={friend.id}
+                className="flex bg-grey-green p-2 rounded-xl"
+              >
+                <div className="flex items-center space-x-3">
+                  <span className="flex items-center justify-center font-bold p-2 w-8 text-xs rounded-full bg-light-green text-primary">
+                    {friend.firstName.split("")[0]}
+                  </span>
+                  <h5 className="text-sm font-semibold">
+                    {friend.firstName} {friend.lastName}
+                  </h5>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
+export default Profile;

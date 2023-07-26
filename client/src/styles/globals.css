@@ -1,0 +1,116 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-sans: "Montserrat", "Inter", sans-serif;
+
+    --dark-green: #224820;
+    --medium-green: #365c34;
+    --light-green: #c6ddac;
+    --grey-green: #dde2d2;
+    --white-green: #e8eede;
+    --main-grey: #e4e4e4;
+    --accent-orange: #f69503;
+    --accent-blue: #0075ef;
+    --danger: #cc0000;
+
+    --background: 0 0% 98%;
+    --foreground: 117 28% 28%;
+
+    --primary: 117 38% 20%;
+    --primary-foreground: 83 32% 90%;
+
+    --secondary: 211 100% 47%;
+    --secondary-foreground: 83 32% 90%;
+
+    --muted: 0 0% 93%;
+    --muted-foreground: 0 0% 13%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 117 28% 28%;
+
+    --card: 88 42% 77%;
+    --card-foreground: 117 38% 20%;
+
+    --card-alt: 0, 0%, 89%;
+    --card-alt-foreground: 117 38% 20%;
+
+    --card-alt-2: 79, 22%, 85%;
+    --card-alt-2-foreground: 117 38% 20%;
+
+    --border: 117 28% 28%;
+    --input: 117 28% 28%;
+
+    --accent: 36 98% 49%;
+    --accent-foreground: 117 38% 20%;
+
+    --destructive: 0, 100%, 40%;
+    --destructive-foreground: 0 0% 99%;
+
+    --ring: 117 38% 20%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 224 71% 4%;
+    --foreground: 213 31% 91%;
+
+    --muted: 223 47% 11%;
+    --muted-foreground: 215.4 16.3% 56.9%;
+
+    --popover: 224 71% 4%;
+    --popover-foreground: 215 20.2% 65.1%;
+
+    --card: 224 71% 4%;
+    --card-foreground: 213 31% 91%;
+
+    --border: 216 34% 17%;
+    --input: 216 34% 17%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 1.2%;
+
+    --secondary: 222.2 47.4% 11.2%;
+    --secondary-foreground: 210 40% 98%;
+
+    --accent: 216 34% 17%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 210 40% 98%;
+
+    --ring: 216 34% 17%;
+
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html,
+  body,
+  #root {
+    @apply h-full;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer components {
+  .elevate-box {
+    @apply shadow-main p-4 rounded-2xl;
+  }
+
+  .eco-geste-drawer {
+    min-height: calc(100vh - 64px);
+  }
+}
