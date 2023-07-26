@@ -15,7 +15,7 @@ services:
     volumes:
       - prodDB:/var/lib/postgresql/data
 
-  server:
+  prodServer:
     depends_on:
       prodDB:
         condition: service_healthy
@@ -37,15 +37,15 @@ services:
       timeout: 5s
       retries: 10
 
-  client:
+  prodClient:
     image: samwildcode/green-gesture-client
 
   nginx:
     image: nginx:1.21.3
     depends_on:
-      client:
+      prodClient:
         condition: service_started
-      server:
+      prodServer:
         condition: service_healthy
     restart: always
     ports:
