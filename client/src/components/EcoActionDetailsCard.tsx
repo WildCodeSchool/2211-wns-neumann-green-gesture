@@ -1,5 +1,11 @@
-import { useState } from "react";
-
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { ThumbsUp } from "lucide-react";
 
 interface EcoActionDetailsCardProps {
@@ -13,41 +19,30 @@ const EcoActionDetailsCard = ({
   likes,
   description,
 }: EcoActionDetailsCardProps) => {
-  const [limite, setLimite] = useState(300);
-
-  const hideButton = description.length < limite;
-  const afficherPlus = description.length > limite;
-
   return (
-    <div className=" bg-grey-green rounded-xl p-3 mt-8 mb-7">
-      <div className="flex justify-between items-center">
-        <h1 className="text-xl text-primary font-bold">{name}</h1>
-        <div className="flex flex-col justify-center items-center">
-          <div className="rounded-full bg-primary flex justify-center items-center p-1">
-            <ThumbsUp className="text-grey-green" size={"15px"} />
+    <Dialog>
+      <DialogTrigger className="text-xs">Voir plus</DialogTrigger>
+      <DialogContent className="bg-grey-green border-0">
+        <DialogHeader>
+          <DialogTitle className=" text-center">{name}</DialogTitle>
+        </DialogHeader>
+        <div className=" bg-grey-green rounded-xl p-3">
+          <div className="flex justify-between items-center mb-3">
+            <h5 className="text-md font-semibold my-1">
+              Description de l'éco-geste
+            </h5>
+            <div className="flex flex-col justify-center items-center">
+              <div className="rounded-full bg-primary flex justify-center items-center p-1">
+                <ThumbsUp className="text-grey-green" size={"15px"} />
+              </div>
+              <p className="text-xs">{likes}</p>
+            </div>
           </div>
-          <p className="text-xs">{likes}</p>
+
+          <p className="text-xs">{description}</p>
         </div>
-      </div>
-      <h5 className=" text-md font-semibold my-1">
-        Description de l'éco-geste
-      </h5>
-      <p className="text-xs">
-        {afficherPlus ? `${description.slice(0, limite)}...` : description}
-      </p>
-      {!hideButton && (
-        <div className="flex justify-end">
-          {afficherPlus && (
-            <button onClick={() => setLimite(description.length)}>
-              Voir plus
-            </button>
-          )}
-          {!afficherPlus && (
-            <button onClick={() => setLimite(300)}>Voir moins</button>
-          )}
-        </div>
-      )}
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 

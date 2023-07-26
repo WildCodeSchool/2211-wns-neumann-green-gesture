@@ -5,9 +5,13 @@ query GetUserEcoAction($ecoActionId: Float!, $groupId: Float!) {
     proof
     validationId
     ecoAction {
+      id
       name
       description
       likes
+      groups {
+        challengeName
+      }
     }
   }
 }

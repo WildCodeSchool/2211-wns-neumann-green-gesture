@@ -9,6 +9,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Heart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Loading } from "@/pages/Loading";
+import EcoActionDetailsCard from "./EcoActionDetailsCard";
 
 interface EcoCardProps {
   name: string;
@@ -57,7 +58,7 @@ const EcoCard = ({ name, description, ecoActionId, groupId }: EcoCardProps) => {
     }
   };
 
-  if (loading) return <Loading />;
+  if (loading || typeof ecoAction === "undefined") return <Loading />;
 
   return (
     <AnimatePresence>
@@ -70,12 +71,7 @@ const EcoCard = ({ name, description, ecoActionId, groupId }: EcoCardProps) => {
       >
         <div className="w-[100%] rounded-xl bg-grey-green my-5 px-3 pb-4 pt-2 hover:shadow-2xl transition ease-in-out delay-90">
           <div className="flex flex-row justify-between items-center">
-            <h3
-              className="font-sans text-xs"
-              onClick={() =>
-                navigate(`/single-ecoaction/${ecoActionId}/${groupId}}`)
-              }
-            >
+            <h3 className="font-sans text-xs">
               {name} {validation?.points} / {maxPoints?.points}
             </h3>
             <Heart
@@ -83,14 +79,14 @@ const EcoCard = ({ name, description, ecoActionId, groupId }: EcoCardProps) => {
               onClick={() => handleLike()}
             />
           </div>
-          <p
-            className="font-sans text-2xs"
-            onClick={() =>
-              navigate(`/single-ecoaction/${ecoActionId}/${groupId}}`)
-            }
-          >
-            {description}
+          <p className="font-sans text-2xs">
+            {`${description.slice(0, 300)}...`}
           </p>
+          <EcoActionDetailsCard
+            name={ecoAction?.ecoAction[0].name}
+            likes={ecoAction?.ecoAction[0].likes}
+            description={ecoAction?.ecoAction[0].description}
+          />
         </div>
       </motion.div>
     </AnimatePresence>

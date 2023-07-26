@@ -408,7 +408,7 @@ export type GetUserEcoActionQueryVariables = Exact<{
 }>;
 
 
-export type GetUserEcoActionQuery = { __typename?: 'Query', getUserEcoAction: { __typename?: 'UserEcoAction', id: number, hasLiked: boolean, proof?: string | null, validationId?: number | null, ecoAction: Array<{ __typename?: 'EcoAction', name: string, description: string, likes: number }> } };
+export type GetUserEcoActionQuery = { __typename?: 'Query', getUserEcoAction: { __typename?: 'UserEcoAction', id: number, hasLiked: boolean, proof?: string | null, validationId?: number | null, ecoAction: Array<{ __typename?: 'EcoAction', id: number, name: string, description: string, likes: number, groups?: Array<{ __typename?: 'Group', challengeName: string }> | null }> } };
 
 export type GetUserEcoActionsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -910,9 +910,13 @@ export const GetUserEcoActionDocument = gql`
     proof
     validationId
     ecoAction {
+      id
       name
       description
       likes
+      groups {
+        challengeName
+      }
     }
   }
 }
