@@ -25,7 +25,7 @@ function Home() {
   return (
     <>
       <h1 className="text-2xl font-bold mb-4">
-        Bienvenue, {currentUser?.firstName} 👋
+        Bienvenue, {currentUser?.firstName} ! 👋
       </h1>
       <div className="space-y-8">
         {groups.length > 0 ? (
