@@ -1,8 +1,7 @@
 import { Control } from "react-hook-form";
-import { Eye } from "lucide-react";
 import { Checkbox } from "../../components/ui/checkbox";
 import { Button } from "../../components/ui/button";
-import { FormControl, FormField } from "../../components/ui/form";
+import { FormControl, FormField, FormMessage } from "../../components/ui/form";
 import { GroupeCreationType, User } from "../../types/global";
 
 type StepThreeProps = {
@@ -47,13 +46,22 @@ function StepThree({
                       <FormControl>
                         <Checkbox
                           className="h-6 w-6 rounded-xl border-2"
-                          checked={field.value?.includes(friend.id!)}
+                          checked={
+                            field.value?.filter((user) => user.id === friend.id)
+                              .length > 0
+                          }
                           onCheckedChange={(checked) => {
                             return checked
-                              ? field.onChange([...field.value, friend.id])
+                              ? field.onChange([
+                                  ...field.value,
+                                  {
+                                    id: friend.id,
+                                    name: `${friend.firstName} ${friend.lastName}`,
+                                  },
+                                ])
                               : field.onChange(
                                   field.value?.filter(
-                                    (value) => value !== friend.id
+                                    (user) => user.id !== friend.id
                                   )
                                 );
                           }}
@@ -63,6 +71,7 @@ function StepThree({
                   </div>
                 ))}
             </div>
+            <FormMessage />
           </div>
         )}
       />

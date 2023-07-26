@@ -1,16 +1,14 @@
 import { Control } from "react-hook-form";
-import { Eye } from "lucide-react";
 
-import { Checkbox } from "../../components/ui/checkbox";
 import { Button } from "../../components/ui/button";
-import { FormControl, FormField } from "../../components/ui/form";
+import { FormField, FormMessage } from "../../components/ui/form";
 import { GroupeCreationType } from "../../types/global";
 import {
   useGetFreeEcoActionsQuery,
   useGetPopularFreeEcoActionsQuery,
   useGetUserEcoActionsQuery,
 } from "../../gql/generated/schema";
-import SeeEcoActionDrawer from "@/components/SeeEcoActionDrawer";
+
 import SelectableEcoAction from "@/components/SelectableEcoAction";
 
 type StepTwoProps = {
@@ -74,6 +72,7 @@ function StepTwo({ control, handleGoBackInStep }: StepTwoProps) {
                 ))}
               </div>
             </div>
+            <FormMessage />
           </div>
         )}
       />
