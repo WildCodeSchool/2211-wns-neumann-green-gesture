@@ -9,7 +9,7 @@
     "build": "tsc",
     "start:prod": "node build/index.js",
     "resetDB": "ts-node-dev src/resetDB.ts",
-    "populateDB": "ts-node-dev src/populateDB.ts"
+    "populateDB": "node build/populateDB.js"
   },
   "keywords": [],
   "author": "",
