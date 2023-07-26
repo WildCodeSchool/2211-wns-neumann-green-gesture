@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 
+import RegisterImg from "../assets/images/register.png";
 import { useLoginMutation } from "../gql/generated/schema";
 import client from "../gql/client";
 import * as z from "zod";
@@ -58,7 +59,7 @@ function Login() {
         className="flex flex-col items-center h-full justify-center"
       >
         <>
-          <img src="./src/assets/images/register.png" className="w-[260px]" />
+          <img src={RegisterImg} className="w-[260px]" />
           <h1 className="text-2xl font-bold my-3">Se connecter</h1>
           <div className="space-y-5 w-full px-8">
             <CustomFormField
