@@ -4,6 +4,7 @@ import User, { UserSubscriptionType } from "../entity/User";
 import Notification, {
   NotificationInputCreation,
   NotificationInputStatusChange,
+  NotificationStatusEnum,
 } from "../entity/Notification";
 import { ContextType } from "..";
 import Group from "../entity/Group";
@@ -25,9 +26,13 @@ export class NotificationResolver {
       where: { id: receiverId },
     });
 
-    const group = await datasource.getRepository(Group).findOne({
-      where: { id: groupId },
-    });
+    let group;
+
+    if (groupId !== null) {
+      group = await datasource.getRepository(Group).findOne({
+        where: { id: groupId },
+      });
+    }
 
     if (receiver === null) {
       throw new ApolloError("Invalid receiver", "INVALID_RECEIVER");
@@ -82,5 +87,20 @@ export class NotificationResolver {
     });
 
     return notifications;
+  }
+
+  @Authorized()
+  @Query(() => [User])
+  async getUsersAlreadyAdded(
+    @Ctx() { currentUser }: ContextType
+  ): Promise<User[]> {
+    const notifications = await datasource.getRepository(Notification).find({
+      where: { sender: currentUser, status: NotificationStatusEnum.PENDING },
+      relations: {
+        receiver: true,
+      },
+    });
+
+    return notifications.map((notif) => notif.receiver);
   }
 }

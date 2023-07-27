@@ -108,14 +108,16 @@ export type Mutation = {
   addUserToGroup: Group;
   addUsersToCompany: Company;
   addUsersToTeam: Team;
+  changeNotificationStatus: Notification;
   createComment: Comment;
   createEcoAction: EcoAction;
   createGroup: Group;
-  createTeams: Team;
+  createTeams: Array<Team>;
   createUser: User;
   likeEcoAction: Scalars['String']['output'];
   login: Scalars['String']['output'];
   logout: Scalars['String']['output'];
+  sendNotification: Notification;
 };
 
 
@@ -147,6 +149,11 @@ export type MutationAddUsersToCompanyArgs = {
 
 export type MutationAddUsersToTeamArgs = {
   data: TeamInputAddUsers;
+};
+
+
+export type MutationChangeNotificationStatusArgs = {
+  data: NotificationInputStatusChange;
 };
 
 
@@ -184,6 +191,32 @@ export type MutationLoginArgs = {
   data: UserInputLogin;
 };
 
+
+export type MutationSendNotificationArgs = {
+  data: NotificationInputCreation;
+};
+
+export type Notification = {
+  __typename?: 'Notification';
+  group?: Maybe<Group>;
+  id: Scalars['Float']['output'];
+  receiver: User;
+  sender: User;
+  status: Scalars['String']['output'];
+  type: Scalars['String']['output'];
+};
+
+export type NotificationInputCreation = {
+  groupId?: InputMaybe<Scalars['Float']['input']>;
+  receiverId: Scalars['Float']['input'];
+  type: Scalars['String']['input'];
+};
+
+export type NotificationInputStatusChange = {
+  notificationId: Scalars['Float']['input'];
+  status: Scalars['String']['input'];
+};
+
 export type Query = {
   __typename?: 'Query';
   getCommentsForGroup: Array<Comment>;
@@ -192,6 +225,7 @@ export type Query = {
   getGroup: Group;
   getGroups: Array<Group>;
   getMaxValidationPoints: Validation;
+  getNotifications: Array<Notification>;
   getPopularFreeEcoActions: Array<EcoAction>;
   getTeamByGroup: Array<Team>;
   getUserById: User;
@@ -199,6 +233,7 @@ export type Query = {
   getUserEcoActions: Array<EcoAction>;
   getUserGroups: Array<Group>;
   getUsers: Array<User>;
+  getUsersAlreadyAdded: Array<User>;
   getUsersByName: Array<User>;
   getUsersByTeam: Array<User>;
   getValidation: Validation;
@@ -305,11 +340,6 @@ export type UserEcoActionInputAddProof = {
   proof: Scalars['String']['input'];
 };
 
-export type UserEcoActionInputAddValidation = {
-  validationId: Scalars['Float']['input'];
-  validationPoints: Scalars['Float']['input'];
-};
-
 export type UserInputLogin = {
   email: Scalars['String']['input'];
   password: Scalars['String']['input'];
@@ -357,7 +387,7 @@ export type CreateTeamsMutationVariables = Exact<{
 }>;
 
 
-export type CreateTeamsMutation = { __typename?: 'Mutation', createTeams: { __typename?: 'Team', id: number, name: string, users?: Array<{ __typename?: 'User', id: number, firstName: string, lastName: string, email: string }> | null } };
+export type CreateTeamsMutation = { __typename?: 'Mutation', createTeams: Array<{ __typename?: 'Team', id: number, name: string, users?: Array<{ __typename?: 'User', id: number, firstName: string, lastName: string, email: string }> | null }> };
 
 export type GetCommentsForGroupQueryVariables = Exact<{
   groupId: Scalars['Float']['input'];
@@ -425,6 +455,11 @@ export type UsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type UsersQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', id: number, firstName: string, lastName: string, email: string, password: string, role: string, subscriptionType: string }> };
 
+export type GetUsersAlreadyAddedQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetUsersAlreadyAddedQuery = { __typename?: 'Query', getUsersAlreadyAdded: Array<{ __typename?: 'User', id: number, firstName: string, lastName: string }> };
+
 export type GetUsersByNameQueryVariables = Exact<{
   name: Scalars['String']['input'];
 }>;
@@ -464,6 +499,13 @@ export type CreateUserMutationVariables = Exact<{
 
 
 export type CreateUserMutation = { __typename?: 'Mutation', createUser: { __typename?: 'User', email: string, firstName: string, lastName: string, password: string } };
+
+export type SendNotificationMutationVariables = Exact<{
+  data: NotificationInputCreation;
+}>;
+
+
+export type SendNotificationMutation = { __typename?: 'Mutation', sendNotification: { __typename?: 'Notification', id: number } };
 
 
 export const AddFriendDocument = gql`
@@ -1078,6 +1120,42 @@ export function useUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<User
 export type UsersQueryHookResult = ReturnType<typeof useUsersQuery>;
 export type UsersLazyQueryHookResult = ReturnType<typeof useUsersLazyQuery>;
 export type UsersQueryResult = Apollo.QueryResult<UsersQuery, UsersQueryVariables>;
+export const GetUsersAlreadyAddedDocument = gql`
+    query GetUsersAlreadyAdded {
+  getUsersAlreadyAdded {
+    id
+    firstName
+    lastName
+  }
+}
+    `;
+
+/**
+ * __useGetUsersAlreadyAddedQuery__
+ *
+ * To run a query within a React component, call `useGetUsersAlreadyAddedQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUsersAlreadyAddedQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUsersAlreadyAddedQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetUsersAlreadyAddedQuery(baseOptions?: Apollo.QueryHookOptions<GetUsersAlreadyAddedQuery, GetUsersAlreadyAddedQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetUsersAlreadyAddedQuery, GetUsersAlreadyAddedQueryVariables>(GetUsersAlreadyAddedDocument, options);
+      }
+export function useGetUsersAlreadyAddedLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUsersAlreadyAddedQuery, GetUsersAlreadyAddedQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetUsersAlreadyAddedQuery, GetUsersAlreadyAddedQueryVariables>(GetUsersAlreadyAddedDocument, options);
+        }
+export type GetUsersAlreadyAddedQueryHookResult = ReturnType<typeof useGetUsersAlreadyAddedQuery>;
+export type GetUsersAlreadyAddedLazyQueryHookResult = ReturnType<typeof useGetUsersAlreadyAddedLazyQuery>;
+export type GetUsersAlreadyAddedQueryResult = Apollo.QueryResult<GetUsersAlreadyAddedQuery, GetUsersAlreadyAddedQueryVariables>;
 export const GetUsersByNameDocument = gql`
     query GetUsersByName($name: String!) {
   getUsersByName(name: $name) {
@@ -1279,3 +1357,36 @@ export function useCreateUserMutation(baseOptions?: Apollo.MutationHookOptions<C
 export type CreateUserMutationHookResult = ReturnType<typeof useCreateUserMutation>;
 export type CreateUserMutationResult = Apollo.MutationResult<CreateUserMutation>;
 export type CreateUserMutationOptions = Apollo.BaseMutationOptions<CreateUserMutation, CreateUserMutationVariables>;
+export const SendNotificationDocument = gql`
+    mutation sendNotification($data: NotificationInputCreation!) {
+  sendNotification(data: $data) {
+    id
+  }
+}
+    `;
+export type SendNotificationMutationFn = Apollo.MutationFunction<SendNotificationMutation, SendNotificationMutationVariables>;
+
+/**
+ * __useSendNotificationMutation__
+ *
+ * To run a mutation, you first call `useSendNotificationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSendNotificationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [sendNotificationMutation, { data, loading, error }] = useSendNotificationMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useSendNotificationMutation(baseOptions?: Apollo.MutationHookOptions<SendNotificationMutation, SendNotificationMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SendNotificationMutation, SendNotificationMutationVariables>(SendNotificationDocument, options);
+      }
+export type SendNotificationMutationHookResult = ReturnType<typeof useSendNotificationMutation>;
+export type SendNotificationMutationResult = Apollo.MutationResult<SendNotificationMutation>;
+export type SendNotificationMutationOptions = Apollo.BaseMutationOptions<SendNotificationMutation, SendNotificationMutationVariables>;
