@@ -9,7 +9,7 @@ import { In } from "typeorm";
 @Resolver(Team)
 export class TeamResolver {
   @Authorized<UserSubscriptionType>([UserSubscriptionType.PARTNER])
-  @Mutation(() => Team)
+  @Mutation(() => [Team])
   async createTeams(
     @Arg("data") { groupId, teams }: CreateTeamsInput
   ): Promise<Team[]> {
