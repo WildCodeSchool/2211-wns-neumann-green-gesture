@@ -7,9 +7,10 @@ import {
 } from "@/gql/generated/schema";
 import { AnimatePresence, motion } from "framer-motion";
 import { Heart } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import { Loading } from "@/pages/Loading";
 import EcoActionDetailsCard from "./EcoActionDetailsCard";
+import Validation from "./Validation";
+import ValidationDetails from "./ValidationDetails";
 
 interface EcoCardProps {
   name: string;
@@ -19,8 +20,6 @@ interface EcoCardProps {
 }
 
 const EcoCard = ({ name, description, ecoActionId, groupId }: EcoCardProps) => {
-  const navigate = useNavigate();
-
   const { data, loading, refetch } = useGetUserEcoActionQuery({
     variables: { ecoActionId: ecoActionId, groupId: groupId },
   });
@@ -58,7 +57,13 @@ const EcoCard = ({ name, description, ecoActionId, groupId }: EcoCardProps) => {
     }
   };
 
-  if (loading || typeof ecoAction === "undefined") return <Loading />;
+  if (
+    loading ||
+    validationLoading ||
+    typeof ecoAction === "undefined" ||
+    typeof validation === "undefined"
+  )
+    return <Loading />;
 
   return (
     <AnimatePresence>
@@ -82,11 +87,21 @@ const EcoCard = ({ name, description, ecoActionId, groupId }: EcoCardProps) => {
           <p className="font-sans text-2xs">
             {`${description.slice(0, 300)}...`}
           </p>
-          <EcoActionDetailsCard
-            name={ecoAction?.ecoAction[0].name}
-            likes={ecoAction?.ecoAction[0].likes}
-            description={ecoAction?.ecoAction[0].description}
-          />
+          <div className="flex justify-between items-center mt-3">
+            <EcoActionDetailsCard
+              name={ecoAction?.ecoAction[0].name}
+              likes={ecoAction?.ecoAction[0].likes}
+              description={ecoAction?.ecoAction[0].description}
+            />
+            {!ecoAction.validationId ? (
+              <Validation userEcoActionId={ecoAction?.id} />
+            ) : (
+              <ValidationDetails
+                points={validation.points}
+                proof={ecoAction?.proof}
+              />
+            )}
+          </div>
         </div>
       </motion.div>
     </AnimatePresence>

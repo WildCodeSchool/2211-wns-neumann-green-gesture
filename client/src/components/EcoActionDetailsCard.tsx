@@ -1,7 +1,6 @@
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -21,10 +20,12 @@ const EcoActionDetailsCard = ({
 }: EcoActionDetailsCardProps) => {
   return (
     <Dialog>
-      <DialogTrigger className="text-xs">Voir plus</DialogTrigger>
+      <DialogTrigger className="text-xs text-accent-blue hover:text-[#0061c7]">
+        VOIR PLUS
+      </DialogTrigger>
       <DialogContent className="bg-grey-green border-0">
         <DialogHeader>
-          <DialogTitle className=" text-center">{name}</DialogTitle>
+          <DialogTitle className="text-center">{name}</DialogTitle>
         </DialogHeader>
         <div className=" bg-grey-green rounded-xl p-3">
           <div className="flex justify-between items-center mb-3">
