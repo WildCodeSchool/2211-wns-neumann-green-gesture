@@ -8,6 +8,7 @@ import { Team } from "./entity/Team";
 import { Company } from "./entity/Company";
 import Validation from "./entity/Validation";
 import { UserEcoAction } from "./entity/UserEcoAction";
+import Notification from "./entity/Notification";
 
 const datasource = new DataSource({
   type: "postgres",
@@ -26,6 +27,7 @@ const datasource = new DataSource({
     Group,
     Company,
     User,
+    Notification,
   ],
 });
 

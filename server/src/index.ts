@@ -16,6 +16,7 @@ import { GroupResolver } from "./resolvers/GroupResolver";
 import { TeamResolver } from "./resolvers/TeamResolver";
 import { UserEcoActionResolver } from "./resolvers/UserEcoActionResolver";
 import { ValidationResolver } from "./resolvers/ValidationResolver";
+import { NotificationResolver } from "./resolvers/NotificationResolver";
 
 export interface JWTPayload {
   userId: number;
@@ -40,6 +41,7 @@ async function start(): Promise<void> {
       TeamResolver,
       UserEcoActionResolver,
       ValidationResolver,
+      NotificationResolver,
     ],
     validate: {
       forbidUnknownValues: false,
