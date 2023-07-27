@@ -72,4 +72,13 @@ export class NotificationInputCreation {
   groupId?: number;
 }
 
+@InputType()
+export class NotificationInputStatusChange {
+  @Field()
+  status: string;
+
+  @Field()
+  notificationId: number;
+}
+
 export default Notification;

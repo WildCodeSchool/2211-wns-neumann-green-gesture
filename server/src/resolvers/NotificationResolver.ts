@@ -3,6 +3,7 @@ import datasource from "../db";
 import User, { UserSubscriptionType } from "../entity/User";
 import Notification, {
   NotificationInputCreation,
+  NotificationInputStatusChange,
 } from "../entity/Notification";
 import { ContextType } from "..";
 import Group from "../entity/Group";
@@ -38,6 +39,30 @@ export class NotificationResolver {
       receiver,
       ...(group !== null && { group }),
     });
+
+    return notification;
+  }
+
+  @Authorized<UserSubscriptionType>([
+    UserSubscriptionType.FREE,
+    UserSubscriptionType.PARTNER,
+  ])
+  @Mutation(() => Notification)
+  async changeNotificationStatus(
+    @Arg("data")
+    { status, notificationId }: NotificationInputStatusChange
+  ): Promise<Notification> {
+    const notification = await datasource.getRepository(Notification).findOne({
+      where: { id: notificationId },
+    });
+
+    if (notification === null) {
+      throw new ApolloError("Invalid notification", "INVALID_NOTIFICATION");
+    }
+
+    notification.status = status;
+
+    await datasource.getRepository(Notification).save(notification);
 
     return notification;
   }
