@@ -1,4 +1,4 @@
-import { Arg, Authorized, Ctx, Mutation, Resolver } from "type-graphql";
+import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import datasource from "../db";
 import User, { UserSubscriptionType } from "../entity/User";
 import Notification, {
@@ -40,5 +40,22 @@ export class NotificationResolver {
     });
 
     return notification;
+  }
+
+  @Authorized()
+  @Query(() => [Notification])
+  async getNotifications(
+    @Ctx() { currentUser }: ContextType
+  ): Promise<Notification[]> {
+    const notifications = await datasource.getRepository(Notification).find({
+      where: { receiver: currentUser },
+      relations: {
+        receiver: true,
+        sender: true,
+        group: true,
+      },
+    });
+
+    return notifications;
   }
 }
