@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 import { addDays } from "date-fns";
 
 import {
-  CreateTeamInput,
   useCreateGroupMutation,
   useCreateTeamsMutation,
   useGetCurrentUserQuery,
@@ -154,8 +153,7 @@ function CreateGroup() {
         const createdGroupId = createdGroup.data?.createGroup?.id;
 
         if (createdGroupId) {
-          console.log(createdGroupId);
-          const createdTeams = await createTeams({
+          await createTeams({
             variables: {
               data: {
                 groupId: createdGroupId,
@@ -163,7 +161,6 @@ function CreateGroup() {
               },
             },
           });
-          console.log(createdTeams);
           navigate(`/groups/${createdGroupId}`);
         }
       } catch (err) {

@@ -31,9 +31,9 @@ function StepFour({
   selectedParticipants,
   form,
 }: StepFourProps) {
-  const [currentTeams, setCurrentTeams] = useState<CreateTeamInput[]>([
-    ...DEFAULT_TEAMS,
-  ]);
+  const [currentTeams, setCurrentTeams] = useState<CreateTeamInput[]>(
+    JSON.parse(JSON.stringify(DEFAULT_TEAMS))
+  );
   const [availableParticipants, setAvailableParticipants] =
     useState<Participant[]>(selectedParticipants);
 
