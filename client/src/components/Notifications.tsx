@@ -9,9 +9,11 @@ import {
   SheetTrigger,
 } from "./ui/sheet";
 import { Notification } from "./ui/notification";
+import { useGetNotificationsQuery } from "@/gql/generated/schema";
 
 function Notifications() {
-  const notifs = [1];
+  const { data: getNotifs } = useGetNotificationsQuery();
+  const notifs = getNotifs?.getNotifications ?? [];
   return (
     <Sheet>
       <SheetTrigger asChild={true}>
@@ -30,16 +32,18 @@ function Notifications() {
           )}
         </SheetHeader>
         <div className="space-y-4 mt-4">
-          <Notification
-            icon={<Bell />}
-            title="Je suis le titre"
-            message={
-              <div className="flex gap-4">
-                <Button variant="secondary">Accepter</Button>
-                <Button variant="destructive">Décliner</Button>
-              </div>
-            }
-          />
+          {notifs.map((notif) => (
+            <Notification
+              icon={<Bell />}
+              title={notif.type}
+              message={
+                <div className="flex gap-4">
+                  <Button variant="secondary">Accepter</Button>
+                  <Button variant="destructive">Décliner</Button>
+                </div>
+              }
+            />
+          ))}
         </div>
       </SheetContent>
     </Sheet>
