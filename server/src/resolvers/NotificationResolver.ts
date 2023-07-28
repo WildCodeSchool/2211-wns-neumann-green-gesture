@@ -78,7 +78,10 @@ export class NotificationResolver {
     @Ctx() { currentUser }: ContextType
   ): Promise<Notification[]> {
     const notifications = await datasource.getRepository(Notification).find({
-      where: { receiver: currentUser },
+      where: {
+        receiver: { id: currentUser?.id },
+        status: NotificationStatusEnum.PENDING,
+      },
       relations: {
         receiver: true,
         sender: true,

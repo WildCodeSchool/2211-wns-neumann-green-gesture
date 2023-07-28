@@ -9,17 +9,7 @@ import { useEffect, useState } from "react";
 import { UserPlus2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
-
-enum NotificationStatusEnum {
-  PENDING = "pending",
-  ACCEPTED = "accepted",
-  REJECTED = "rejected",
-}
-
-enum NotificationTypeEnum {
-  CHALLENGE_REQUEST = "challenge_request",
-  FRIEND_REQUEST = "friend_request",
-}
+import { NotificationTypeEnum } from "@/types/global";
 
 export const FriendList = () => {
   const { currentUser } = useCurrentUser();
@@ -54,7 +44,7 @@ export const FriendList = () => {
       refetchUsersAlreadyAdded();
       setSearch("");
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 

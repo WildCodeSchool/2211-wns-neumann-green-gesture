@@ -29,3 +29,14 @@ export type EcoActionType = {
   description: string;
   author?: Partial<User>;
 };
+
+export enum NotificationStatusEnum {
+  PENDING = "pending",
+  ACCEPTED = "accepted",
+  REJECTED = "rejected",
+}
+
+export enum NotificationTypeEnum {
+  CHALLENGE_REQUEST = "challenge_request",
+  FRIEND_REQUEST = "friend_request",
+}
