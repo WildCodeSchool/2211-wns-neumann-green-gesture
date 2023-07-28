@@ -1,15 +1,13 @@
-import { useGetCurrentUserQuery } from "@/gql/generated/schema";
 import { ArrowRight, Plus, Eye } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import { Badge } from "../components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Loading } from "./Loading";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 
 function Profile() {
-  const { data, loading } = useGetCurrentUserQuery();
-
-  const currentUser = data?.getCurrentUser;
+  const { currentUser, loading } = useCurrentUser();
 
   if (loading) return <Loading />;
 

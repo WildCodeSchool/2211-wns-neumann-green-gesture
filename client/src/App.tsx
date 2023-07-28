@@ -6,16 +6,14 @@ import Login from "./pages/Login";
 import CreateGroup from "./pages/CreateGroup/CreateGroup";
 import Profile from "./pages/Profile";
 import Register from "./pages/Register/Register";
-import { useGetCurrentUserQuery } from "./gql/generated/schema";
 import Layout from "./containers/Layout";
 import { Loading } from "./pages/Loading";
 import { FriendList } from "./pages/FriendList";
 import SingleEcoAction from "./pages/SingleEcoAction";
+import { useCurrentUser } from "./hooks/useCurrentUser";
 
 function App() {
-  const { data: currentUser, loading } = useGetCurrentUserQuery({
-    errorPolicy: "ignore",
-  });
+  const { currentUser, loading } = useCurrentUser();
 
   if (loading) return <Loading />;
 

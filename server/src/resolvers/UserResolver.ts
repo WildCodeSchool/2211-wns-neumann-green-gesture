@@ -84,8 +84,7 @@ export class UserResolver {
       .getMany();
 
     const currentFriends = currentUser.friends.map((friend) => friend.id);
-    console.log(currentUser.id);
-    console.log(foundUsers);
+
     const searchedUsers = foundUsers.filter(
       (foundUser) =>
         !currentFriends.includes(foundUser.id) &&
