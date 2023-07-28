@@ -1,8 +1,12 @@
 import { useGetCurrentUserQuery } from "@/gql/generated/schema";
 
 export const useCurrentUser = () => {
-  const { data: currentUserData, loading } = useGetCurrentUserQuery();
+  const {
+    data: currentUserData,
+    loading,
+    refetch: refetchCurrentUser,
+  } = useGetCurrentUserQuery();
   const currentUser = currentUserData?.getCurrentUser;
 
-  return { currentUser, loading };
+  return { currentUser, loading, refetchCurrentUser };
 };

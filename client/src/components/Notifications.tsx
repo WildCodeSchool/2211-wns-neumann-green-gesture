@@ -10,12 +10,24 @@ import {
 } from "./ui/sheet";
 import { Notification } from "./ui/notification";
 import { useGetNotificationsQuery } from "@/gql/generated/schema";
+import { NotificationTypeEnum } from "@/types/global";
 
 function Notifications() {
-  const { data: getNotifs } = useGetNotificationsQuery();
-  const notifs = getNotifs?.getNotifications ?? [];
+  const {
+    data: getNotifs,
+    refetch: refetchNotifs,
+    loading,
+  } = useGetNotificationsQuery();
+  const notifs = getNotifs?.getNotifications || [];
+
+  console.log("notifs", notifs);
+
+  const handleTraitedNotifs = () => {
+    refetchNotifs();
+  };
+
   return (
-    <Sheet>
+    <Sheet onOpenChange={(openState) => openState && refetchNotifs()}>
       <SheetTrigger asChild={true}>
         <div className="relative">
           <Button className="rounded-full p-2">
@@ -34,14 +46,11 @@ function Notifications() {
         <div className="space-y-4 mt-4">
           {notifs.map((notif) => (
             <Notification
-              icon={<Bell />}
-              title={notif.type}
-              message={
-                <div className="flex gap-4">
-                  <Button variant="secondary">Accepter</Button>
-                  <Button variant="destructive">Décliner</Button>
-                </div>
-              }
+              key={notif.id}
+              type={notif.type as NotificationTypeEnum}
+              sender={notif.sender}
+              notifId={notif.id}
+              handleTraitedNotifs={handleTraitedNotifs}
             />
           ))}
         </div>
