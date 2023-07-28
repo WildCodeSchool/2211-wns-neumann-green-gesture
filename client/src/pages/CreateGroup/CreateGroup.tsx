@@ -8,7 +8,6 @@ import { addDays } from "date-fns";
 import {
   useCreateGroupMutation,
   useCreateTeamsMutation,
-  useGetCurrentUserQuery,
 } from "../../gql/generated/schema";
 import { Form } from "@/components/ui/form";
 import StepOne from "./StepOne";
@@ -16,6 +15,7 @@ import StepTwo from "./StepTwo";
 import StepThree from "./StepThree";
 import StepFour from "./StepFour";
 import { Progress } from "@/components/ui/progress";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 
 const DEFAULT_GROUP = {
   name: "",
@@ -70,8 +70,7 @@ function CreateGroup() {
   const [createGroup, { loading: processing }] = useCreateGroupMutation();
   const [createTeams, { loading: processingTeams }] = useCreateTeamsMutation();
 
-  const { data } = useGetCurrentUserQuery();
-  const currentUser = data?.getCurrentUser;
+  const { currentUser } = useCurrentUser();
 
   const isPartner = currentUser?.subscriptionType === "partner";
   const maxSteps = isTeamChallenge ? 4 : 3;

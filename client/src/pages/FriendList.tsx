@@ -1,7 +1,6 @@
 import { Input } from "@/components/ui/input";
 import {
   User,
-  useGetCurrentUserQuery,
   useGetUsersAlreadyAddedQuery,
   useGetUsersByNameQuery,
   useSendNotificationMutation,
@@ -9,6 +8,7 @@ import {
 import { useEffect, useState } from "react";
 import { UserPlus2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 
 enum NotificationStatusEnum {
   PENDING = "pending",
@@ -22,18 +22,12 @@ enum NotificationTypeEnum {
 }
 
 export const FriendList = () => {
-  const { data: currentUserData } = useGetCurrentUserQuery({
-    errorPolicy: "ignore",
-  });
+  const { currentUser } = useCurrentUser();
+  const [sendNotification] = useSendNotificationMutation();
 
-  const currentUser = currentUserData?.getCurrentUser;
-
-  const { data: usersAlreadyAdded } = useGetUsersAlreadyAddedQuery();
-  const [usersAdded, setUsersAdded] = useState(
-    usersAlreadyAdded?.getUsersAlreadyAdded ?? []
-  );
-
-  console.log(usersAlreadyAdded);
+  const { data: usersAlreadyAdded, refetch: refetchUsersAlreadyAdded } =
+    useGetUsersAlreadyAddedQuery();
+  const usersAdded = usersAlreadyAdded?.getUsersAlreadyAdded || [];
 
   const [search, setSearch] = useState("");
   const { data: foundUsers, refetch } = useGetUsersByNameQuery({
@@ -41,14 +35,32 @@ export const FriendList = () => {
   });
   const searchedUsers = foundUsers?.getUsersByName;
 
-  const [sendNotification] = useSendNotificationMutation();
-
   useEffect(() => {
     refetch();
   }, [search]);
 
+  const handleAddFriend = async (user: User) => {
+    if (!currentUser) return;
+    try {
+      await sendNotification({
+        variables: {
+          data: {
+            receiverId: user.id,
+            type: NotificationTypeEnum.FRIEND_REQUEST,
+            groupId: null,
+          },
+        },
+      });
+      refetchUsersAlreadyAdded();
+      setSearch("");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const displayUser = (user: any, idx: number) => {
-    if (usersAdded) return;
+    if (usersAdded.findIndex((val) => val.id === user.id) !== -1) return;
+
     return (
       <div
         key={idx}
@@ -69,44 +81,18 @@ export const FriendList = () => {
   };
 
   const displayAlreadAddedUsers = () => {
-    return usersAdded.map((user, idx) => <div key={idx}>{user.firstName}</div>);
-  };
-
-  const handleAddFriend = async (user: User) => {
-    if (!currentUser) return;
-    setUsersAdded([...usersAdded, user]);
-    try {
-      await sendNotification({
-        variables: {
-          data: {
-            receiverId: user.id,
-            type: NotificationTypeEnum.FRIEND_REQUEST,
-            groupId: null,
-          },
-        },
-      });
-    } catch (error) {
-      console.log(error);
-    }
+    return usersAdded.map((user, idx) => (
+      <div key={idx}>
+        {user.firstName} {user.lastName}
+      </div>
+    ));
   };
 
   return (
-    <div className="px-4">
-      <h2 className="font-bold">Liste d'amis</h2>
-      <div className="flex flex-col gap-2 mt-3">
-        {currentUser?.friends && currentUser.friends.length > 0 ? (
-          currentUser.friends.map((friend, idx) => (
-            <p key={idx}>
-              {friend.firstName} {friend.lastName}
-            </p>
-          ))
-        ) : (
-          <p>Vous n'avez pas encore d'amis...</p>
-        )}
-      </div>
-
-      <div className="mt-4">
-        <h3 className="font-bold mb-2">Ajouter un ami</h3>
+    <div className="px-3 space-y-4">
+      {/* INPUT D'AJOUT */}
+      <div>
+        <h3 className="font-bold mb-1">Ajouter un ami</h3>
         <Input onChange={(e) => setSearch(e.target.value)} />
         {searchedUsers && (
           <div className="flex flex-col gap-2 mt-3">
@@ -115,7 +101,31 @@ export const FriendList = () => {
         )}
       </div>
 
-      {displayAlreadAddedUsers()}
+      {/* DEMANDES EN ATTENTES */}
+      <div>
+        {usersAdded.length > 0 && (
+          <>
+            <h2 className="font-bold">Demandes en attentes</h2>
+            {displayAlreadAddedUsers()}
+          </>
+        )}
+      </div>
+
+      {/* LISTE D'AMIS */}
+      <div>
+        <h2 className="font-bold">Liste d'amis</h2>
+        <div className="flex flex-col gap-2 mt-3">
+          {currentUser?.friends && currentUser.friends.length > 0 ? (
+            currentUser.friends.map((friend, idx) => (
+              <p key={idx}>
+                {friend.firstName} {friend.lastName}
+              </p>
+            ))
+          ) : (
+            <p>Vous n'avez pas encore d'amis...</p>
+          )}
+        </div>
+      </div>
     </div>
   );
 };

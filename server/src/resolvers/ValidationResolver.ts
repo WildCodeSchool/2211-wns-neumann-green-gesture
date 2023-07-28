@@ -31,7 +31,6 @@ export class ValidationResolver {
 
     if (validation === null) throw new Error("Validation not found");
 
-    console.log(validation);
     return validation;
   }
 }

@@ -2,17 +2,16 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
 import {
-  useGetCurrentUserQuery,
   useGetFreeEcoActionsQuery,
   useGetUserGroupsQuery,
 } from "../gql/generated/schema";
 import { Button } from "@/components/ui/button";
 import { challengeCountDown } from "@/lib/utils";
 import DisplayDate from "@/components/DisplayDate";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 
 function Home() {
-  const { data: userData } = useGetCurrentUserQuery();
-  const currentUser = userData?.getCurrentUser;
+  const { currentUser } = useCurrentUser();
 
   const { data: userGroups, refetch } = useGetUserGroupsQuery();
   const groups = userGroups?.getUserGroups || [];

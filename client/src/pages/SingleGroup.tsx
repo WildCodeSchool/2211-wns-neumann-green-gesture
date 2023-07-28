@@ -4,7 +4,6 @@ import DisplayDate from "@/components/DisplayDate";
 import { Badge } from "@/components/ui/badge";
 import {
   useGetCommentsForGroupQuery,
-  useGetCurrentUserQuery,
   useGetGroupQuery,
 } from "@/gql/generated/schema";
 import { Loading } from "./Loading";
@@ -20,6 +19,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ShowChallengeParticipants from "@/components/ShowChallengeParticipants";
 import ShowChallengeComments from "@/components/ShowChallengeComments";
 import EcoCard from "@/components/EcoCard";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 
 const SingleGroup = () => {
   const { id = "0" } = useParams();
@@ -36,8 +36,7 @@ const SingleGroup = () => {
     });
   const comments = commentData?.getCommentsForGroup;
 
-  const { data: currentUserData, loading: currentUseLoading } =
-    useGetCurrentUserQuery();
+  const { currentUser, loading: currentUseLoading } = useCurrentUser();
 
   if (groupLoading || commentLoading || currentUseLoading) return <Loading />;
 
@@ -120,8 +119,8 @@ const SingleGroup = () => {
                 exit={{ x: -100 }}
               >
                 <div>
-                  {currentUserData?.getCurrentUser?.subscriptionType ===
-                    "partner" && challenge?.teams.length
+                  {currentUser?.subscriptionType === "partner" &&
+                  challenge?.teams.length
                     ? challenge?.teams.map((team) => {
                         if (!team || !team.users) return null;
                         return (

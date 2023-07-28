@@ -18,6 +18,7 @@ function ProfileDropDownMenu() {
   const handleLogout = async () => {
     try {
       await logout();
+      window.location.href = "/login";
     } catch (err) {
       console.error("err", err);
     } finally {
