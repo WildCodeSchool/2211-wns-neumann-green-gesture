@@ -1,90 +1,137 @@
-import { useGetCurrentUserQuery } from "@/gql/generated/schema";
+import { ArrowRight, Plus, Eye } from "lucide-react";
+import { Link } from "react-router-dom";
 
-import Layout from "../containers/Layout";
 import { Badge } from "../components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Users2 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import { Loading } from "./Loading";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 
 function Profile() {
-  const navigate = useNavigate();
-  const { data, loading } = useGetCurrentUserQuery();
-
-  const currentUser = data?.getCurrentUser;
+  const { currentUser, loading } = useCurrentUser();
 
   if (loading) return <Loading />;
 
   return (
-    <div>
-      <div className="h-full px-4">
-        <div className="pt-5">
-          <h1 className="font-sans text-2xl font-bold">
-            Bienvenue, {currentUser?.firstName} {currentUser?.lastName}
-          </h1>
-          {currentUser?.subscriptionType === "partner" && (
-            <Badge variant={"accent"} className={"text-sm font-medium"}>
-              Partner
-            </Badge>
-          )}
-        </div>
-        <Button
-          className={"w-full my-4 py-6 text-sm flex"}
-          onClick={() => navigate("#", { replace: true })}
-        >
-          VOIR MES CHALLENGES <ArrowRight className="ms-3" />
+    <>
+      <div className="flex items-center flex-wrap gap-2">
+        <h1 className="text-2xl font-bold">
+          Bienvenue, {currentUser?.firstName} {currentUser?.lastName}
+        </h1>
+        {currentUser?.subscriptionType === "partner" && (
+          <Badge variant="accent" className="text-sm font-semibold">
+            Partner
+          </Badge>
+        )}
+      </div>
+      {/* BUTTONS */}
+      <div className="flex items-center flex-wrap gap-2 my-8">
+        <Button className="flex w-full sm:w-auto" asChild={true}>
+          <Link to="/groups?own=true">
+            Mes challenges <ArrowRight className="ms-3" />
+          </Link>
         </Button>
-        <div className="pt-5">
-          <h2 className="font-sans text-xl font-semibold">
+        <Button
+          variant="outline"
+          className="flex w-full sm:w-auto"
+          asChild={true}
+        >
+          <Link to="/eco-actions?own=true">
+            Mes eco-gestes <ArrowRight className="ms-3" />
+          </Link>
+        </Button>
+      </div>
+      {/* PROFILE */}
+      <div className="space-y-8">
+        {/* PERSONNAL INFOS */}
+        <div>
+          <h2 className="text-xl font-semibold mb-2">
             Mes informations personnelles
           </h2>
-          <div>
-            <div className="mt-4">
-              <h5 className="font-sans text-sm font-semibold">Nom</h5>
-              <p className="mt-2 ms-4 text-xs">{currentUser?.lastName}</p>
+          <div className="elevate-box space-y-4">
+            <div>
+              <h5 className="text-sm font-semibold">Nom</h5>
+              <p className="mt-1 text-xs">{currentUser?.lastName}</p>
             </div>
-            <div className="mt-4">
-              <h5 className="font-sans text-sm font-semibold">Prénom</h5>
-              <p className="mt-2 ms-4 text-xs">{currentUser?.firstName}</p>
+            <div>
+              <h5 className="text-sm font-semibold">Prénom</h5>
+              <p className="mt-1 text-xs">{currentUser?.firstName}</p>
             </div>
-            <div className="mt-4">
-              <h5 className="font-sans text-sm font-semibold">Email</h5>
-              <p className="mt-2 ms-4 text-xs">{currentUser?.email}</p>
+            <div>
+              <h5 className="text-sm font-semibold">Email</h5>
+              <p className="mt-1 text-xs">{currentUser?.email}</p>
             </div>
           </div>
-          <div className="mt-8">
-            <h2 className="font-sans text-xl font-semibold">Mon entreprise</h2>
-            <div>
-              <div className="mt-4">
-                <h5 className="font-sans text-sm font-semibold">
-                  Nom de l'entreprise
-                </h5>
-                <p className="mt-2 ms-4 text-xs">
+        </div>
+        {/* COMPANY */}
+        {currentUser?.subscriptionType === "partner" && (
+          <div>
+            <h2 className="text-xl font-semibold mb-2">Mon entreprise</h2>
+            <div className="elevate-box space-y-4">
+              <div>
+                <h5 className="text-sm font-semibold">Nom de l'entreprise</h5>
+                <p className="mt-1 text-xs">
                   {currentUser?.company?.name ?? "Aucune entreprise"}
                 </p>
               </div>
-              <div className="mt-4">
-                <h5 className="font-sans text-sm font-semibold">
+              <div>
+                <h5 className="text-sm font-semibold">
                   Nombre d'utilisateurs de l'entreprise
                 </h5>
-                <div className="flex items-center justify-start">
-                  <p className="font-bold text-lg">
+                <div className="flex items-center gap-1">
+                  <p className="font-bold text-base">
                     {currentUser?.company?.users?.length ?? 0} utilisateurs
                   </p>
                   <Button
-                    variant={"link"}
-                    onClick={() => navigate("#", { replace: true })}
-                    className="text-xs"
+                    variant="link"
+                    onClick={() => {}}
+                    className="p-2 h-auto"
+                    title="Voir les utilisateurs"
                   >
-                    voir les utilisateurs <Users2 className="ms-1" />
+                    <Eye color="#224820" size={18} />
                   </Button>
                 </div>
               </div>
             </div>
           </div>
+        )}
+        {/* FRIENDS */}
+        <div>
+          <div className="flex items-center mb-2">
+            <h2 className="text-xl font-semibold me-3">Mes amis</h2>
+            <Button
+              asChild={true}
+              variant="accent-orange"
+              className="rounded-full p-1 h-auto"
+              title="Ajouter un ami"
+            >
+              <Link to="/friends">
+                <Plus color="#e8eede" size={15} />
+              </Link>
+            </Button>
+          </div>
+          <div className="elevate-box space-y-4">
+            {currentUser?.friends?.length === 0 && (
+              <p className="text-sm font-medium">Pas encore d'amis...</p>
+            )}
+            {currentUser?.friends?.map((friend) => (
+              <div
+                key={friend.id}
+                className="flex bg-grey-green p-2 rounded-xl"
+              >
+                <div className="flex items-center space-x-3">
+                  <span className="flex items-center justify-center font-bold p-2 w-8 text-xs rounded-full bg-light-green text-primary">
+                    {friend.firstName.split("")[0]}
+                  </span>
+                  <h5 className="text-sm font-semibold">
+                    {friend.firstName} {friend.lastName}
+                  </h5>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

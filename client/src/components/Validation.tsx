@@ -50,7 +50,6 @@ const Validation = ({ ecoActionId, userEcoActionId }: ValidationProps) => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("submit");
     try {
       if (
         confirm(`Voulez-vous valider votre défi avec ${selectedPoint} points ?`)
@@ -63,7 +62,6 @@ const Validation = ({ ecoActionId, userEcoActionId }: ValidationProps) => {
             },
           },
         });
-      console.log("submit", selectedPoint);
       setOpen(false);
     } catch (error) {
       console.log(error);

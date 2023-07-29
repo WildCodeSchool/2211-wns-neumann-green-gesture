@@ -1,14 +1,15 @@
 import { Control } from "react-hook-form";
-import { Eye } from "lucide-react";
-import { Checkbox } from "../../components/ui/checkbox";
+
 import { Button } from "../../components/ui/button";
-import { FormControl, FormField } from "../../components/ui/form";
+import { FormField, FormMessage } from "../../components/ui/form";
 import { GroupeCreationType } from "../../types/global";
 import {
   useGetFreeEcoActionsQuery,
   useGetPopularFreeEcoActionsQuery,
   useGetUserEcoActionsQuery,
 } from "../../gql/generated/schema";
+
+import SelectableEcoAction from "@/components/SelectableEcoAction";
 
 type StepTwoProps = {
   control: Control<GroupeCreationType, any>;
@@ -47,38 +48,13 @@ function StepTwo({ control, handleGoBackInStep }: StepTwoProps) {
               <p className="font-semibold text-base">
                 Les Éco-gestes populaires
               </p>
-              <div className="flex space-x-4 items-center overflow-y-hidden overflow-x-scroll snap-mandatory">
+              <div className="space-y-3 md:space-y-0 md:flex md:items-center">
                 {popularEcoActionsList.map((ecoAction) => (
-                  <div
+                  <SelectableEcoAction
                     key={ecoAction.id}
-                    className="flex items-center justify-between space-x-4 py-1 px-4 bg-card text-card-foreground text-sm font-medium rounded-3xl"
-                  >
-                    <span>{ecoAction.name}</span>
-                    <div className="flex items-center space-x-2">
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        className="p-1 h-auto"
-                      >
-                        <Eye size="24" />
-                      </Button>
-                      <FormControl>
-                        <Checkbox
-                          className="h-6 w-6 rounded-xl border-2"
-                          checked={field.value?.includes(ecoAction.id)}
-                          onCheckedChange={(checked) => {
-                            return checked
-                              ? field.onChange([...field.value, ecoAction.id])
-                              : field.onChange(
-                                  field.value?.filter(
-                                    (value) => value !== ecoAction.id
-                                  )
-                                );
-                          }}
-                        />
-                      </FormControl>
-                    </div>
-                  </div>
+                    ecoAction={ecoAction}
+                    field={field}
+                  />
                 ))}
               </div>
             </div>
@@ -86,41 +62,17 @@ function StepTwo({ control, handleGoBackInStep }: StepTwoProps) {
               <p className="font-semibold text-base">
                 Mes Éco-gestes disponibles
               </p>
-              <div className="flex gap-4 flex-wrap">
+              <div className="space-y-3 md:space-y-0 md:flex md:flex-wrap md:items-center md:gap-3">
                 {ecoActionsList.map((ecoAction) => (
-                  <div
+                  <SelectableEcoAction
                     key={ecoAction.id}
-                    className="flex items-center justify-between space-x-4 py-1 px-4 bg-card text-card-foreground text-sm font-medium rounded-3xl"
-                  >
-                    <span>{ecoAction.name}</span>
-                    <div className="flex items-center space-x-2">
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        className="p-1 h-auto"
-                      >
-                        <Eye size="24" />
-                      </Button>
-                      <FormControl>
-                        <Checkbox
-                          className="h-6 w-6 rounded-xl border-2"
-                          checked={field.value?.includes(ecoAction.id)}
-                          onCheckedChange={(checked) => {
-                            return checked
-                              ? field.onChange([...field.value, ecoAction.id])
-                              : field.onChange(
-                                  field.value?.filter(
-                                    (value) => value !== ecoAction.id
-                                  )
-                                );
-                          }}
-                        />
-                      </FormControl>
-                    </div>
-                  </div>
+                    ecoAction={ecoAction}
+                    field={field}
+                  />
                 ))}
               </div>
             </div>
+            <FormMessage />
           </div>
         )}
       />

@@ -1,11 +1,10 @@
-import { useEffect, useState } from "react";
 import {
   useGetMaxValidationPointsQuery,
   useGetUserEcoActionQuery,
   useGetValidationQuery,
   useLikeEcoActionMutation,
 } from "@/gql/generated/schema";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { Heart } from "lucide-react";
 import { Loading } from "@/pages/Loading";
 import EcoActionDetailsCard from "./EcoActionDetailsCard";
@@ -63,48 +62,46 @@ const EcoCard = ({ name, description, ecoActionId, groupId }: EcoCardProps) => {
     return <Loading />;
 
   return (
-    <AnimatePresence>
-      <motion.div
-        key={ecoActionId}
-        initial={{ x: -300, opacity: 0 }}
-        animate={{ x: 0, opacity: 1, transition: { delay: 0.2 } }}
-        exit={{ x: 300, opacity: 0 }}
-        className="h-full"
-      >
-        <div className="w-[100%] rounded-xl bg-grey-green my-5 px-3 pb-4 pt-2 hover:shadow-2xl transition ease-in-out delay-90">
-          <div className="flex flex-row justify-between items-center">
-            <h3 className="font-sans text-xs">
-              {name} {validation?.points} / {maxPoints?.points}
-            </h3>
-            <Heart
-              className={userEcoAction?.hasLiked ? "text-[#FF0101] w-4" : "w-4"}
-              onClick={() => handleLike()}
-            />
-          </div>
-          <p className="font-sans text-2xs">
-            {`${description.slice(0, 300)}...`}
-          </p>
-          <div className="flex justify-between items-center mt-3">
-            <EcoActionDetailsCard
-              name={userEcoAction?.ecoAction[0].name}
-              likes={userEcoAction?.ecoAction[0].likes}
-              description={userEcoAction?.ecoAction[0].description}
-            />
-            {!userEcoAction.validationId || validation === undefined ? (
-              <Validation
-                ecoActionId={ecoActionId}
-                userEcoActionId={userEcoAction.id}
-              />
-            ) : (
-              <ValidationDetails
-                points={validation.points}
-                proof={userEcoAction?.proof}
-              />
-            )}
-          </div>
+    <motion.div
+      key={ecoActionId}
+      initial={{ x: -100 }}
+      animate={{ x: 0, transition: { duration: 0.2 } }}
+      exit={{ x: 100 }}
+      className="h-full"
+    >
+      <div className="w-[100%] rounded-xl bg-grey-green my-5 px-3 pb-4 pt-2 hover:shadow-2xl transition ease-in-out delay-90">
+        <div className="flex flex-row justify-between items-center">
+          <h3 className="font-sans text-xs">
+            {name} {validation?.points} / {maxPoints?.points}
+          </h3>
+          <Heart
+            className={userEcoAction?.hasLiked ? "text-[#FF0101] w-4" : "w-4"}
+            onClick={() => handleLike()}
+          />
         </div>
-      </motion.div>
-    </AnimatePresence>
+        <p className="font-sans text-2xs">
+          {`${description.slice(0, 300)}...`}
+        </p>
+        <div className="flex justify-between items-center mt-3">
+          <EcoActionDetailsCard
+            name={userEcoAction?.ecoAction[0].name}
+            likes={userEcoAction?.ecoAction[0].likes}
+            description={userEcoAction?.ecoAction[0].description}
+          />
+          {!userEcoAction.validationId || validation === undefined ? (
+            <Validation
+              ecoActionId={ecoActionId}
+              userEcoActionId={userEcoAction.id}
+            />
+          ) : (
+            <ValidationDetails
+              points={validation.points}
+              proof={userEcoAction?.proof}
+            />
+          )}
+        </div>
+      </div>
+    </motion.div>
   );
 };
 

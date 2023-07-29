@@ -3,6 +3,7 @@ query GetUserEcoActions {
     id
     name
     description
+    likes
     author {
       firstName
       lastName

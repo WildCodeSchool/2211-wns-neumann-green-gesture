@@ -1,18 +1,19 @@
 import { Control } from "react-hook-form";
+import { Link } from "react-router-dom";
 
+import RegisterImg from "../../assets/images/register.png";
 import { Button } from "../../components/ui/button";
 import CustomFormField from "../../components/CustomFormField";
-import { Link } from "react-router-dom";
-import { User } from "@/types/global";
+import { User } from "../../types/global";
 
 type StepOneProps = {
-  control: Control<User, any>;
+  control: Control<Omit<User, "id">, any>;
 };
 
 export const StepOne = ({ control }: StepOneProps) => {
   return (
     <>
-      <img src="./src/assets/images/register.png" className="w-[260px]" />
+      <img src={RegisterImg} className="w-[260px]" />
       <h1 className="text-2xl font-bold my-3">S'inscrire</h1>
       <div className="space-y-5 w-full px-8">
         <CustomFormField
@@ -40,9 +41,10 @@ export const StepOne = ({ control }: StepOneProps) => {
           name="password"
           type="password"
           placeholder="mot de passe"
+          isPassword={true}
         />
         <Button type="submit" className="w-full">
-          Je m'inscris
+          Suivant
         </Button>
       </div>
       <p className="text-xs">

@@ -7,13 +7,15 @@ import { addDays } from "date-fns";
 
 import {
   useCreateGroupMutation,
-  useGetCurrentUserQuery,
+  useCreateTeamsMutation,
 } from "../../gql/generated/schema";
 import { Form } from "@/components/ui/form";
 import StepOne from "./StepOne";
 import StepTwo from "./StepTwo";
 import StepThree from "./StepThree";
 import StepFour from "./StepFour";
+import { Progress } from "@/components/ui/progress";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 
 const DEFAULT_GROUP = {
   name: "",
@@ -24,34 +26,55 @@ const DEFAULT_GROUP = {
   },
   participants: [],
   ecoActionsIds: [],
+  teams: [],
 };
-
-const formSchema = z.object({
-  name: z.string().min(3).max(150),
-  challengeName: z.string().min(3).max(150),
-  dates: z.object({
-    from: z.date(),
-    to: z.date(),
-  }),
-  participants: z.array(z.number()),
-  ecoActionsIds: z.array(z.number()),
-});
 
 function CreateGroup() {
   const navigate = useNavigate();
   const [step, setStep] = useState<number>(1);
   const [isTeamChallenge, setIsTeamChallenge] = useState(false);
-  const [groupId, setGroupId] = useState<number | null>(null);
+
+  const formSchema = z.object({
+    name: z.string().min(3, "3 caractères minium").max(150),
+    challengeName: z.string().min(3, "3 caractères minium").max(150),
+    dates: z
+      .object({
+        from: z.date(),
+        to: z.date(),
+      })
+      .required(),
+    ecoActionsIds: z
+      .array(z.number())
+      .min(step >= 2 ? 1 : 0, "Veuillez sélectionner au moins 1 éco-geste."),
+    participants: z
+      .array(
+        z.object({
+          id: z.number(),
+          name: z.string(),
+        })
+      )
+      .min(step >= 3 ? 2 : 0, "Veuillez sélectionner au moins 2 participants."),
+    teams: z
+      .array(
+        z.object({
+          name: z.string().min(3, "3 caractères minium").max(150),
+          userIds: z
+            .array(z.number())
+            .min(1, "Veuillez sélectionner au moins 1 participant."),
+        })
+      )
+      .min(step >= 4 ? 2 : 0, "Veuillez composer au moins 2 équipes."),
+  });
 
   // Queries
   const [createGroup, { loading: processing }] = useCreateGroupMutation();
+  const [createTeams, { loading: processingTeams }] = useCreateTeamsMutation();
 
-  const { data } = useGetCurrentUserQuery();
-  const currentUser = data?.getCurrentUser;
+  const { currentUser } = useCurrentUser();
 
   const isPartner = currentUser?.subscriptionType === "partner";
-
-  console.log("currentUser", currentUser);
+  const maxSteps = isTeamChallenge ? 4 : 3;
+  const progressValue = (100 / maxSteps) * step;
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -68,8 +91,6 @@ function CreateGroup() {
   };
 
   const handleSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log("values", values);
-
     if (step === 1) {
       setStep(2);
       return;
@@ -80,7 +101,7 @@ function CreateGroup() {
       return;
     }
 
-    if (step === 3) {
+    if (step === 3 && !isTeamChallenge) {
       try {
         const createdGroup = await createGroup({
           variables: {
@@ -90,7 +111,39 @@ function CreateGroup() {
               startDate: values.dates.from,
               endDate: values.dates.to,
               ecoActionsIds: values.ecoActionsIds,
-              participants: values.participants,
+              participants: values.participants.map(
+                (participant) => participant.id
+              ),
+            },
+          },
+          // refetchQueries: [{ query: CreateGroupDocument }],
+        });
+
+        const createdGroupId = createdGroup.data?.createGroup?.id;
+        navigate(`/groups/${createdGroupId}`);
+        return;
+      } catch (err) {
+        console.error("err", err);
+      } finally {
+        console.log("groupe créé !");
+      }
+    } else {
+      setStep(4);
+    }
+
+    if (step === 4 && isTeamChallenge) {
+      try {
+        const createdGroup = await createGroup({
+          variables: {
+            data: {
+              name: values.name,
+              challengeName: values.challengeName,
+              startDate: values.dates.from,
+              endDate: values.dates.to,
+              ecoActionsIds: values.ecoActionsIds,
+              participants: values.participants.map(
+                (participant) => participant.id
+              ),
             },
           },
           // refetchQueries: [{ query: CreateGroupDocument }],
@@ -98,12 +151,16 @@ function CreateGroup() {
 
         const createdGroupId = createdGroup.data?.createGroup?.id;
 
-        if (isPartner && isTeamChallenge && createdGroupId) {
-          setGroupId(createdGroupId);
-          setStep(4);
-          return;
-        } else if (!isTeamChallenge && createdGroupId) {
-          navigate(`/`);
+        if (createdGroupId) {
+          await createTeams({
+            variables: {
+              data: {
+                groupId: createdGroupId,
+                teams: values.teams,
+              },
+            },
+          });
+          navigate(`/groups/${createdGroupId}`);
         }
       } catch (err) {
         console.error("err", err);
@@ -114,12 +171,14 @@ function CreateGroup() {
   };
 
   return (
-    <div className="py-4 h-full px-4">
+    <>
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(handleSubmit)}
-          className="flex flex-col h-full justify-center"
-        >
+        <form onSubmit={form.handleSubmit(handleSubmit)}>
+          <Progress
+            value={progressValue}
+            max={maxSteps}
+            className="h-4 mt-2 mb-4"
+          />
           {step === 1 && (
             <StepOne
               control={form.control}
@@ -143,12 +202,17 @@ function CreateGroup() {
               friends={currentUser?.friends || []}
             />
           )}
+          {step === 4 && isPartner && (
+            <StepFour
+              control={form.control}
+              form={form}
+              handleGoBackInStep={handleGoBackInStep}
+              selectedParticipants={form.getValues("participants")}
+            />
+          )}
         </form>
       </Form>
-      {step === 4 && (
-        <StepFour groupId={groupId} handleGoBackInStep={handleGoBackInStep} />
-      )}
-    </div>
+    </>
   );
 }
 

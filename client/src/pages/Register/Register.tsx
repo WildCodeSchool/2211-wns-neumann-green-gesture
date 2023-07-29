@@ -14,9 +14,9 @@ import { StepOne } from "./StepOne";
 import { StepTwo } from "./StepTwo";
 import { StepThree } from "./StepThree";
 import { Form } from "../../components/ui/form";
-import { Formula } from "@/types/global";
+import { Formula, User } from "../../types/global";
 
-const DEFAULT_USER = {
+const DEFAULT_USER: Omit<User, "id"> = {
   firstName: "",
   lastName: "",
   email: "",
@@ -41,10 +41,10 @@ const DEFAULT_FORMULA_RADIOS: Radio[] = [
 ];
 
 const formSchema = z.object({
-  firstName: z.string().min(2).max(50),
-  lastName: z.string().min(2).max(50),
-  email: z.string().min(6).email({ message: "Email invalide" }),
-  password: z.string().min(8).max(50),
+  firstName: z.string().min(2, "2 caractères minium").max(50),
+  lastName: z.string().min(2, "2 caractères minium").max(50),
+  email: z.string().email({ message: "Email invalide" }),
+  password: z.string().min(8, "8 caractères minium").max(50),
   company: z.string().max(50).optional(),
 });
 
@@ -104,7 +104,8 @@ function Register() {
           refetchQueries: [{ query: UsersDocument }],
         });
         form.clearErrors();
-        navigate("/");
+        window.location.reload();
+        // navigate("/");
       } catch (err) {
         console.error("err", err);
         form.setError("email", {
@@ -123,17 +124,17 @@ function Register() {
         initial={{ x: 300, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         exit={{ x: -300, opacity: 0 }}
-        className="py-8 h-full"
       >
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(handleSubmit)}
-            className="flex flex-col items-center h-full justify-center"
+            className="flex flex-col items-center h-full pb-10"
           >
             {step === 1 && <StepOne control={form.control} />}
             {step === 2 && (
               <StepTwo
                 radios={DEFAULT_FORMULA_RADIOS}
+                selectedFormula={selectedFormula}
                 handleChangeFormula={handleChangeFormula}
                 handleGoBackInStep={handleGoBackInStep}
               />

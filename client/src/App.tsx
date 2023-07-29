@@ -6,15 +6,13 @@ import Login from "./pages/Login";
 import CreateGroup from "./pages/CreateGroup/CreateGroup";
 import Profile from "./pages/Profile";
 import Register from "./pages/Register/Register";
-import { useGetCurrentUserQuery } from "./gql/generated/schema";
 import Layout from "./containers/Layout";
 import { Loading } from "./pages/Loading";
 import { FriendList } from "./pages/FriendList";
+import { useCurrentUser } from "./hooks/useCurrentUser";
 
 function App() {
-  const { data: currentUser, loading } = useGetCurrentUserQuery({
-    errorPolicy: "ignore",
-  });
+  const { currentUser, loading } = useCurrentUser();
 
   if (loading) return <Loading />;
 
@@ -40,6 +38,9 @@ function App() {
           <Route path="/friends" element={<FriendList />} />
           <Route path="/create-group" element={<CreateGroup />} />
           <Route path="/group/:id" element={<SingleGroup />} />
+          <Route path="/groups" element={<h1>Groups / Challenges</h1>} />
+          <Route path="/groups/:id" element={<SingleGroup />} />
+          <Route path="/eco-actions" element={<h1>Eco-actions</h1>} />
         </Route>
       </Route>
       <Route path="*" element={<Navigate to="/" />} />

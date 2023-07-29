@@ -1,14 +1,15 @@
 import { Control } from "react-hook-form";
 import { motion } from "framer-motion";
 
+import { User } from "@/types/global";
+import EarthMoneyImg from "../../assets/images/register.png";
 import { Button } from "../../components/ui/button";
 import RadioButtons, { Radio } from "../../components/RadioButtons";
 import CustomFormField from "../../components/CustomFormField";
 import StepBackButton from "../../components/StepBackButton";
-import { User } from "@/types/global";
 
 type StepThreeProps = {
-  control: Control<User, any>;
+  control: Control<Omit<User, "id">, any>;
   handleGoBackInStep: () => void;
 };
 
@@ -40,10 +41,10 @@ export const StepThree = ({ control, handleGoBackInStep }: StepThreeProps) => {
       initial={{ x: 300, opacity: 0 }}
       animate={{ x: 0, opacity: 1, transition: { duration: 0.5 } }}
       exit={{ x: -300, opacity: 0 }}
-      className="flex flex-col items-center w-full px-5"
+      className="flex flex-col items-center w-full px-5 pt-8 pb-10"
     >
       <StepBackButton onClick={handleGoBackInStep} />
-      <img src="./src/assets/images/earth-money.png" className="w-40" />
+      <img src={EarthMoneyImg} className="w-40" />
       <h2 className="text-xl font-bold mb-7">Plus qu'une étape !</h2>
       <CustomFormField
         control={control}
