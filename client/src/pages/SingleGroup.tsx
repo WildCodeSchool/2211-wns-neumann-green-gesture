@@ -28,6 +28,7 @@ const SingleGroup = () => {
     variables: { groupId: parseInt(id || "0", 10) },
   });
   const challenge = challengeData?.getGroup;
+  console.log("challenge", challenge);
 
   const { data: commentData, loading: commentLoading } =
     useGetCommentsForGroupQuery({
