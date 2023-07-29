@@ -69,6 +69,10 @@ async function resetDB(): Promise<void> {
       author: userPartner,
       validations: [
         {
+          name: "Validation 0",
+          points: 0,
+        },
+        {
           name: "Validation 1",
           points: 1,
         },
@@ -88,6 +92,10 @@ async function resetDB(): Promise<void> {
       author: userPartner,
       validations: [
         {
+          name: "Validation 0",
+          points: 0,
+        },
+        {
           name: "Validation 1",
           points: 1,
         },
@@ -106,6 +114,10 @@ async function resetDB(): Promise<void> {
       description:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec euismod, nisl eget aliquam ultricies, nunc nisl aliquet nunc, vitae aliquam nisl nunc sit amet nisl. Donec euismod, nisl eget aliquam ultricies, nunc nisl aliquet nunc, vitae aliquam nisl nunc sit amet nisl.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec euismod, nisl eget aliquam ultricies, nunc nisl aliquet nunc, vitae aliquam nisl nunc sit amet nisl. Donec euismod, nisl eget aliquam ultricies, nunc nisl aliquet nunc, vitae aliquam nisl nunc sit amet nisl",
       validations: [
+        {
+          name: "Validation 0",
+          points: 0,
+        },
         {
           name: "Validation 1",
           points: 1,

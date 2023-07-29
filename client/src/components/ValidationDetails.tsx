@@ -7,6 +7,7 @@ import {
   DialogFooter,
   DialogClose,
 } from "@/components/ui/dialog";
+import { X } from "lucide-react";
 
 interface ValidationDetailsProps {
   points: number;
@@ -20,6 +21,11 @@ const ValidationDetails = ({ points, proof }: ValidationDetailsProps) => {
         MA VALIDATION
       </DialogTrigger>
       <DialogContent className="bg-grey-green border-0">
+        <div className="flex justify-end items-center">
+          <DialogClose className="h-4 w-4">
+            <X className="h-4 w-4" />
+          </DialogClose>
+        </div>
         <DialogHeader>
           <DialogTitle className="text-center">Ma note</DialogTitle>
         </DialogHeader>

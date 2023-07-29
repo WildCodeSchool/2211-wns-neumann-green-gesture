@@ -1,11 +1,13 @@
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { ThumbsUp } from "lucide-react";
+import { X } from "lucide-react";
 
 interface EcoActionDetailsCardProps {
   name: string;
@@ -24,6 +26,11 @@ const EcoActionDetailsCard = ({
         VOIR PLUS
       </DialogTrigger>
       <DialogContent className="bg-grey-green border-0">
+        <div className="flex justify-end items-center">
+          <DialogClose className="h-4 w-4">
+            <X className="h-4 w-4" />
+          </DialogClose>
+        </div>
         <DialogHeader>
           <DialogTitle className="text-center">{name}</DialogTitle>
         </DialogHeader>

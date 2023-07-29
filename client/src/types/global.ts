@@ -16,5 +16,3 @@ export type GroupeCreationType = {
   participants: number[];
   ecoActionsIds: number[];
 };
-
-export type PointType = "0" | "3" | "6" | "9";

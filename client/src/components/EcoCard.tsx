@@ -23,11 +23,13 @@ const EcoCard = ({ name, description, ecoActionId, groupId }: EcoCardProps) => {
   const { data, loading, refetch } = useGetUserEcoActionQuery({
     variables: { ecoActionId: ecoActionId, groupId: groupId },
   });
-  const ecoAction = data?.getUserEcoAction;
+  const userEcoAction = data?.getUserEcoAction;
 
   const { data: validationData, loading: validationLoading } =
     useGetValidationQuery({
-      variables: { getValidationId: ecoAction?.validationId || 0 },
+      variables: {
+        getValidationId: userEcoAction?.validationId || 0,
+      },
     });
   const validation = validationData?.getValidation;
 
@@ -46,7 +48,7 @@ const EcoCard = ({ name, description, ecoActionId, groupId }: EcoCardProps) => {
           data: {
             ecoActionId: ecoActionId,
             groupId: groupId,
-            hasLiked: !ecoAction?.hasLiked,
+            hasLiked: !userEcoAction?.hasLiked,
           },
         },
       });
@@ -57,12 +59,7 @@ const EcoCard = ({ name, description, ecoActionId, groupId }: EcoCardProps) => {
     }
   };
 
-  if (
-    loading ||
-    validationLoading ||
-    typeof ecoAction === "undefined" ||
-    typeof validation === "undefined"
-  )
+  if (loading || validationLoading || typeof userEcoAction === "undefined")
     return <Loading />;
 
   return (
@@ -80,7 +77,7 @@ const EcoCard = ({ name, description, ecoActionId, groupId }: EcoCardProps) => {
               {name} {validation?.points} / {maxPoints?.points}
             </h3>
             <Heart
-              className={ecoAction?.hasLiked ? "text-[#FF0101] w-4" : "w-4"}
+              className={userEcoAction?.hasLiked ? "text-[#FF0101] w-4" : "w-4"}
               onClick={() => handleLike()}
             />
           </div>
@@ -89,16 +86,19 @@ const EcoCard = ({ name, description, ecoActionId, groupId }: EcoCardProps) => {
           </p>
           <div className="flex justify-between items-center mt-3">
             <EcoActionDetailsCard
-              name={ecoAction?.ecoAction[0].name}
-              likes={ecoAction?.ecoAction[0].likes}
-              description={ecoAction?.ecoAction[0].description}
+              name={userEcoAction?.ecoAction[0].name}
+              likes={userEcoAction?.ecoAction[0].likes}
+              description={userEcoAction?.ecoAction[0].description}
             />
-            {!ecoAction.validationId ? (
-              <Validation userEcoActionId={ecoAction?.id} />
+            {!userEcoAction.validationId || validation === undefined ? (
+              <Validation
+                ecoActionId={ecoActionId}
+                userEcoActionId={userEcoAction.id}
+              />
             ) : (
               <ValidationDetails
                 points={validation.points}
-                proof={ecoAction?.proof}
+                proof={userEcoAction?.proof}
               />
             )}
           </div>

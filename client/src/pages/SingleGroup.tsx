@@ -20,11 +20,11 @@ import {
 } from "@radix-ui/react-navigation-menu";
 
 const SingleGroup = () => {
-  const { id = "0" } = useParams();
+  const { id } = useParams();
   const [mode, setMode] = useState(false);
 
   const { data: challengeData, loading: groupLoading } = useGetGroupQuery({
-    variables: { groupId: parseInt(id, 10) || 0 },
+    variables: { groupId: parseInt(id || "0", 10) || 0 },
   });
   const challenge = challengeData?.getGroup;
 
@@ -36,7 +36,6 @@ const SingleGroup = () => {
 
   const { data: currentUserData, loading: currentUseLoading } =
     useGetCurrentUserQuery();
-
   if (groupLoading || commentLoading || currentUseLoading) return <Loading />;
 
   return (
