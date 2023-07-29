@@ -9,7 +9,6 @@ import Register from "./pages/Register/Register";
 import Layout from "./containers/Layout";
 import { Loading } from "./pages/Loading";
 import { FriendList } from "./pages/FriendList";
-import SingleEcoAction from "./pages/SingleEcoAction";
 import { useCurrentUser } from "./hooks/useCurrentUser";
 
 function App() {
@@ -39,9 +38,10 @@ function App() {
           <Route path="/friends" element={<FriendList />} />
           <Route path="/create-group" element={<CreateGroup />} />
           <Route path="/groups" element={<h1>Groups / Challenges</h1>} />
+          <Route path="/eco-actions" element={<h1>Eco-actions</h1>} />
+          <Route path="/groups" element={<h1>Groups / Challenges</h1>} />
           <Route path="/groups/:id" element={<SingleGroup />} />
           <Route path="/eco-actions" element={<h1>Eco-actions</h1>} />
-          <Route path="/eco-actions/:id/" element={<SingleEcoAction />} />
         </Route>
       </Route>
       <Route path="*" element={<Navigate to="/" />} />

@@ -18,7 +18,8 @@
     "baseUrl": "./src",
     "paths": {
       "@/*": ["./*"]
-    }
+    },
+    "types": ["@uploadcare/blocks/types/jsx"]
   },
   "references": [{ "path": "./tsconfig.node.json" }]
 }

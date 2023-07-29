@@ -5,6 +5,7 @@ import { UserSubscriptionType } from "../entity/User";
 import {
   UserEcoAction,
   UserEcoActionInputAddLike,
+  UserEcoActionInputAddPoints,
   UserEcoActionInputAddProof,
 } from "../entity/UserEcoAction";
 import { ApolloError } from "apollo-server-errors";
@@ -60,29 +61,13 @@ export class UserEcoActionResolver {
   ])
   @Mutation(() => String)
   async addProof(
-    @Arg("data") { proof, ecoActionId, groupId }: UserEcoActionInputAddProof,
-    @Ctx() { currentUser }: ContextType
+    @Arg("data") { proof, userEcoActionId }: UserEcoActionInputAddProof
   ): Promise<string> {
     const userEcoAction = await datasource
       .getRepository(UserEcoAction)
       .findOne({
         where: {
-          user: {
-            id: currentUser?.id,
-          },
-          ecoAction: {
-            id: ecoActionId,
-            groups: {
-              id: groupId,
-            },
-          },
-        },
-        relations: {
-          ecoAction: {
-            groups: true,
-            validations: true,
-          },
-          user: true,
+          id: userEcoActionId,
         },
       });
 
@@ -144,9 +129,36 @@ export class UserEcoActionResolver {
     if (ecoAction === null) {
       throw new ApolloError("EcoAction not found");
     }
-    ecoAction.likes = +ecoAction.likes + 1;
+    ecoAction.likes = hasLiked ? +ecoAction.likes + 1 : +ecoAction.likes - 1;
     await datasource.getRepository(EcoAction).save(ecoAction);
 
     return "Your like has been added";
+  }
+
+  // Mutation for adding points to an userEcoAction
+  @Authorized<UserSubscriptionType>([
+    UserSubscriptionType.FREE,
+    UserSubscriptionType.PARTNER,
+  ])
+  @Mutation(() => String)
+  async addPoints(
+    @Arg("data") { userEcoActionId, points }: UserEcoActionInputAddPoints
+  ): Promise<string> {
+    const userEcoAction = await datasource
+      .getRepository(UserEcoAction)
+      .findOne({
+        where: {
+          id: userEcoActionId,
+        },
+      });
+
+    if (userEcoAction === null) {
+      throw new ApolloError("UserEcoAction not found");
+    }
+
+    userEcoAction.validationId = points;
+    await datasource.getRepository(UserEcoAction).save(userEcoAction);
+
+    return "Your points have been added";
   }
 }

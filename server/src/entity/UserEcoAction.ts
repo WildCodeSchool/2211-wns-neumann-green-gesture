@@ -52,10 +52,7 @@ export class UserEcoActionInputAddProof {
   proof: string;
 
   @Field()
-  ecoActionId: number;
-
-  @Field()
-  groupId: number;
+  userEcoActionId: number;
 }
 
 @InputType()
@@ -71,10 +68,10 @@ export class UserEcoActionInputAddLike {
 }
 
 @InputType()
-export class UserEcoActionInputAddValidation {
+export class UserEcoActionInputAddPoints {
   @Field()
-  validationId: number;
+  userEcoActionId: number;
 
   @Field()
-  validationPoints: number;
+  points: number;
 }

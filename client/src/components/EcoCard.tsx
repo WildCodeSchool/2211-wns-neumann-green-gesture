@@ -6,8 +6,10 @@ import {
 } from "@/gql/generated/schema";
 import { motion } from "framer-motion";
 import { Heart } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import { Loading } from "@/pages/Loading";
+import EcoActionDetailsCard from "./EcoActionDetailsCard";
+import Validation from "./Validation";
+import ValidationDetails from "./ValidationDetails";
 
 interface EcoCardProps {
   name: string;
@@ -17,17 +19,16 @@ interface EcoCardProps {
 }
 
 const EcoCard = ({ name, description, ecoActionId, groupId }: EcoCardProps) => {
-  const navigate = useNavigate();
-
   const { data, loading, refetch } = useGetUserEcoActionQuery({
     variables: { ecoActionId: ecoActionId, groupId: groupId },
   });
-  const ecoAction = data?.getUserEcoAction;
+  const userEcoAction = data?.getUserEcoAction;
 
   const { data: validationData, loading: validationLoading } =
     useGetValidationQuery({
-      skip: !ecoAction?.validationId,
-      variables: { getValidationId: ecoAction?.validationId! },
+      variables: {
+        getValidationId: userEcoAction?.validationId || 0,
+      },
     });
   const validation = validationData?.getValidation;
 
@@ -40,15 +41,13 @@ const EcoCard = ({ name, description, ecoActionId, groupId }: EcoCardProps) => {
   const [LikeEcoAction] = useLikeEcoActionMutation();
 
   const handleLike = async () => {
-    console.log(ecoAction);
-
     try {
       await LikeEcoAction({
         variables: {
           data: {
             ecoActionId: ecoActionId,
             groupId: groupId,
-            hasLiked: !ecoAction?.hasLiked,
+            hasLiked: !userEcoAction?.hasLiked,
           },
         },
       });
@@ -59,7 +58,8 @@ const EcoCard = ({ name, description, ecoActionId, groupId }: EcoCardProps) => {
     }
   };
 
-  if (loading) return <Loading />;
+  if (loading || validationLoading || typeof userEcoAction === "undefined")
+    return <Loading />;
 
   return (
     <motion.div
@@ -69,22 +69,37 @@ const EcoCard = ({ name, description, ecoActionId, groupId }: EcoCardProps) => {
       exit={{ x: 100 }}
       className="h-full"
     >
-      <div
-        className="w-[100%] rounded-xl bg-grey-green my-5 px-3 pb-4 pt-2 hover:shadow-2xl transition ease-in-out delay-90"
-        // onClick={() =>
-        //   navigate(`/single-ecoaction/${ecoActionId}/${groupId}`)
-        // }
-      >
+      <div className="w-[100%] rounded-xl bg-grey-green my-5 px-3 pb-4 pt-2 hover:shadow-2xl transition ease-in-out delay-90">
         <div className="flex flex-row justify-between items-center">
           <h3 className="font-sans text-xs">
             {name} {validation?.points} / {maxPoints?.points}
           </h3>
           <Heart
-            className={ecoAction?.hasLiked ? "text-[#FF0101] w-4" : "w-4"}
+            className={userEcoAction?.hasLiked ? "text-[#FF0101] w-4" : "w-4"}
             onClick={() => handleLike()}
           />
         </div>
-        <p className="font-sans text-2xs">{description}</p>
+        <p className="font-sans text-2xs">
+          {`${description.slice(0, 300)}...`}
+        </p>
+        <div className="flex justify-between items-center mt-3">
+          <EcoActionDetailsCard
+            name={userEcoAction?.ecoAction[0].name}
+            likes={userEcoAction?.ecoAction[0].likes}
+            description={userEcoAction?.ecoAction[0].description}
+          />
+          {!userEcoAction.validationId || validation === undefined ? (
+            <Validation
+              ecoActionId={ecoActionId}
+              userEcoActionId={userEcoAction.id}
+            />
+          ) : (
+            <ValidationDetails
+              points={validation.points}
+              proof={userEcoAction?.proof}
+            />
+          )}
+        </div>
       </div>
     </motion.div>
   );

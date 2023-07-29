@@ -25,7 +25,7 @@ const SingleGroup = () => {
   const { id = "0" } = useParams();
 
   const { data: challengeData, loading: groupLoading } = useGetGroupQuery({
-    variables: { groupId: parseInt(id, 10) || 0 },
+    variables: { groupId: parseInt(id || "0", 10) },
   });
   const challenge = challengeData?.getGroup;
   console.log("challenge", challenge);

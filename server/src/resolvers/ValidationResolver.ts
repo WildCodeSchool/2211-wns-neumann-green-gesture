@@ -20,6 +20,10 @@ export class ValidationResolver {
     return validation;
   }
 
+  @Authorized<UserSubscriptionType>([
+    UserSubscriptionType.FREE,
+    UserSubscriptionType.PARTNER,
+  ])
   @Query(() => Validation)
   async getMaxValidationPoints(
     @Arg("ecoActionId", () => Int) ecoActionId: number
@@ -32,5 +36,22 @@ export class ValidationResolver {
     if (validation === null) throw new Error("Validation not found");
 
     return validation;
+  }
+
+  @Authorized<UserSubscriptionType>([
+    UserSubscriptionType.FREE,
+    UserSubscriptionType.PARTNER,
+  ])
+  @Query(() => [Validation])
+  async getValidationsByEcoAction(
+    @Arg("ecoActionId", () => Int) ecoActionId: number
+  ): Promise<Validation[]> {
+    const validations = await datasource.getRepository(Validation).find({
+      where: { ecoAction: { id: ecoActionId } },
+    });
+
+    if (validations === null) throw new Error("Validation not found");
+
+    return validations;
   }
 }
