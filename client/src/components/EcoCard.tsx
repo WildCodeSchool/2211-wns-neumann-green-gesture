@@ -15,12 +15,19 @@ interface EcoCardProps {
   name: string;
   description: string;
   ecoActionId: number;
+  likes: number;
   groupId: number;
 }
 
-const EcoCard = ({ name, description, ecoActionId, groupId }: EcoCardProps) => {
+const EcoCard = ({
+  name,
+  description,
+  ecoActionId,
+  likes,
+  groupId,
+}: EcoCardProps) => {
   const { data, loading, refetch } = useGetUserEcoActionQuery({
-    variables: { ecoActionId: ecoActionId, groupId: groupId },
+    variables: { groupId, ecoActionId },
   });
   const userEcoAction = data?.getUserEcoAction;
 
@@ -58,8 +65,7 @@ const EcoCard = ({ name, description, ecoActionId, groupId }: EcoCardProps) => {
     }
   };
 
-  if (loading || validationLoading || typeof userEcoAction === "undefined")
-    return <Loading />;
+  if (loading || validationLoading) return <Loading />;
 
   return (
     <motion.div
@@ -84,20 +90,18 @@ const EcoCard = ({ name, description, ecoActionId, groupId }: EcoCardProps) => {
         </p>
         <div className="flex justify-between items-center mt-3">
           <EcoActionDetailsCard
-            name={userEcoAction?.ecoAction[0].name}
-            likes={userEcoAction?.ecoAction[0].likes}
-            description={userEcoAction?.ecoAction[0].description}
+            name={name}
+            likes={likes}
+            description={description}
           />
-          {!userEcoAction.validationId || validation === undefined ? (
+          {userEcoAction === undefined ? (
             <Validation
               ecoActionId={ecoActionId}
-              userEcoActionId={userEcoAction.id}
+              groupId={groupId}
+              refetchParent={refetch}
             />
           ) : (
-            <ValidationDetails
-              points={validation.points}
-              proof={userEcoAction?.proof}
-            />
+            <ValidationDetails groupId={groupId} ecoActionId={ecoActionId} />
           )}
         </div>
       </div>

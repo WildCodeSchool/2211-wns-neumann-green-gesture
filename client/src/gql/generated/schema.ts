@@ -58,7 +58,7 @@ export type EcoAction = {
   id: Scalars['Float']['output'];
   likes: Scalars['Float']['output'];
   name: Scalars['String']['output'];
-  relatedUsers: Array<UserEcoAction>;
+  userEcoActions: Array<UserEcoAction>;
   validations: Array<Validation>;
 };
 
@@ -274,8 +274,8 @@ export type QueryGetUserByIdArgs = {
 
 
 export type QueryGetUserEcoActionArgs = {
-  ecoActionId: Scalars['Float']['input'];
-  groupId: Scalars['Float']['input'];
+  ecoActionId: Scalars['Int']['input'];
+  groupId: Scalars['Int']['input'];
 };
 
 
@@ -332,11 +332,12 @@ export type User = {
 
 export type UserEcoAction = {
   __typename?: 'UserEcoAction';
-  ecoAction: Array<EcoAction>;
+  ecoAction: EcoAction;
+  groupId: Scalars['Int']['output'];
   hasLiked: Scalars['Boolean']['output'];
   id: Scalars['Float']['output'];
   proof?: Maybe<Scalars['String']['output']>;
-  user: Array<User>;
+  user: User;
   validationId?: Maybe<Scalars['Float']['output']>;
 };
 
@@ -347,8 +348,10 @@ export type UserEcoActionInputAddLike = {
 };
 
 export type UserEcoActionInputAddPoints = {
-  points: Scalars['Float']['input'];
-  userEcoActionId: Scalars['Float']['input'];
+  ecoActionId: Scalars['Int']['input'];
+  groupId: Scalars['Int']['input'];
+  proof: Scalars['String']['input'];
+  validationId: Scalars['Int']['input'];
 };
 
 export type UserEcoActionInputAddProof = {
@@ -468,12 +471,12 @@ export type GetUserByIdQueryVariables = Exact<{
 export type GetUserByIdQuery = { __typename?: 'Query', getUserById: { __typename?: 'User', id: number, firstName: string, lastName: string, email: string, password: string, role: string, subscriptionType: string } };
 
 export type GetUserEcoActionQueryVariables = Exact<{
-  ecoActionId: Scalars['Float']['input'];
-  groupId: Scalars['Float']['input'];
+  groupId: Scalars['Int']['input'];
+  ecoActionId: Scalars['Int']['input'];
 }>;
 
 
-export type GetUserEcoActionQuery = { __typename?: 'Query', getUserEcoAction: { __typename?: 'UserEcoAction', id: number, hasLiked: boolean, proof?: string | null, validationId?: number | null, ecoAction: Array<{ __typename?: 'EcoAction', id: number, name: string, description: string, likes: number, groups?: Array<{ __typename?: 'Group', challengeName: string }> | null }> } };
+export type GetUserEcoActionQuery = { __typename?: 'Query', getUserEcoAction: { __typename?: 'UserEcoAction', id: number, proof?: string | null, hasLiked: boolean, validationId?: number | null, groupId: number, ecoAction: { __typename?: 'EcoAction', name: string, description: string, likes: number } } };
 
 export type GetUserEcoActionsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1106,20 +1109,17 @@ export type GetUserByIdQueryHookResult = ReturnType<typeof useGetUserByIdQuery>;
 export type GetUserByIdLazyQueryHookResult = ReturnType<typeof useGetUserByIdLazyQuery>;
 export type GetUserByIdQueryResult = Apollo.QueryResult<GetUserByIdQuery, GetUserByIdQueryVariables>;
 export const GetUserEcoActionDocument = gql`
-    query GetUserEcoAction($ecoActionId: Float!, $groupId: Float!) {
-  getUserEcoAction(ecoActionId: $ecoActionId, groupId: $groupId) {
+    query GetUserEcoAction($groupId: Int!, $ecoActionId: Int!) {
+  getUserEcoAction(groupId: $groupId, ecoActionId: $ecoActionId) {
     id
-    hasLiked
     proof
+    hasLiked
     validationId
+    groupId
     ecoAction {
-      id
       name
       description
       likes
-      groups {
-        challengeName
-      }
     }
   }
 }
@@ -1137,8 +1137,8 @@ export const GetUserEcoActionDocument = gql`
  * @example
  * const { data, loading, error } = useGetUserEcoActionQuery({
  *   variables: {
- *      ecoActionId: // value for 'ecoActionId'
  *      groupId: // value for 'groupId'
+ *      ecoActionId: // value for 'ecoActionId'
  *   },
  * });
  */

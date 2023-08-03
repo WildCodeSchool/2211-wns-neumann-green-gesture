@@ -3,6 +3,7 @@ import Comment from "./entity/Comment";
 import { Company } from "./entity/Company";
 import EcoAction from "./entity/EcoAction";
 import Group from "./entity/Group";
+import Notification from "./entity/Notification";
 import { Team } from "./entity/Team";
 import User, { hashPassword } from "./entity/User";
 import { UserEcoAction } from "./entity/UserEcoAction";
@@ -24,6 +25,8 @@ async function resetDB(): Promise<void> {
   await datasource.getRepository(EcoAction).delete({});
   // delete all groups in the database
   await datasource.getRepository(Group).delete({});
+  // detlete all notifications in the database
+  await datasource.getRepository(Notification).delete({});
   // delete all users in the database
   await datasource.getRepository(User).delete({});
 
@@ -182,49 +185,52 @@ async function resetDB(): Promise<void> {
   // create new userEcoActions
   await datasource.getRepository(UserEcoAction).save([
     {
-      user: [userFree],
-      ecoAction: [ecoActions[0]],
+      user: userFree,
+      groupId: groups[2].id,
+      ecoAction: ecoActions[0],
       validationId: ecoActions[0].validations[0].id,
     },
     {
-      user: [userPartner],
-      ecoAction: [ecoActions[0]],
-      validationId: ecoActions[0].validations[0].id,
+      user: userFree,
+      groupId: groups[2].id,
+      ecoAction: ecoActions[1],
+      validationId: ecoActions[1].validations[2].id,
     },
     {
-      user: [admin],
-      ecoAction: [ecoActions[0]],
-      validationId: ecoActions[0].validations[0].id,
-    },
-    {
-      user: [userFree],
-      ecoAction: [ecoActions[1]],
-      validationId: ecoActions[1].validations[0].id,
-    },
-    {
-      user: [userPartner],
-      ecoAction: [ecoActions[1]],
-      validationId: ecoActions[1].validations[0].id,
-    },
-    {
-      user: [admin],
-      ecoAction: [ecoActions[1]],
-      validationId: ecoActions[1].validations[0].id,
-    },
-    {
-      user: [userFree],
-      ecoAction: [ecoActions[2]],
+      user: userFree,
+      groupId: groups[1].id,
+      ecoAction: ecoActions[2],
       validationId: ecoActions[2].validations[0].id,
     },
     {
-      user: [userPartner],
-      ecoAction: [ecoActions[2]],
-      validationId: ecoActions[2].validations[0].id,
+      user: userPartner,
+      groupId: groups[0].id,
+      ecoAction: ecoActions[0],
+      validationId: ecoActions[0].validations[1].id,
     },
     {
-      user: [admin],
-      ecoAction: [ecoActions[2]],
-      validationId: ecoActions[2].validations[0].id,
+      user: userPartner,
+      groupId: groups[0].id,
+      ecoAction: ecoActions[1],
+      validationId: ecoActions[1].validations[2].id,
+    },
+    {
+      user: userPartner,
+      groupId: groups[1].id,
+      ecoAction: ecoActions[1],
+      validationId: ecoActions[1].validations[1].id,
+    },
+    {
+      user: admin,
+      groupId: groups[0].id,
+      ecoAction: ecoActions[0],
+      validationId: ecoActions[0].validations[2].id,
+    },
+    {
+      user: admin,
+      groupId: groups[1].id,
+      ecoAction: ecoActions[1],
+      validationId: ecoActions[1].validations[1].id,
     },
   ]);
 

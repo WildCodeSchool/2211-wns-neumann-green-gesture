@@ -51,10 +51,10 @@ class EcoAction {
   validations: Validation[];
 
   @Field(() => [UserEcoAction])
-  @ManyToMany(() => UserEcoAction, (userEcoAction) => userEcoAction.ecoAction, {
+  @OneToMany(() => UserEcoAction, (userEcoAction) => userEcoAction.ecoAction, {
     cascade: true,
   })
-  relatedUsers: EcoAction[];
+  userEcoActions: UserEcoAction[];
 }
 
 @InputType()

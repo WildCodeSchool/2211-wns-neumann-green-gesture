@@ -1,4 +1,12 @@
-import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
+import {
+  Arg,
+  Authorized,
+  Ctx,
+  Int,
+  Mutation,
+  Query,
+  Resolver,
+} from "type-graphql";
 import datasource from "../db";
 import { ContextType } from "..";
 import { UserSubscriptionType } from "../entity/User";
@@ -20,31 +28,29 @@ export class UserEcoActionResolver {
   ])
   @Query(() => UserEcoAction)
   async getUserEcoAction(
-    @Arg("ecoActionId") ecoActionId: number,
-    @Arg("groupId") groupId: number,
+    @Arg("ecoActionId", () => Int) ecoActionId: number,
+    @Arg("groupId", () => Int) groupId: number,
     @Ctx() { currentUser }: ContextType
   ): Promise<UserEcoAction> {
+    const ecoAction = await datasource.getRepository(EcoAction).findOne({
+      where: {
+        id: ecoActionId,
+      },
+    });
+
+    if (ecoAction === null) throw new ApolloError("EcoAction not found");
+
     const userEcoAction = await datasource
       .getRepository(UserEcoAction)
       .findOne({
         where: {
-          user: {
-            id: currentUser?.id,
-          },
-          ecoAction: {
-            id: ecoActionId,
-            groups: {
-              id: groupId,
-            },
-          },
+          user: { id: currentUser?.id },
+          ecoAction: { id: ecoActionId },
+          groupId,
         },
         relations: {
-          ecoAction: {
-            groups: true,
-            validations: true,
-            relatedUsers: true,
-          },
-          user: true,
+          ecoAction: true,
+          // user: true,
         },
       });
 
@@ -142,22 +148,20 @@ export class UserEcoActionResolver {
   ])
   @Mutation(() => String)
   async addPoints(
-    @Arg("data") { userEcoActionId, points }: UserEcoActionInputAddPoints
+    @Arg("data")
+    { ecoActionId, validationId, groupId, proof }: UserEcoActionInputAddPoints,
+    @Ctx() { currentUser }: ContextType
   ): Promise<string> {
-    const userEcoAction = await datasource
-      .getRepository(UserEcoAction)
-      .findOne({
-        where: {
-          id: userEcoActionId,
-        },
-      });
+    const userEcoAction = await datasource.getRepository(UserEcoAction).save({
+      user: { id: currentUser?.id },
+      ecoAction: { id: ecoActionId },
+      groupId,
+      validationId,
+      proof,
+    });
 
-    if (userEcoAction === null) {
+    if (userEcoAction === null)
       throw new ApolloError("UserEcoAction not found");
-    }
-
-    userEcoAction.validationId = points;
-    await datasource.getRepository(UserEcoAction).save(userEcoAction);
 
     return "Your points have been added";
   }

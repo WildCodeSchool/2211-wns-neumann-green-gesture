@@ -1,11 +1,5 @@
-import { Field, InputType, ObjectType } from "type-graphql";
-import {
-  Column,
-  Entity,
-  JoinTable,
-  ManyToMany,
-  PrimaryGeneratedColumn,
-} from "typeorm";
+import { Field, InputType, Int, ObjectType } from "type-graphql";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import User from "./User";
 import EcoAction from "./EcoAction";
 
@@ -18,19 +12,21 @@ export class UserEcoAction {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Field(() => [User])
-  @ManyToMany(() => User, (user) => user.relatedEcoActions, {
+  @Field(() => User)
+  @ManyToOne(() => User, (user) => user.relatedEcoActions, {
     onDelete: "CASCADE",
   })
-  @JoinTable()
-  user: User[];
+  user: User;
 
-  @Field(() => [EcoAction])
-  @ManyToMany(() => EcoAction, (ecoAction) => ecoAction.relatedUsers, {
+  @Field(() => EcoAction)
+  @ManyToOne(() => EcoAction, (ecoAction) => ecoAction.userEcoActions, {
     onDelete: "CASCADE",
   })
-  @JoinTable()
-  ecoAction: EcoAction[];
+  ecoAction: EcoAction;
+
+  @Field(() => Int)
+  @Column({ default: 0 })
+  groupId: number;
 
   @Field({ nullable: true, defaultValue: null })
   @Column({ nullable: true })
@@ -69,9 +65,15 @@ export class UserEcoActionInputAddLike {
 
 @InputType()
 export class UserEcoActionInputAddPoints {
-  @Field()
-  userEcoActionId: number;
+  @Field(() => Int)
+  ecoActionId: number;
 
-  @Field()
-  points: number;
+  @Field(() => Int)
+  groupId: number;
+
+  @Field(() => Int)
+  validationId: number;
+
+  @Field({ nullable: true })
+  proof?: string;
 }

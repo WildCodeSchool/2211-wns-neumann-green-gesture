@@ -7,14 +7,32 @@ import {
   DialogFooter,
   DialogClose,
 } from "@/components/ui/dialog";
+import {
+  useGetUserEcoActionQuery,
+  useGetValidationQuery,
+} from "@/gql/generated/schema";
 import { X } from "lucide-react";
 
 interface ValidationDetailsProps {
-  points: number;
-  proof?: string | null;
+  groupId: number;
+  ecoActionId: number;
 }
 
-const ValidationDetails = ({ points, proof }: ValidationDetailsProps) => {
+const ValidationDetails = ({
+  groupId,
+  ecoActionId,
+}: ValidationDetailsProps) => {
+  const { data, loading } = useGetUserEcoActionQuery({
+    variables: { groupId, ecoActionId },
+  });
+  const userEcoAction = data?.getUserEcoAction;
+
+  const { data: validationData, loading: validationLoading } =
+    useGetValidationQuery({
+      variables: { getValidationId: userEcoAction?.validationId || 0 },
+    });
+  const validation = validationData?.getValidation;
+
   return (
     <Dialog>
       <DialogTrigger className="text-xs text-accent-blue hover:text-[#0061c7]">
@@ -29,8 +47,8 @@ const ValidationDetails = ({ points, proof }: ValidationDetailsProps) => {
         <DialogHeader>
           <DialogTitle className="text-center">Ma note</DialogTitle>
         </DialogHeader>
-        <p className="text-center text-md text-accent-blue font-semibold my-1">{`${points} points`}</p>
-        {!proof ? (
+        <p className="text-center text-md text-accent-blue font-semibold my-1">{`${validation?.points} points`}</p>
+        {!userEcoAction?.proof ? (
           <h5 className="text-center text-md font-semibold my-1">
             Aucune preuve fournie
           </h5>
@@ -41,7 +59,7 @@ const ValidationDetails = ({ points, proof }: ValidationDetailsProps) => {
             </h5>
             <img
               className="max-h-48 max-w-48"
-              src={proof}
+              src={userEcoAction?.proof}
               alt="preuve de validation"
             />
           </div>

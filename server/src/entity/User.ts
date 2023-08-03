@@ -86,7 +86,7 @@ class User {
   createdEcoActions?: EcoAction[];
 
   @Field(() => [UserEcoAction])
-  @ManyToMany(() => UserEcoAction, (userEcoAction) => userEcoAction.user, {
+  @OneToMany(() => UserEcoAction, (userEcoAction) => userEcoAction.user, {
     cascade: true,
   })
   relatedEcoActions?: UserEcoAction[];

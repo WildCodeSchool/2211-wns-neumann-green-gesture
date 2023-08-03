@@ -22,12 +22,18 @@ import { Loading } from "@/pages/Loading";
 
 interface ValidationProps {
   ecoActionId: number;
-  userEcoActionId: number;
+  groupId: number;
+  refetchParent: () => void;
 }
 
-const Validation = ({ ecoActionId, userEcoActionId }: ValidationProps) => {
+const Validation = ({
+  ecoActionId,
+  groupId,
+  refetchParent,
+}: ValidationProps) => {
   const [open, setOpen] = useState(false);
   const [selectedPoint, setSelectedPoint] = useState<string>("0");
+  const [fileUrl, setFileUrl] = useState<string>("");
 
   const { data, loading } = useGetValidationsByEcoActionQuery({
     variables: { ecoActionId },
@@ -52,17 +58,25 @@ const Validation = ({ ecoActionId, userEcoActionId }: ValidationProps) => {
     e.preventDefault();
     try {
       if (
-        confirm(`Voulez-vous valider votre défi avec ${selectedPoint} points ?`)
+        confirm(
+          `Voulez-vous valider votre défi avec ${
+            validations?.find(
+              (validation) => validation.id.toString() === selectedPoint
+            )?.points
+          } points ?`
+        )
       )
         await addPoints({
           variables: {
             data: {
-              userEcoActionId: userEcoActionId,
-              points: parseInt(selectedPoint, 10),
+              ecoActionId,
+              groupId,
+              validationId: parseInt(selectedPoint),
+              proof: fileUrl,
             },
           },
         });
-      setOpen(false);
+      refetchParent();
     } catch (error) {
       console.log(error);
     }
@@ -108,7 +122,7 @@ const Validation = ({ ecoActionId, userEcoActionId }: ValidationProps) => {
           </RadioGroup>
           <h2 className=" text-center">J'ajoute une preuve</h2>
           <div className=" h-[100px] w-[90%] mt- 2mb-5 mx-auto flex justify-center items-center">
-            <FilesUploader userEcoActionId={userEcoActionId} />
+            <FilesUploader setFileUrl={setFileUrl} />
           </div>
           <DialogFooter className="flex flex-row justify-between sm:justify-evenly items-center">
             <DialogClose
