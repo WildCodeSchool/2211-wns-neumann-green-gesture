@@ -32,10 +32,6 @@ export class UserEcoAction {
   @Column({ nullable: true })
   proof?: string;
 
-  @Field()
-  @Column({ default: false })
-  hasLiked?: boolean;
-
   @Field(() => Number, { nullable: true })
   @Column({ nullable: true })
   validationId?: number;
@@ -49,18 +45,6 @@ export class UserEcoActionInputAddProof {
 
   @Field()
   userEcoActionId: number;
-}
-
-@InputType()
-export class UserEcoActionInputAddLike {
-  @Field()
-  hasLiked: boolean;
-
-  @Field()
-  ecoActionId: number;
-
-  @Field()
-  groupId: number;
 }
 
 @InputType()

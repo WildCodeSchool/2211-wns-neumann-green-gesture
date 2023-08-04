@@ -12,6 +12,7 @@ import Group from "./Group";
 import User from "./User";
 import Validation, { ValidationInputCreation } from "./Validation";
 import { UserEcoAction } from "./UserEcoAction";
+import LikeEcoAction from "./LikeEcoAction";
 
 @Entity()
 @ObjectType()
@@ -55,6 +56,12 @@ class EcoAction {
     cascade: true,
   })
   userEcoActions: UserEcoAction[];
+
+  @Field(() => [LikeEcoAction])
+  @OneToMany(() => LikeEcoAction, (like) => like.ecoAction, {
+    cascade: true,
+  })
+  likesList: LikeEcoAction[];
 }
 
 @InputType()

@@ -2,14 +2,13 @@ import {
   useGetMaxValidationPointsQuery,
   useGetUserEcoActionQuery,
   useGetValidationQuery,
-  useLikeEcoActionMutation,
 } from "@/gql/generated/schema";
 import { motion } from "framer-motion";
-import { Heart } from "lucide-react";
 import { Loading } from "@/pages/Loading";
 import EcoActionDetailsCard from "./EcoActionDetailsCard";
 import Validation from "./Validation";
 import ValidationDetails from "./ValidationDetails";
+import LikeComponent from "./LikeComponent";
 
 interface EcoCardProps {
   name: string;
@@ -45,26 +44,6 @@ const EcoCard = ({
     });
   const maxPoints = maxPointsData?.getMaxValidationPoints;
 
-  const [LikeEcoAction] = useLikeEcoActionMutation();
-
-  const handleLike = async () => {
-    try {
-      await LikeEcoAction({
-        variables: {
-          data: {
-            ecoActionId: ecoActionId,
-            groupId: groupId,
-            hasLiked: !userEcoAction?.hasLiked,
-          },
-        },
-      });
-    } catch (error) {
-      console.log(error);
-    } finally {
-      refetch();
-    }
-  };
-
   if (loading || validationLoading) return <Loading />;
 
   return (
@@ -80,10 +59,7 @@ const EcoCard = ({
           <h3 className="font-sans text-xs">
             {name} {validation?.points} / {maxPoints?.points}
           </h3>
-          <Heart
-            className={userEcoAction?.hasLiked ? "text-[#FF0101] w-4" : "w-4"}
-            onClick={() => handleLike()}
-          />
+          <LikeComponent ecoActionId={ecoActionId} />
         </div>
         <p className="font-sans text-2xs">
           {`${description.slice(0, 300)}...`}
@@ -91,7 +67,7 @@ const EcoCard = ({
         <div className="flex justify-between items-center mt-3">
           <EcoActionDetailsCard
             name={name}
-            likes={likes}
+            ecoActionId={ecoActionId}
             description={description}
           />
           {userEcoAction === undefined ? (

@@ -17,6 +17,7 @@ import EcoAction from "./EcoAction";
 import { Team } from "./Team";
 import { Company } from "./Company";
 import { UserEcoAction } from "./UserEcoAction";
+import LikeEcoAction from "./LikeEcoAction";
 
 export enum UserRole {
   ADMIN = "admin",
@@ -104,6 +105,12 @@ class User {
   })
   @JoinTable()
   friends: User[];
+
+  @Field(() => [LikeEcoAction])
+  @OneToMany(() => LikeEcoAction, (like) => like.user, {
+    cascade: true,
+  })
+  likes?: LikeEcoAction[];
 }
 
 @InputType()
