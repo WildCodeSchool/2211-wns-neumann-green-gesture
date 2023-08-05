@@ -1,7 +1,7 @@
 import {
   useGetMaxValidationPointsQuery,
   useGetUserEcoActionQuery,
-  useGetValidationQuery,
+  // useGetValidationQuery,
 } from "@/gql/generated/schema";
 import { motion } from "framer-motion";
 import { Loading } from "@/pages/Loading";
@@ -30,13 +30,13 @@ const EcoCard = ({
   });
   const userEcoAction = data?.getUserEcoAction;
 
-  const { data: validationData, loading: validationLoading } =
-    useGetValidationQuery({
-      variables: {
-        getValidationId: userEcoAction?.validationId || 0,
-      },
-    });
-  const validation = validationData?.getValidation;
+  // const { data: validationData, loading: validationLoading } =
+  //   useGetValidationQuery({
+  //     variables: {
+  //       getValidationId: userEcoAction?.validationId || 0,
+  //     },
+  //   });
+  // const validation = validationData?.getValidation;
 
   const { data: maxPointsData, loading: maxPointsLoading } =
     useGetMaxValidationPointsQuery({
@@ -44,7 +44,7 @@ const EcoCard = ({
     });
   const maxPoints = maxPointsData?.getMaxValidationPoints;
 
-  if (loading || validationLoading) return <Loading />;
+  if (loading) return <Loading />;
 
   return (
     <motion.div
@@ -57,7 +57,10 @@ const EcoCard = ({
       <div className="w-[100%] rounded-xl bg-grey-green my-5 px-3 pb-4 pt-2 hover:shadow-2xl transition ease-in-out delay-90">
         <div className="flex flex-row justify-between items-center">
           <h3 className="font-sans text-xs">
-            {name} {validation?.points} / {maxPoints?.points}
+            {name}{" "}
+            {userEcoAction !== null &&
+              userEcoAction !== undefined &&
+              `${userEcoAction?.points} / ${maxPoints?.points}`}
           </h3>
           <LikeComponent ecoActionId={ecoActionId} />
         </div>

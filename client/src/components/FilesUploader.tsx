@@ -1,19 +1,39 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import * as LR from "@uploadcare/blocks";
 import { PACKAGE_VERSION } from "@uploadcare/blocks";
+import { set } from "date-fns";
+import { useAddProofMutation } from "@/gql/generated/schema";
+import { tr } from "date-fns/locale";
 
 LR.registerBlocks(LR);
 
 interface FilesUploaderProps {
-  setFileUrl: (fileUrl: string) => void;
+  setFileUrl?: (fileUrl: string) => void;
+  userEcoActionId?: number;
 }
 
-const FilesUploader = ({ setFileUrl }: FilesUploaderProps) => {
+const FilesUploader = ({ setFileUrl, userEcoActionId }: FilesUploaderProps) => {
   const dataOutputRef = useRef<LR.DataOutput>();
+
+  const [addProof] = useAddProofMutation();
 
   const handleUploaderEvent = useCallback((e: CustomEvent<any>) => {
     const { data } = e.detail;
-    setFileUrl(data[0].cdnUrl);
+    if (setFileUrl) setFileUrl(data[0].cdnUrl);
+    if (userEcoActionId) {
+      try {
+        addProof({
+          variables: {
+            data: {
+              userEcoActionId,
+              proof: data[0].cdnUrl,
+            },
+          },
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    }
   }, []);
 
   useEffect(() => {

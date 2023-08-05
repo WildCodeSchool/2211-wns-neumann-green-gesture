@@ -34,7 +34,7 @@ export class UserEcoAction {
 
   @Field(() => Number, { nullable: true })
   @Column({ nullable: true })
-  validationId?: number;
+  points?: number;
 }
 
 @InputType()
@@ -56,7 +56,7 @@ export class UserEcoActionInputAddPoints {
   groupId: number;
 
   @Field(() => Int)
-  validationId: number;
+  points: number;
 
   @Field({ nullable: true })
   proof?: string;

@@ -77,22 +77,22 @@ export class UserEcoActionResolver {
     return "Your proof has been added";
   }
 
-  // Mutation for adding points to an userEcoAction
+  // Mutation for creating a userEcoAction and adding points to the user
   @Authorized<UserSubscriptionType>([
     UserSubscriptionType.FREE,
     UserSubscriptionType.PARTNER,
   ])
   @Mutation(() => String)
-  async addPoints(
+  async createUserEcoAction(
     @Arg("data")
-    { ecoActionId, validationId, groupId, proof }: UserEcoActionInputAddPoints,
+    { ecoActionId, points, groupId, proof }: UserEcoActionInputAddPoints,
     @Ctx() { currentUser }: ContextType
   ): Promise<string> {
     const userEcoAction = await datasource.getRepository(UserEcoAction).save({
       user: { id: currentUser?.id },
       ecoAction: { id: ecoActionId },
       groupId,
-      validationId,
+      points,
       proof,
     });
 
@@ -100,5 +100,30 @@ export class UserEcoActionResolver {
       throw new ApolloError("UserEcoAction not found");
 
     return "Your points have been added";
+  }
+
+  // Query for getting userEcoActions by groupId
+  @Authorized<UserSubscriptionType>([
+    UserSubscriptionType.FREE,
+    UserSubscriptionType.PARTNER,
+  ])
+  @Query(() => [UserEcoAction])
+  async getUserEcoActionsByGroupId(
+    @Arg("groupId", () => Int) groupId: number
+  ): Promise<UserEcoAction[]> {
+    const userEcoActions = await datasource.getRepository(UserEcoAction).find({
+      where: {
+        groupId,
+      },
+      relations: {
+        ecoAction: true,
+        user: { groups: { teams: true } },
+      },
+    });
+
+    if (userEcoActions === null)
+      throw new ApolloError("UserEcoAction not found");
+
+    return userEcoActions;
   }
 }

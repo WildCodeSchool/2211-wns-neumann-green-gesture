@@ -2,7 +2,7 @@ query GetUserEcoAction($groupId: Int!, $ecoActionId: Int!) {
   getUserEcoAction(groupId: $groupId, ecoActionId: $ecoActionId) {
     id
     proof
-    validationId
+    points
     groupId
     ecoAction {
       name

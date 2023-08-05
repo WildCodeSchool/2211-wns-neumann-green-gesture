@@ -15,7 +15,7 @@ import { Label } from "./ui/label";
 import FilesUploader from "./FilesUploader";
 import { X } from "lucide-react";
 import {
-  useAddPointsMutation,
+  useCreateUserEcoActionMutation,
   useGetValidationsByEcoActionQuery,
 } from "@/gql/generated/schema";
 import { Loading } from "@/pages/Loading";
@@ -40,11 +40,11 @@ const Validation = ({
   });
   const validations = data?.getValidationsByEcoAction;
 
-  const [addPoints] = useAddPointsMutation();
+  const [createUserEcoAction] = useCreateUserEcoActionMutation();
 
   useEffect(() => {
     if (validations && validations[0]) {
-      setSelectedPoint(validations[0].id.toString());
+      setSelectedPoint(validations[0].points.toString());
     }
   }, [validations]);
 
@@ -58,20 +58,14 @@ const Validation = ({
     e.preventDefault();
     try {
       if (
-        confirm(
-          `Voulez-vous valider votre défi avec ${
-            validations?.find(
-              (validation) => validation.id.toString() === selectedPoint
-            )?.points
-          } points ?`
-        )
+        confirm(`Voulez-vous valider votre défi avec ${selectedPoint} points ?`)
       )
-        await addPoints({
+        await createUserEcoAction({
           variables: {
             data: {
               ecoActionId,
               groupId,
-              validationId: parseInt(selectedPoint),
+              points: parseInt(selectedPoint),
               proof: fileUrl,
             },
           },
@@ -101,7 +95,7 @@ const Validation = ({
         </DialogHeader>
         <form onSubmit={(e) => handleSubmit(e)}>
           <RadioGroup
-            defaultValue={validations[0].id.toString()}
+            defaultValue={validations[0].points.toString()}
             className="flex flex-row justify-center h-11 mb-5"
             onValueChange={(value) => handleChange(value as string)}
           >
@@ -111,7 +105,7 @@ const Validation = ({
                 key={validation.id}
               >
                 <RadioGroupItem
-                  value={validation.id.toString()}
+                  value={validation.points.toString()}
                   id={validation.id.toString()}
                 />
                 <Label htmlFor={validation.id.toString()}>

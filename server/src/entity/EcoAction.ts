@@ -3,6 +3,7 @@ import { Field, InputType, ObjectType } from "type-graphql";
 import {
   Column,
   Entity,
+  JoinTable,
   ManyToMany,
   ManyToOne,
   OneToMany,
@@ -46,9 +47,10 @@ class EcoAction {
   groups?: Group[];
 
   @Field(() => [Validation])
-  @OneToMany(() => Validation, (validation) => validation.ecoAction, {
+  @ManyToMany(() => Validation, (validation) => validation.ecoAction, {
     cascade: true,
   })
+  @JoinTable({ name: "ecoAction_validations" })
   validations: Validation[];
 
   @Field(() => [UserEcoAction])

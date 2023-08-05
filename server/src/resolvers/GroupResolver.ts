@@ -9,7 +9,6 @@ import { ContextType } from "..";
 import User, { UserRole, UserSubscriptionType } from "../entity/User";
 import EcoAction from "../entity/EcoAction";
 import { In } from "typeorm";
-import { UserEcoAction } from "../entity/UserEcoAction";
 
 @Resolver(Group)
 export class GroupResolver {
@@ -49,15 +48,6 @@ export class GroupResolver {
       ecoActions,
     });
 
-    groupCreated.users.forEach((user) => {
-      groupCreated.ecoActions.forEach(async (ecoAction) => {
-        await datasource.getRepository(UserEcoAction).save({
-          user,
-          ecoAction,
-        });
-      });
-    });
-
     return groupCreated;
   }
 
@@ -79,12 +69,6 @@ export class GroupResolver {
 
     if (group !== null && user !== null) {
       group.users = [...group.users, user];
-      group.ecoActions.forEach(async (ecoAction) => {
-        await datasource.getRepository(UserEcoAction).save({
-          user,
-          ecoAction,
-        });
-      });
       return await datasource.getRepository(Group).save(group);
     }
 
@@ -153,10 +137,10 @@ export class GroupResolver {
   }
 
   // Query to get one group by his groupId
-  // @Authorized<UserSubscriptionType>([
-  //   UserSubscriptionType.PARTNER,
-  //   UserSubscriptionType.FREE,
-  // ])
+  @Authorized<UserSubscriptionType>([
+    UserSubscriptionType.PARTNER,
+    UserSubscriptionType.FREE,
+  ])
   @Query(() => Group)
   async getGroup(@Arg("groupId") groupId: number): Promise<Group> {
     const res = await datasource.getRepository(Group).findOne({
@@ -165,7 +149,7 @@ export class GroupResolver {
         author: true,
         users: true,
         ecoActions: { validations: true },
-        teams: { users: true },
+        teams: { users: { relatedEcoActions: true } },
       },
     });
 

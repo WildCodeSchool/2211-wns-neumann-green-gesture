@@ -112,7 +112,6 @@ export type Mutation = {
   __typename?: 'Mutation';
   addEcoActionsToGroup: Group;
   addFriend: User;
-  addPoints: Scalars['String']['output'];
   addProof: Scalars['String']['output'];
   addUserToGroup: Group;
   addUsersToCompany: Company;
@@ -124,6 +123,7 @@ export type Mutation = {
   createLike: LikeEcoAction;
   createTeams: Array<Team>;
   createUser: User;
+  createUserEcoAction: Scalars['String']['output'];
   deleteLike: Scalars['Boolean']['output'];
   login: Scalars['String']['output'];
   logout: Scalars['String']['output'];
@@ -138,11 +138,6 @@ export type MutationAddEcoActionsToGroupArgs = {
 
 export type MutationAddFriendArgs = {
   friendId: Scalars['Int']['input'];
-};
-
-
-export type MutationAddPointsArgs = {
-  data: UserEcoActionInputAddPoints;
 };
 
 
@@ -202,6 +197,11 @@ export type MutationCreateUserArgs = {
 };
 
 
+export type MutationCreateUserEcoActionArgs = {
+  data: UserEcoActionInputAddPoints;
+};
+
+
 export type MutationDeleteLikeArgs = {
   ecoActionId: Scalars['Int']['input'];
 };
@@ -252,6 +252,7 @@ export type Query = {
   getUserById: User;
   getUserEcoAction: UserEcoAction;
   getUserEcoActions: Array<EcoAction>;
+  getUserEcoActionsByGroupId: Array<UserEcoAction>;
   getUserGroups: Array<Group>;
   getUsers: Array<User>;
   getUsersAlreadyAdded: Array<User>;
@@ -296,6 +297,11 @@ export type QueryGetUserByIdArgs = {
 
 export type QueryGetUserEcoActionArgs = {
   ecoActionId: Scalars['Int']['input'];
+  groupId: Scalars['Int']['input'];
+};
+
+
+export type QueryGetUserEcoActionsByGroupIdArgs = {
   groupId: Scalars['Int']['input'];
 };
 
@@ -362,16 +368,16 @@ export type UserEcoAction = {
   ecoAction: EcoAction;
   groupId: Scalars['Int']['output'];
   id: Scalars['Float']['output'];
+  points?: Maybe<Scalars['Float']['output']>;
   proof?: Maybe<Scalars['String']['output']>;
   user: User;
-  validationId?: Maybe<Scalars['Float']['output']>;
 };
 
 export type UserEcoActionInputAddPoints = {
   ecoActionId: Scalars['Int']['input'];
   groupId: Scalars['Int']['input'];
+  points: Scalars['Int']['input'];
   proof?: InputMaybe<Scalars['String']['input']>;
-  validationId: Scalars['Int']['input'];
 };
 
 export type UserEcoActionInputAddProof = {
@@ -421,13 +427,6 @@ export type CreateLikeMutationVariables = Exact<{
 
 export type CreateLikeMutation = { __typename?: 'Mutation', createLike: { __typename?: 'LikeEcoAction', id: number } };
 
-export type AddPointsMutationVariables = Exact<{
-  data: UserEcoActionInputAddPoints;
-}>;
-
-
-export type AddPointsMutation = { __typename?: 'Mutation', addPoints: string };
-
 export type AddProofMutationVariables = Exact<{
   data: UserEcoActionInputAddProof;
 }>;
@@ -448,6 +447,13 @@ export type CreateTeamsMutationVariables = Exact<{
 
 
 export type CreateTeamsMutation = { __typename?: 'Mutation', createTeams: Array<{ __typename?: 'Team', id: number, name: string, users?: Array<{ __typename?: 'User', id: number, firstName: string, lastName: string, email: string }> | null }> };
+
+export type CreateUserEcoActionMutationVariables = Exact<{
+  data: UserEcoActionInputAddPoints;
+}>;
+
+
+export type CreateUserEcoActionMutation = { __typename?: 'Mutation', createUserEcoAction: string };
 
 export type DeleteLikeMutationVariables = Exact<{
   ecoActionId: Scalars['Int']['input'];
@@ -504,6 +510,13 @@ export type GetPopularFreeEcoActionsQueryVariables = Exact<{ [key: string]: neve
 
 export type GetPopularFreeEcoActionsQuery = { __typename?: 'Query', getPopularFreeEcoActions: Array<{ __typename?: 'EcoAction', id: number, name: string, likes: number, description: string }> };
 
+export type GetUserEcoActionsByGroupIdQueryVariables = Exact<{
+  groupId: Scalars['Int']['input'];
+}>;
+
+
+export type GetUserEcoActionsByGroupIdQuery = { __typename?: 'Query', getUserEcoActionsByGroupId: Array<{ __typename?: 'UserEcoAction', id: number, groupId: number, points?: number | null, user: { __typename?: 'User', id: number } }> };
+
 export type GetUserByIdQueryVariables = Exact<{
   getUserById: Scalars['Int']['input'];
 }>;
@@ -517,7 +530,7 @@ export type GetUserEcoActionQueryVariables = Exact<{
 }>;
 
 
-export type GetUserEcoActionQuery = { __typename?: 'Query', getUserEcoAction: { __typename?: 'UserEcoAction', id: number, proof?: string | null, validationId?: number | null, groupId: number, ecoAction: { __typename?: 'EcoAction', name: string, description: string, likes: number } } };
+export type GetUserEcoActionQuery = { __typename?: 'Query', getUserEcoAction: { __typename?: 'UserEcoAction', id: number, proof?: string | null, points?: number | null, groupId: number, ecoAction: { __typename?: 'EcoAction', name: string, description: string, likes: number } } };
 
 export type GetUserEcoActionsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -667,37 +680,6 @@ export function useCreateLikeMutation(baseOptions?: Apollo.MutationHookOptions<C
 export type CreateLikeMutationHookResult = ReturnType<typeof useCreateLikeMutation>;
 export type CreateLikeMutationResult = Apollo.MutationResult<CreateLikeMutation>;
 export type CreateLikeMutationOptions = Apollo.BaseMutationOptions<CreateLikeMutation, CreateLikeMutationVariables>;
-export const AddPointsDocument = gql`
-    mutation AddPoints($data: UserEcoActionInputAddPoints!) {
-  addPoints(data: $data)
-}
-    `;
-export type AddPointsMutationFn = Apollo.MutationFunction<AddPointsMutation, AddPointsMutationVariables>;
-
-/**
- * __useAddPointsMutation__
- *
- * To run a mutation, you first call `useAddPointsMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAddPointsMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [addPointsMutation, { data, loading, error }] = useAddPointsMutation({
- *   variables: {
- *      data: // value for 'data'
- *   },
- * });
- */
-export function useAddPointsMutation(baseOptions?: Apollo.MutationHookOptions<AddPointsMutation, AddPointsMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<AddPointsMutation, AddPointsMutationVariables>(AddPointsDocument, options);
-      }
-export type AddPointsMutationHookResult = ReturnType<typeof useAddPointsMutation>;
-export type AddPointsMutationResult = Apollo.MutationResult<AddPointsMutation>;
-export type AddPointsMutationOptions = Apollo.BaseMutationOptions<AddPointsMutation, AddPointsMutationVariables>;
 export const AddProofDocument = gql`
     mutation AddProof($data: UserEcoActionInputAddProof!) {
   addProof(data: $data)
@@ -803,6 +785,37 @@ export function useCreateTeamsMutation(baseOptions?: Apollo.MutationHookOptions<
 export type CreateTeamsMutationHookResult = ReturnType<typeof useCreateTeamsMutation>;
 export type CreateTeamsMutationResult = Apollo.MutationResult<CreateTeamsMutation>;
 export type CreateTeamsMutationOptions = Apollo.BaseMutationOptions<CreateTeamsMutation, CreateTeamsMutationVariables>;
+export const CreateUserEcoActionDocument = gql`
+    mutation CreateUserEcoAction($data: UserEcoActionInputAddPoints!) {
+  createUserEcoAction(data: $data)
+}
+    `;
+export type CreateUserEcoActionMutationFn = Apollo.MutationFunction<CreateUserEcoActionMutation, CreateUserEcoActionMutationVariables>;
+
+/**
+ * __useCreateUserEcoActionMutation__
+ *
+ * To run a mutation, you first call `useCreateUserEcoActionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateUserEcoActionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createUserEcoActionMutation, { data, loading, error }] = useCreateUserEcoActionMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useCreateUserEcoActionMutation(baseOptions?: Apollo.MutationHookOptions<CreateUserEcoActionMutation, CreateUserEcoActionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateUserEcoActionMutation, CreateUserEcoActionMutationVariables>(CreateUserEcoActionDocument, options);
+      }
+export type CreateUserEcoActionMutationHookResult = ReturnType<typeof useCreateUserEcoActionMutation>;
+export type CreateUserEcoActionMutationResult = Apollo.MutationResult<CreateUserEcoActionMutation>;
+export type CreateUserEcoActionMutationOptions = Apollo.BaseMutationOptions<CreateUserEcoActionMutation, CreateUserEcoActionMutationVariables>;
 export const DeleteLikeDocument = gql`
     mutation DeleteLike($ecoActionId: Int!) {
   deleteLike(ecoActionId: $ecoActionId)
@@ -1205,6 +1218,46 @@ export function useGetPopularFreeEcoActionsLazyQuery(baseOptions?: Apollo.LazyQu
 export type GetPopularFreeEcoActionsQueryHookResult = ReturnType<typeof useGetPopularFreeEcoActionsQuery>;
 export type GetPopularFreeEcoActionsLazyQueryHookResult = ReturnType<typeof useGetPopularFreeEcoActionsLazyQuery>;
 export type GetPopularFreeEcoActionsQueryResult = Apollo.QueryResult<GetPopularFreeEcoActionsQuery, GetPopularFreeEcoActionsQueryVariables>;
+export const GetUserEcoActionsByGroupIdDocument = gql`
+    query GetUserEcoActionsByGroupId($groupId: Int!) {
+  getUserEcoActionsByGroupId(groupId: $groupId) {
+    id
+    groupId
+    points
+    user {
+      id
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetUserEcoActionsByGroupIdQuery__
+ *
+ * To run a query within a React component, call `useGetUserEcoActionsByGroupIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUserEcoActionsByGroupIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUserEcoActionsByGroupIdQuery({
+ *   variables: {
+ *      groupId: // value for 'groupId'
+ *   },
+ * });
+ */
+export function useGetUserEcoActionsByGroupIdQuery(baseOptions: Apollo.QueryHookOptions<GetUserEcoActionsByGroupIdQuery, GetUserEcoActionsByGroupIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetUserEcoActionsByGroupIdQuery, GetUserEcoActionsByGroupIdQueryVariables>(GetUserEcoActionsByGroupIdDocument, options);
+      }
+export function useGetUserEcoActionsByGroupIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUserEcoActionsByGroupIdQuery, GetUserEcoActionsByGroupIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetUserEcoActionsByGroupIdQuery, GetUserEcoActionsByGroupIdQueryVariables>(GetUserEcoActionsByGroupIdDocument, options);
+        }
+export type GetUserEcoActionsByGroupIdQueryHookResult = ReturnType<typeof useGetUserEcoActionsByGroupIdQuery>;
+export type GetUserEcoActionsByGroupIdLazyQueryHookResult = ReturnType<typeof useGetUserEcoActionsByGroupIdLazyQuery>;
+export type GetUserEcoActionsByGroupIdQueryResult = Apollo.QueryResult<GetUserEcoActionsByGroupIdQuery, GetUserEcoActionsByGroupIdQueryVariables>;
 export const GetUserByIdDocument = gql`
     query GetUserById($getUserById: Int!) {
   getUserById(id: $getUserById) {
@@ -1251,7 +1304,7 @@ export const GetUserEcoActionDocument = gql`
   getUserEcoAction(groupId: $groupId, ecoActionId: $ecoActionId) {
     id
     proof
-    validationId
+    points
     groupId
     ecoAction {
       name

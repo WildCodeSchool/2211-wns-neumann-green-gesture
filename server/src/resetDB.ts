@@ -57,6 +57,17 @@ async function resetDB(): Promise<void> {
     friends: [admin],
   });
 
+  // create validation for eco action
+  let i = 0;
+  const validations = [];
+  for (i = 0; i < 11; i++) {
+    validations.push({
+      name: `Validation ${i}`,
+      points: i,
+    });
+  }
+  await datasource.getRepository(Validation).save(validations);
+
   // create Company for userPartner
   await datasource.getRepository(Company).save({
     name: "Company 1",
@@ -71,22 +82,10 @@ async function resetDB(): Promise<void> {
       description: "EcoAction 1 description",
       author: userPartner,
       validations: [
-        {
-          name: "Validation 0",
-          points: 0,
-        },
-        {
-          name: "Validation 1",
-          points: 1,
-        },
-        {
-          name: "Validation 2",
-          points: 2,
-        },
-        {
-          name: "Validation 3",
-          points: 3,
-        },
+        validations[0],
+        validations[1],
+        validations[2],
+        validations[3],
       ],
     },
     {
@@ -94,22 +93,10 @@ async function resetDB(): Promise<void> {
       description: "EcoAction 2 description",
       author: userPartner,
       validations: [
-        {
-          name: "Validation 0",
-          points: 0,
-        },
-        {
-          name: "Validation 1",
-          points: 1,
-        },
-        {
-          name: "Validation 2",
-          points: 2,
-        },
-        {
-          name: "Validation 3",
-          points: 3,
-        },
+        validations[0],
+        validations[2],
+        validations[4],
+        validations[6],
       ],
     },
     {
@@ -117,22 +104,10 @@ async function resetDB(): Promise<void> {
       description:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec euismod, nisl eget aliquam ultricies, nunc nisl aliquet nunc, vitae aliquam nisl nunc sit amet nisl. Donec euismod, nisl eget aliquam ultricies, nunc nisl aliquet nunc, vitae aliquam nisl nunc sit amet nisl.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec euismod, nisl eget aliquam ultricies, nunc nisl aliquet nunc, vitae aliquam nisl nunc sit amet nisl. Donec euismod, nisl eget aliquam ultricies, nunc nisl aliquet nunc, vitae aliquam nisl nunc sit amet nisl",
       validations: [
-        {
-          name: "Validation 0",
-          points: 0,
-        },
-        {
-          name: "Validation 1",
-          points: 1,
-        },
-        {
-          name: "Validation 2",
-          points: 2,
-        },
-        {
-          name: "Validation 3",
-          points: 3,
-        },
+        validations[0],
+        validations[3],
+        validations[6],
+        validations[9],
       ],
     },
   ]);
@@ -188,49 +163,49 @@ async function resetDB(): Promise<void> {
       user: userFree,
       groupId: groups[2].id,
       ecoAction: ecoActions[0],
-      validationId: ecoActions[0].validations[0].id,
+      points: ecoActions[0].validations[0].points,
     },
     {
       user: userFree,
       groupId: groups[2].id,
       ecoAction: ecoActions[1],
-      validationId: ecoActions[1].validations[2].id,
+      points: ecoActions[1].validations[2].points,
     },
     {
       user: userFree,
       groupId: groups[1].id,
       ecoAction: ecoActions[2],
-      validationId: ecoActions[2].validations[0].id,
+      points: ecoActions[2].validations[0].points,
     },
     {
       user: userPartner,
       groupId: groups[0].id,
       ecoAction: ecoActions[0],
-      validationId: ecoActions[0].validations[1].id,
+      points: ecoActions[0].validations[1].points,
     },
     {
       user: userPartner,
       groupId: groups[0].id,
       ecoAction: ecoActions[1],
-      validationId: ecoActions[1].validations[2].id,
+      points: ecoActions[1].validations[2].points,
     },
     {
       user: userPartner,
       groupId: groups[1].id,
       ecoAction: ecoActions[1],
-      validationId: ecoActions[1].validations[1].id,
+      points: ecoActions[1].validations[1].points,
     },
     {
       user: admin,
       groupId: groups[0].id,
       ecoAction: ecoActions[0],
-      validationId: ecoActions[0].validations[2].id,
+      points: ecoActions[0].validations[2].points,
     },
     {
       user: admin,
       groupId: groups[1].id,
       ecoAction: ecoActions[1],
-      validationId: ecoActions[1].validations[1].id,
+      points: ecoActions[1].validations[1].points,
     },
   ]);
 
