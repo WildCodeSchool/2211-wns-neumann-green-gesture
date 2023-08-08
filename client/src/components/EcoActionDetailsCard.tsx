@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+
 import {
   Dialog,
   DialogClose,
@@ -6,23 +8,45 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Loading } from "@/pages/Loading";
 import { ThumbsUp } from "lucide-react";
 import { X } from "lucide-react";
 
+import { useGetNumberLikesQuery } from "@/gql/generated/schema";
+
 interface EcoActionDetailsCardProps {
   name: string;
-  likes: number;
+  ecoActionId: number;
   description: string;
 }
 
 const EcoActionDetailsCard = ({
   name,
-  likes,
+  ecoActionId,
   description,
 }: EcoActionDetailsCardProps) => {
+  const { data, loading, refetch } = useGetNumberLikesQuery({
+    variables: { ecoActionId },
+  });
+  const [likes, setLikes] = useState<number | undefined>(data?.getNumberLikes);
+
+  useEffect(() => {
+    setLikes(data?.getNumberLikes);
+  }, [data?.getNumberLikes]);
+
+  const handleClick = async () => {
+    await refetch();
+    setLikes(data?.getNumberLikes);
+  };
+
+  if (loading) return <Loading />;
+
   return (
     <Dialog>
-      <DialogTrigger className="text-xs text-accent-blue hover:text-[#0061c7]">
+      <DialogTrigger
+        className="text-xs text-accent-blue hover:text-[#0061c7]"
+        onClick={() => handleClick()}
+      >
         VOIR PLUS
       </DialogTrigger>
       <DialogContent className="bg-grey-green border-0">

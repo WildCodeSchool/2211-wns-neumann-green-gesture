@@ -15,30 +15,36 @@ import { Label } from "./ui/label";
 import FilesUploader from "./FilesUploader";
 import { X } from "lucide-react";
 import {
-  useAddPointsMutation,
+  useCreateUserEcoActionMutation,
   useGetValidationsByEcoActionQuery,
 } from "@/gql/generated/schema";
 import { Loading } from "@/pages/Loading";
 
 interface ValidationProps {
   ecoActionId: number;
-  userEcoActionId: number;
+  groupId: number;
+  refetchParent: () => void;
 }
 
-const Validation = ({ ecoActionId, userEcoActionId }: ValidationProps) => {
+const Validation = ({
+  ecoActionId,
+  groupId,
+  refetchParent,
+}: ValidationProps) => {
   const [open, setOpen] = useState(false);
   const [selectedPoint, setSelectedPoint] = useState<string>("0");
+  const [fileUrl, setFileUrl] = useState<string>("");
 
   const { data, loading } = useGetValidationsByEcoActionQuery({
     variables: { ecoActionId },
   });
   const validations = data?.getValidationsByEcoAction;
 
-  const [addPoints] = useAddPointsMutation();
+  const [createUserEcoAction] = useCreateUserEcoActionMutation();
 
   useEffect(() => {
     if (validations && validations[0]) {
-      setSelectedPoint(validations[0].id.toString());
+      setSelectedPoint(validations[0].points.toString());
     }
   }, [validations]);
 
@@ -54,15 +60,17 @@ const Validation = ({ ecoActionId, userEcoActionId }: ValidationProps) => {
       if (
         confirm(`Voulez-vous valider votre défi avec ${selectedPoint} points ?`)
       )
-        await addPoints({
+        await createUserEcoAction({
           variables: {
             data: {
-              userEcoActionId: userEcoActionId,
-              points: parseInt(selectedPoint, 10),
+              ecoActionId,
+              groupId,
+              points: parseInt(selectedPoint),
+              proof: fileUrl,
             },
           },
         });
-      setOpen(false);
+      refetchParent();
     } catch (error) {
       console.log(error);
     }
@@ -87,7 +95,7 @@ const Validation = ({ ecoActionId, userEcoActionId }: ValidationProps) => {
         </DialogHeader>
         <form onSubmit={(e) => handleSubmit(e)}>
           <RadioGroup
-            defaultValue={validations[0].id.toString()}
+            defaultValue={validations[0].points.toString()}
             className="flex flex-row justify-center h-11 mb-5"
             onValueChange={(value) => handleChange(value as string)}
           >
@@ -97,7 +105,7 @@ const Validation = ({ ecoActionId, userEcoActionId }: ValidationProps) => {
                 key={validation.id}
               >
                 <RadioGroupItem
-                  value={validation.id.toString()}
+                  value={validation.points.toString()}
                   id={validation.id.toString()}
                 />
                 <Label htmlFor={validation.id.toString()}>
@@ -108,7 +116,7 @@ const Validation = ({ ecoActionId, userEcoActionId }: ValidationProps) => {
           </RadioGroup>
           <h2 className=" text-center">J'ajoute une preuve</h2>
           <div className=" h-[100px] w-[90%] mt- 2mb-5 mx-auto flex justify-center items-center">
-            <FilesUploader userEcoActionId={userEcoActionId} />
+            <FilesUploader setFileUrl={setFileUrl} />
           </div>
           <DialogFooter className="flex flex-row justify-between sm:justify-evenly items-center">
             <DialogClose

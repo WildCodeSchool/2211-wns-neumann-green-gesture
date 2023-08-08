@@ -48,6 +48,7 @@ export class ValidationResolver {
   ): Promise<Validation[]> {
     const validations = await datasource.getRepository(Validation).find({
       where: { ecoAction: { id: ecoActionId } },
+      order: { points: "ASC" },
     });
 
     if (validations === null) throw new Error("Validation not found");

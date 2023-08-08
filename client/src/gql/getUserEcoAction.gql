@@ -1,17 +1,13 @@
-query GetUserEcoAction($ecoActionId: Float!, $groupId: Float!) {
-  getUserEcoAction(ecoActionId: $ecoActionId, groupId: $groupId) {
+query GetUserEcoAction($groupId: Int!, $ecoActionId: Int!) {
+  getUserEcoAction(groupId: $groupId, ecoActionId: $ecoActionId) {
     id
-    hasLiked
     proof
-    validationId
+    points
+    groupId
     ecoAction {
-      id
       name
       description
       likes
-      groups {
-        challengeName
-      }
     }
   }
 }

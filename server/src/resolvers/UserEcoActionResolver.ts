@@ -1,15 +1,21 @@
-import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
+import {
+  Arg,
+  Authorized,
+  Ctx,
+  Int,
+  Mutation,
+  Query,
+  Resolver,
+} from "type-graphql";
 import datasource from "../db";
 import { ContextType } from "..";
 import { UserSubscriptionType } from "../entity/User";
 import {
   UserEcoAction,
-  UserEcoActionInputAddLike,
   UserEcoActionInputAddPoints,
   UserEcoActionInputAddProof,
 } from "../entity/UserEcoAction";
 import { ApolloError } from "apollo-server-errors";
-import EcoAction from "../entity/EcoAction";
 
 @Resolver(UserEcoAction)
 export class UserEcoActionResolver {
@@ -20,30 +26,20 @@ export class UserEcoActionResolver {
   ])
   @Query(() => UserEcoAction)
   async getUserEcoAction(
-    @Arg("ecoActionId") ecoActionId: number,
-    @Arg("groupId") groupId: number,
+    @Arg("ecoActionId", () => Int) ecoActionId: number,
+    @Arg("groupId", () => Int) groupId: number,
     @Ctx() { currentUser }: ContextType
   ): Promise<UserEcoAction> {
     const userEcoAction = await datasource
       .getRepository(UserEcoAction)
       .findOne({
         where: {
-          user: {
-            id: currentUser?.id,
-          },
-          ecoAction: {
-            id: ecoActionId,
-            groups: {
-              id: groupId,
-            },
-          },
+          user: { id: currentUser?.id },
+          ecoAction: { id: ecoActionId },
+          groupId,
         },
         relations: {
-          ecoAction: {
-            groups: true,
-            validations: true,
-            relatedUsers: true,
-          },
+          ecoAction: true,
           user: true,
         },
       });
@@ -81,84 +77,53 @@ export class UserEcoActionResolver {
     return "Your proof has been added";
   }
 
-  // Mutation for liking an ecoAction
+  // Mutation for creating a userEcoAction and adding points to the user
   @Authorized<UserSubscriptionType>([
     UserSubscriptionType.FREE,
     UserSubscriptionType.PARTNER,
   ])
   @Mutation(() => String)
-  async likeEcoAction(
+  async createUserEcoAction(
     @Arg("data")
-    { hasLiked, ecoActionId, groupId }: UserEcoActionInputAddLike,
+    { ecoActionId, points, groupId, proof }: UserEcoActionInputAddPoints,
     @Ctx() { currentUser }: ContextType
   ): Promise<string> {
-    const userEcoAction = await datasource
-      .getRepository(UserEcoAction)
-      .findOne({
-        where: {
-          user: {
-            id: currentUser?.id,
-          },
-          ecoAction: {
-            id: ecoActionId,
-            groups: {
-              id: groupId,
-            },
-          },
-        },
-        relations: {
-          ecoAction: {
-            groups: true,
-            validations: true,
-          },
-          user: true,
-        },
-      });
+    const userEcoAction = await datasource.getRepository(UserEcoAction).save({
+      user: { id: currentUser?.id },
+      ecoAction: { id: ecoActionId },
+      groupId,
+      points,
+      proof,
+    });
 
-    if (userEcoAction === null) {
+    if (userEcoAction === null)
       throw new ApolloError("UserEcoAction not found");
-    }
 
-    userEcoAction.hasLiked = hasLiked;
-    await datasource.getRepository(UserEcoAction).save(userEcoAction);
-
-    // update ecoAction likes
-    const ecoAction = await datasource
-      .getRepository(EcoAction)
-      .findOneBy({ id: ecoActionId });
-    if (ecoAction === null) {
-      throw new ApolloError("EcoAction not found");
-    }
-    ecoAction.likes = hasLiked ? +ecoAction.likes + 1 : +ecoAction.likes - 1;
-    await datasource.getRepository(EcoAction).save(ecoAction);
-
-    return "Your like has been added";
+    return "Your points have been added";
   }
 
-  // Mutation for adding points to an userEcoAction
+  // Query for getting userEcoActions by groupId
   @Authorized<UserSubscriptionType>([
     UserSubscriptionType.FREE,
     UserSubscriptionType.PARTNER,
   ])
-  @Mutation(() => String)
-  async addPoints(
-    @Arg("data") { userEcoActionId, points }: UserEcoActionInputAddPoints
-  ): Promise<string> {
-    const userEcoAction = await datasource
-      .getRepository(UserEcoAction)
-      .findOne({
-        where: {
-          id: userEcoActionId,
-        },
-      });
+  @Query(() => [UserEcoAction])
+  async getUserEcoActionsByGroupId(
+    @Arg("groupId", () => Int) groupId: number
+  ): Promise<UserEcoAction[]> {
+    const userEcoActions = await datasource.getRepository(UserEcoAction).find({
+      where: {
+        groupId,
+      },
+      relations: {
+        ecoAction: true,
+        user: { groups: { teams: true } },
+      },
+    });
 
-    if (userEcoAction === null) {
+    if (userEcoActions === null)
       throw new ApolloError("UserEcoAction not found");
-    }
 
-    userEcoAction.validationId = points;
-    await datasource.getRepository(UserEcoAction).save(userEcoAction);
-
-    return "Your points have been added";
+    return userEcoActions;
   }
 }

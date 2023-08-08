@@ -1,3 +1,0 @@
-mutation LikeEcoAction($data: UserEcoActionInputAddLike!) {
-  likeEcoAction(data: $data)
-}

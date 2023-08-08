@@ -1,41 +1,39 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import * as LR from "@uploadcare/blocks";
 import { PACKAGE_VERSION } from "@uploadcare/blocks";
+import { set } from "date-fns";
 import { useAddProofMutation } from "@/gql/generated/schema";
+import { tr } from "date-fns/locale";
 
 LR.registerBlocks(LR);
 
 interface FilesUploaderProps {
-  userEcoActionId: number;
+  setFileUrl?: (fileUrl: string) => void;
+  userEcoActionId?: number;
 }
 
-const FilesUploader = ({ userEcoActionId }: FilesUploaderProps) => {
+const FilesUploader = ({ setFileUrl, userEcoActionId }: FilesUploaderProps) => {
   const dataOutputRef = useRef<LR.DataOutput>();
-  const [files, setFiles] = useState<any[]>([]);
 
   const [addProof] = useAddProofMutation();
 
-  const handleUpload = async (data: any) => {
-    try {
-      await addProof({
-        variables: {
-          data: {
-            userEcoActionId: userEcoActionId,
-            proof: data[0].cdnUrl,
-          },
-        },
-      });
-      console.log("image uploaded");
-      console.log(data[0]);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const handleUploaderEvent = useCallback((e: CustomEvent<any>) => {
     const { data } = e.detail;
-    setFiles(data);
-    handleUpload(data);
+    if (setFileUrl) setFileUrl(data[0].cdnUrl);
+    if (userEcoActionId) {
+      try {
+        addProof({
+          variables: {
+            data: {
+              userEcoActionId,
+              proof: data[0].cdnUrl,
+            },
+          },
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    }
   }, []);
 
   useEffect(() => {

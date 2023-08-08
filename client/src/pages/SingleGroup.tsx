@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import {
   useGetCommentsForGroupQuery,
   useGetGroupQuery,
+  useGetUserEcoActionsByGroupIdQuery,
 } from "@/gql/generated/schema";
 import { Loading } from "./Loading";
 import {
@@ -28,7 +29,6 @@ const SingleGroup = () => {
     variables: { groupId: parseInt(id || "0", 10) },
   });
   const challenge = challengeData?.getGroup;
-  console.log("challenge", challenge);
 
   const { data: commentData, loading: commentLoading } =
     useGetCommentsForGroupQuery({
@@ -36,9 +36,23 @@ const SingleGroup = () => {
     });
   const comments = commentData?.getCommentsForGroup;
 
-  const { currentUser, loading: currentUseLoading } = useCurrentUser();
+  const { data: userEcoActionData } = useGetUserEcoActionsByGroupIdQuery({
+    variables: { groupId: challenge?.id || 0 },
+  });
+  const userEcoActions = userEcoActionData?.getUserEcoActionsByGroupId;
 
-  if (groupLoading || commentLoading || currentUseLoading) return <Loading />;
+  const { currentUser, loading: currentUserLoading } = useCurrentUser();
+
+  const getTotalMaxPoints = () => {
+    let total = 0;
+    challenge?.ecoActions.forEach((eco) => {
+      total += Math.max(...eco.validations.map((v) => v.points));
+    });
+    return total;
+  };
+  const totalMaxPoints = getTotalMaxPoints();
+
+  if (groupLoading || commentLoading || currentUserLoading) return <Loading />;
 
   return (
     <>
@@ -106,6 +120,7 @@ const SingleGroup = () => {
                     name={eco.name}
                     description={eco.description}
                     ecoActionId={eco.id}
+                    likes={eco.likes}
                     groupId={challenge.id}
                   />
                 ))}
@@ -119,8 +134,7 @@ const SingleGroup = () => {
                 exit={{ x: -100 }}
               >
                 <div>
-                  {currentUser?.subscriptionType === "partner" &&
-                  challenge?.teams.length
+                  {challenge?.teams.length
                     ? challenge?.teams.map((team) => {
                         if (!team || !team.users) return null;
                         return (
@@ -146,7 +160,19 @@ const SingleGroup = () => {
                                 </NavigationMenuList>
                               </NavigationMenu>
                               <p className="text-[.9rem] font-bold">
-                                3 / 9 points
+                                {`${team?.users
+                                  ?.map((user) =>
+                                    userEcoActions
+                                      ?.filter((ua) => ua.user.id === user.id)
+                                      .reduce(
+                                        (acc, curr) => acc + (curr.points ?? 0),
+                                        0
+                                      )
+                                  )
+                                  .reduce(
+                                    (acc, curr) => (acc ?? 0) + (curr ?? 0),
+                                    0
+                                  )} / ${totalMaxPoints} points`}
                               </p>
                             </div>
                           </div>
@@ -158,7 +184,15 @@ const SingleGroup = () => {
                           key={user.id}
                         >
                           <p className="text-[.9rem]">{user.firstName}</p>
-                          <p className="text-[.9rem] font-bold">3 / 9 points</p>
+                          <p className="text-[.9rem] font-bold">
+                            {" "}
+                            {`${userEcoActions
+                              ?.filter((ua) => ua.user.id === user.id)
+                              .reduce(
+                                (acc, curr) => acc + (curr.points ?? 0),
+                                0
+                              )} / ${totalMaxPoints} points`}
+                          </p>
                         </div>
                       ))}
                 </div>

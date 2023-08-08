@@ -17,6 +17,7 @@ import EcoAction from "./EcoAction";
 import { Team } from "./Team";
 import { Company } from "./Company";
 import { UserEcoAction } from "./UserEcoAction";
+import LikeEcoAction from "./LikeEcoAction";
 
 export enum UserRole {
   ADMIN = "admin",
@@ -86,7 +87,7 @@ class User {
   createdEcoActions?: EcoAction[];
 
   @Field(() => [UserEcoAction])
-  @ManyToMany(() => UserEcoAction, (userEcoAction) => userEcoAction.user, {
+  @OneToMany(() => UserEcoAction, (userEcoAction) => userEcoAction.user, {
     cascade: true,
   })
   relatedEcoActions?: UserEcoAction[];
@@ -104,6 +105,12 @@ class User {
   })
   @JoinTable()
   friends: User[];
+
+  @Field(() => [LikeEcoAction])
+  @OneToMany(() => LikeEcoAction, (like) => like.user, {
+    cascade: true,
+  })
+  likes?: LikeEcoAction[];
 }
 
 @InputType()

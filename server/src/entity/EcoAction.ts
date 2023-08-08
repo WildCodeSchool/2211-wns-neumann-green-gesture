@@ -3,6 +3,7 @@ import { Field, InputType, ObjectType } from "type-graphql";
 import {
   Column,
   Entity,
+  JoinTable,
   ManyToMany,
   ManyToOne,
   OneToMany,
@@ -12,6 +13,7 @@ import Group from "./Group";
 import User from "./User";
 import Validation, { ValidationInputCreation } from "./Validation";
 import { UserEcoAction } from "./UserEcoAction";
+import LikeEcoAction from "./LikeEcoAction";
 
 @Entity()
 @ObjectType()
@@ -45,16 +47,23 @@ class EcoAction {
   groups?: Group[];
 
   @Field(() => [Validation])
-  @OneToMany(() => Validation, (validation) => validation.ecoAction, {
+  @ManyToMany(() => Validation, (validation) => validation.ecoAction, {
     cascade: true,
   })
+  @JoinTable({ name: "ecoAction_validations" })
   validations: Validation[];
 
   @Field(() => [UserEcoAction])
-  @ManyToMany(() => UserEcoAction, (userEcoAction) => userEcoAction.ecoAction, {
+  @OneToMany(() => UserEcoAction, (userEcoAction) => userEcoAction.ecoAction, {
     cascade: true,
   })
-  relatedUsers: EcoAction[];
+  userEcoActions: UserEcoAction[];
+
+  @Field(() => [LikeEcoAction])
+  @OneToMany(() => LikeEcoAction, (like) => like.ecoAction, {
+    cascade: true,
+  })
+  likesList: LikeEcoAction[];
 }
 
 @InputType()
