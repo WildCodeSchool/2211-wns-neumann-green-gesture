@@ -224,4 +224,35 @@ export class UserResolver {
 
     return user;
   }
+
+  @Authorized<UserSubscriptionType>([
+    UserSubscriptionType.PARTNER,
+    UserSubscriptionType.FREE,
+  ])
+  @Mutation(() => String)
+  async removeFriend(
+    @Arg("friendId", () => Int) friendId: number,
+    @Ctx() { currentUser }: ContextType
+  ): Promise<String> {
+    const friend = await datasource
+      .getRepository(User)
+      .findOne({ where: { id: friendId }, relations: { friends: true } });
+
+    if (friend === null) throw new ApolloError("friend not found", "NOT_FOUND");
+
+    const user = currentUser as User;
+
+    const friendIndex = user.friends?.findIndex((f) => f.id === friend.id);
+    if (friendIndex === undefined || friendIndex < 0) {
+      throw new ApolloError("friend not found", "NOT_FOUND");
+    }
+
+    user.friends = user.friends?.filter((f) => f.id !== friend.id);
+    friend.friends = friend.friends?.filter((f) => f.id !== user.id);
+
+    await datasource.getRepository(User).save(user);
+    await datasource.getRepository(User).save(friend);
+
+    return "Successfully removed friend";
+  }
 }

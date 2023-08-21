@@ -20,8 +20,6 @@ function Notifications() {
   } = useGetNotificationsQuery();
   const notifs = getNotifs?.getNotifications || [];
 
-  console.log("notifs", notifs);
-
   const handleTraitedNotifs = () => {
     refetchNotifs();
   };
@@ -36,7 +34,7 @@ function Notifications() {
           <span className="absolute top-0 right-1 h-2 w-2 rounded-full bg-accent-orange"></span>
         </div>
       </SheetTrigger>
-      <SheetContent position="right" size="full">
+      <SheetContent position="right" className="w-full md:w-[540px]">
         <SheetHeader>
           <SheetTitle className="text-xl">Notifications</SheetTitle>
           {notifs.length === 0 && (
