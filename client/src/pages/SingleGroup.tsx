@@ -41,7 +41,7 @@ const SingleGroup = () => {
   });
   const userEcoActions = userEcoActionData?.getUserEcoActionsByGroupId;
 
-  const { currentUser, loading: currentUserLoading } = useCurrentUser();
+  const { loading: currentUserLoading } = useCurrentUser();
 
   const getTotalMaxPoints = () => {
     let total = 0;
@@ -117,11 +117,8 @@ const SingleGroup = () => {
                 {challenge?.ecoActions.map((eco) => (
                   <EcoCard
                     key={eco.id}
-                    name={eco.name}
+                    ecoAction={eco}
                     challengeEndDate={challenge.endDate}
-                    description={eco.description}
-                    ecoActionId={eco.id}
-                    likes={eco.likes}
                     groupId={challenge.id}
                   />
                 ))}

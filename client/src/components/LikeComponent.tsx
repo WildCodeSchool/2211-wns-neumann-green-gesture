@@ -5,12 +5,17 @@ import {
 } from "@/gql/generated/schema";
 import { Loading } from "@/pages/Loading";
 import { Heart } from "lucide-react";
+import { Button } from "./ui/button";
 
 interface LikeComponentProps {
   ecoActionId: number;
+  handleRefreshLikeCount: (n: 0 | 1) => void;
 }
 
-const LikeComponent = ({ ecoActionId }: LikeComponentProps) => {
+const LikeComponent = ({
+  ecoActionId,
+  handleRefreshLikeCount,
+}: LikeComponentProps) => {
   const {
     data: isLikedData,
     loading,
@@ -30,6 +35,7 @@ const LikeComponent = ({ ecoActionId }: LikeComponentProps) => {
           ecoActionId,
         },
       });
+      handleRefreshLikeCount(1);
     } catch (error) {
       console.log(error);
     } finally {
@@ -44,24 +50,31 @@ const LikeComponent = ({ ecoActionId }: LikeComponentProps) => {
           ecoActionId,
         },
       });
+      handleRefreshLikeCount(0);
     } catch (error) {
       console.log(error);
     } finally {
       refetch();
     }
   };
+
   if (loading) return <Loading />;
 
   return (
     <>
-      {isLiked ? (
-        <Heart
-          className="text-[#FF0101] w-4 cursor-pointer"
-          onClick={() => handleDeleteLike()}
-        />
-      ) : (
-        <Heart className="w-4 cursor-pointer" onClick={() => handleLike()} />
-      )}
+      <Button
+        size="icon"
+        className={`p-1 h-6 w-6 hover:bg-red-500 hover:text-white cursor-pointer ${
+          isLiked ? "bg-red-500 text-white" : ""
+        }`}
+        asChild={true}
+        variant="ghost"
+        onClick={() => {
+          isLiked ? handleDeleteLike() : handleLike();
+        }}
+      >
+        <Heart className="" />
+      </Button>
     </>
   );
 };

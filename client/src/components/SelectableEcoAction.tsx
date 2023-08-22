@@ -2,10 +2,10 @@ import { Eye } from "lucide-react";
 import { ControllerRenderProps } from "react-hook-form";
 
 import { EcoActionType, GroupeCreationType } from "@/types/global";
-import SeeEcoActionDrawer from "./SeeEcoActionDrawer";
 import { Button } from "./ui/button";
 import { FormControl } from "./ui/form";
 import { Checkbox } from "./ui/checkbox";
+import EcoActionDetailsCard from "./EcoActionDetailsCard";
 
 interface SelectableEcoActionProps {
   ecoAction: EcoActionType;
@@ -20,13 +20,13 @@ function SelectableEcoAction({ ecoAction, field }: SelectableEcoActionProps) {
     >
       <span>{ecoAction.name}</span>
       <div className="flex items-center space-x-2">
-        <SeeEcoActionDrawer
-          component={
+        <EcoActionDetailsCard
+          ecoAction={ecoAction}
+          trigger={
             <Button type="button" variant="ghost" className="p-1 h-auto">
               <Eye size="24" />
             </Button>
           }
-          ecoAction={ecoAction}
         />
         <FormControl>
           <Checkbox
