@@ -45,7 +45,7 @@ const SingleGroup = () => {
       ecoAactionIds: challenge?.ecoActions.map((eco) => eco.id) ?? [],
     },
   });
-  const getTotalMaxPoints = maxPointsData?.getTotalPossiblePoints ?? 0;
+  const TotalMaxPoints = maxPointsData?.getTotalPossiblePoints ?? 0;
 
   if (groupLoading || commentLoading || currentUserLoading) return <Loading />;
 
@@ -134,13 +134,13 @@ const SingleGroup = () => {
                     <RankingByTeam
                       teams={challenge?.teams ?? []}
                       userEcoActions={userEcoActions ?? []}
-                      totalMaxPoints={getTotalMaxPoints}
+                      totalMaxPoints={TotalMaxPoints}
                     />
                   ) : (
                     <RankingByUser
                       users={challenge?.users ?? []}
                       userEcoActions={userEcoActions ?? []}
-                      totalMaxPoints={getTotalMaxPoints}
+                      totalMaxPoints={TotalMaxPoints}
                     />
                   )}
                 </div>

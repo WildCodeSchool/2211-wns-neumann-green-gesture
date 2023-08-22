@@ -1,4 +1,14 @@
 import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+
+import {
   GetGroupQuery,
   GetUserEcoActionsByGroupIdQuery,
 } from "@/gql/generated/schema";
@@ -14,22 +24,42 @@ const RankingByUser = ({
   userEcoActions,
   totalMaxPoints,
 }: RankingByUserProps) => {
+  const sortedUsers = users
+    .map((user) => {
+      return {
+        ...user,
+        points: userEcoActions
+          ?.filter((ua) => ua.user.id === user.id)
+          .reduce((acc, curr) => acc + (curr.points ?? 0), 0),
+      };
+    })
+    .sort((a, b) => {
+      if (a.points === b.points) {
+        return a.firstName.localeCompare(b.firstName);
+      }
+      return b.points - a.points;
+    });
+
   return (
     <>
-      {users.map((user) => (
-        <div className="flex justify-between pt-5" key={user.id}>
-          <p className="text-[.9rem]">{user.firstName}</p>
-          <p className="text-[.9rem] font-bold">
-            {" "}
-            {`${userEcoActions
-              ?.filter((ua) => ua.user.id === user.id)
-              .reduce(
-                (acc, curr) => acc + (curr.points ?? 0),
-                0
-              )} / ${totalMaxPoints} points`}
-          </p>
-        </div>
-      ))}
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Participant</TableHead>
+            <TableHead className="text-right">Points</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {sortedUsers.map((user) => (
+            <TableRow key={user.id}>
+              <TableCell>{user.firstName}</TableCell>
+              <TableCell className="text-right">
+                {`${user.points} / ${totalMaxPoints} points`}
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     </>
   );
 };

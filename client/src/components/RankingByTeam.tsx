@@ -9,8 +9,8 @@ import {
   NavigationMenuItem,
   NavigationMenuTrigger,
   NavigationMenuContent,
-  NavigationMenuLink,
 } from "@radix-ui/react-navigation-menu";
+import RankingByUser from "./RankingByUser";
 
 type RankingByTeamProps = {
   teams: GetGroupQuery["getGroup"]["teams"];
@@ -23,40 +23,51 @@ const RankingByTeam = ({
   userEcoActions,
   totalMaxPoints,
 }: RankingByTeamProps) => {
+  const sortedTeams = teams
+    .map((team) => {
+      return {
+        ...team,
+        points: team.users
+          ?.map((user) =>
+            userEcoActions
+              ?.filter((ua) => ua.user.id === user.id)
+              .reduce((acc, curr) => acc + (curr.points ?? 0), 0)
+          )
+          .reduce((acc, curr) => (acc ?? 0) + (curr ?? 0), 0),
+      };
+    })
+    .sort((a, b) => {
+      if (a.points === b.points) {
+        return a.name.localeCompare(b.name);
+      }
+      return (b.points || 0) - (a.points || 0);
+    });
+
   return (
     <>
-      {teams.map((team) => {
-        if (!team || !team.users) return null;
+      {sortedTeams.map((team) => {
         return (
-          <div key={team.id}>
-            <div className="flex justify-between pt-5" key={team.id}>
-              <NavigationMenu>
-                <NavigationMenuList>
-                  <NavigationMenuItem>
-                    <NavigationMenuTrigger>{team.name}</NavigationMenuTrigger>
-                    {team?.users?.map((user) => (
-                      <NavigationMenuContent key={user.id}>
-                        <NavigationMenuLink className="text-xs">
-                          {user.firstName}
-                        </NavigationMenuLink>
-                      </NavigationMenuContent>
-                    ))}
-                  </NavigationMenuItem>
-                </NavigationMenuList>
-              </NavigationMenu>
-              <p className="text-[.9rem] font-bold">
-                {`${team?.users
-                  ?.map((user) =>
-                    userEcoActions
-                      ?.filter((ua) => ua.user.id === user.id)
-                      .reduce((acc, curr) => acc + (curr.points ?? 0), 0)
-                  )
-                  .reduce((acc, curr) => (acc ?? 0) + (curr ?? 0), 0)} / ${
-                  totalMaxPoints * team?.users.length
-                } points`}
-              </p>
-            </div>
-          </div>
+          <NavigationMenu className=" w-full" key={team.id}>
+            <NavigationMenuList>
+              <NavigationMenuItem>
+                <NavigationMenuTrigger className="w-full">
+                  <div className="w-full flex justify-between pt-5">
+                    {team.name}{" "}
+                    <p className="text-[.9rem] font-bold">
+                      {`${team.points} points`}
+                    </p>
+                  </div>
+                </NavigationMenuTrigger>
+                <NavigationMenuContent className="text-xs">
+                  <RankingByUser
+                    users={team?.users ?? []}
+                    userEcoActions={userEcoActions}
+                    totalMaxPoints={totalMaxPoints}
+                  />
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+            </NavigationMenuList>
+          </NavigationMenu>
         );
       })}
     </>
