@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import {
   Dialog,
@@ -9,69 +9,58 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Loading } from "@/pages/Loading";
-import { ThumbsUp } from "lucide-react";
-import { X } from "lucide-react";
+import { XCircle } from "lucide-react";
 
 import { useGetNumberLikesQuery } from "@/gql/generated/schema";
+import LikeComponent from "./LikeComponent";
+import { EcoActionType } from "@/types/global";
 
 interface EcoActionDetailsCardProps {
-  name: string;
-  ecoActionId: number;
-  description: string;
+  ecoAction: EcoActionType;
+  trigger?: React.ReactNode;
 }
 
 const EcoActionDetailsCard = ({
-  name,
-  ecoActionId,
-  description,
+  ecoAction,
+  trigger,
 }: EcoActionDetailsCardProps) => {
   const { data, loading, refetch } = useGetNumberLikesQuery({
-    variables: { ecoActionId },
+    variables: { ecoActionId: ecoAction.id },
   });
-  const [likes, setLikes] = useState<number | undefined>(data?.getNumberLikes);
 
-  useEffect(() => {
-    setLikes(data?.getNumberLikes);
-  }, [data?.getNumberLikes]);
+  const [likes, setLikes] = useState(data?.getNumberLikes || 0);
 
-  const handleClick = async () => {
+  const handleRefreshLikeCount = async (num: 0 | 1) => {
     await refetch();
-    setLikes(data?.getNumberLikes);
+    setLikes((prev) =>
+      num === 1 ? prev + 1 : prev === 0 && num === 0 ? 0 : prev - 1
+    );
   };
 
   if (loading) return <Loading />;
 
   return (
     <Dialog>
-      <DialogTrigger
-        className="text-xs text-accent-blue hover:text-[#0061c7]"
-        onClick={() => handleClick()}
-      >
-        VOIR PLUS
-      </DialogTrigger>
+      <DialogTrigger asChild={true}>{trigger}</DialogTrigger>
       <DialogContent className="bg-grey-green border-0">
-        <div className="flex justify-end items-center">
-          <DialogClose className="h-4 w-4">
-            <X className="h-4 w-4" />
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-1">
+            <LikeComponent
+              ecoActionId={ecoAction.id}
+              handleRefreshLikeCount={handleRefreshLikeCount}
+            />
+            <p className="text-lg">{likes}</p>
+          </div>
+          <DialogClose className="ml-auto">
+            <XCircle size={24} />
           </DialogClose>
         </div>
         <DialogHeader>
-          <DialogTitle className="text-center">{name}</DialogTitle>
+          <DialogTitle className="text-center">{ecoAction.name}</DialogTitle>
         </DialogHeader>
-        <div className=" bg-grey-green rounded-xl p-3">
-          <div className="flex justify-between items-center mb-3">
-            <h5 className="text-md font-semibold my-1">
-              Description de l'éco-geste
-            </h5>
-            <div className="flex flex-col justify-center items-center">
-              <div className="rounded-full bg-primary flex justify-center items-center p-1">
-                <ThumbsUp className="text-grey-green" size={"15px"} />
-              </div>
-              <p className="text-xs">{likes}</p>
-            </div>
-          </div>
-
-          <p className="text-xs">{description}</p>
+        <div className="space-y-4 my-4">
+          <h5 className="text-md font-semibold">Description de l'éco-geste</h5>
+          <p className="text-xs">{ecoAction.description}</p>
         </div>
       </DialogContent>
     </Dialog>

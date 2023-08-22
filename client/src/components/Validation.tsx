@@ -79,7 +79,7 @@ const Validation = ({
   return (
     <Dialog open={open}>
       <DialogTrigger
-        className="text-xs text-accent-blue hover:text-[#0061c7]"
+        className="text-xs text-accent-blue hover:text-[#0061c7] underline"
         onClick={() => setOpen(!open)}
       >
         VALIDER MON DÉFI

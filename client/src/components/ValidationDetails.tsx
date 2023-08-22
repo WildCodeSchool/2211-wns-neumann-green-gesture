@@ -35,7 +35,7 @@ const ValidationDetails = ({
 
   return (
     <Dialog>
-      <DialogTrigger className="text-xs text-accent-blue hover:text-[#0061c7]">
+      <DialogTrigger className="text-xs text-accent-blue hover:text-[#0061c7] underline">
         MA VALIDATION
       </DialogTrigger>
       <DialogContent className="bg-grey-green border-0">

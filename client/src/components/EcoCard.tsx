@@ -8,27 +8,19 @@ import { Loading } from "@/pages/Loading";
 import EcoActionDetailsCard from "./EcoActionDetailsCard";
 import Validation from "./Validation";
 import ValidationDetails from "./ValidationDetails";
-import LikeComponent from "./LikeComponent";
+import { EcoActionType } from "@/types/global";
+import { Button } from "./ui/button";
+import { Eye } from "lucide-react";
 
 interface EcoCardProps {
-  name: string;
-  description: string;
+  ecoAction: EcoActionType;
   challengeEndDate: number;
-  ecoActionId: number;
-  likes: number;
   groupId: number;
 }
 
-const EcoCard = ({
-  name,
-  description,
-  ecoActionId,
-  challengeEndDate,
-  likes,
-  groupId,
-}: EcoCardProps) => {
+const EcoCard = ({ ecoAction, challengeEndDate, groupId }: EcoCardProps) => {
   const { data, loading, refetch } = useGetUserEcoActionQuery({
-    variables: { groupId, ecoActionId },
+    variables: { groupId, ecoActionId: ecoAction.id },
   });
   const userEcoAction = data?.getUserEcoAction;
 
@@ -42,7 +34,7 @@ const EcoCard = ({
 
   const { data: maxPointsData, loading: maxPointsLoading } =
     useGetMaxValidationPointsQuery({
-      variables: { ecoActionId },
+      variables: { ecoActionId: ecoAction.id },
     });
   const maxPoints = maxPointsData?.getMaxValidationPoints;
 
@@ -50,7 +42,7 @@ const EcoCard = ({
 
   return (
     <motion.div
-      key={ecoActionId}
+      key={ecoAction.id}
       initial={{ x: -100 }}
       animate={{ x: 0, transition: { duration: 0.2 } }}
       exit={{ x: 100 }}
@@ -58,32 +50,37 @@ const EcoCard = ({
     >
       <div className="w-[100%] rounded-xl bg-grey-green my-5 px-3 pb-4 pt-2 hover:shadow-2xl transition ease-in-out delay-90">
         <div className="flex flex-row justify-between items-center">
-          <h3 className="font-sans text-xs">
-            {name}{" "}
+          <div className="flex items-center gap-1">
+            <h3 className="font-sans">{ecoAction.name}</h3>
+            <EcoActionDetailsCard
+              ecoAction={ecoAction}
+              trigger={
+                <Button type="button" variant="ghost" className="p-1 h-auto">
+                  <Eye size="24" />
+                </Button>
+              }
+            />
+          </div>
+          <span className="font-semibold text-sm">
             {userEcoAction !== null &&
               userEcoAction !== undefined &&
-              `${userEcoAction?.points} / ${maxPoints?.points}`}
-          </h3>
-          <LikeComponent ecoActionId={ecoActionId} />
+              `${userEcoAction?.points} / ${maxPoints?.points}`}{" "}
+            {userEcoAction?.points ? "points" : "0 points"}
+          </span>
         </div>
-        <p className="font-sans text-2xs">
-          {`${description.slice(0, 300)}...`}
+        <p className="font-sans text-2xs mt-2 mb-4 md:max-w-lg">
+          {`${ecoAction.description.slice(0, 250)}...`}
         </p>
-        <div className="flex justify-between items-center mt-3">
-          <EcoActionDetailsCard
-            name={name}
-            ecoActionId={ecoActionId}
-            description={description}
-          />
+        <div className="flex justify-end items-center">
           {userEcoAction === undefined &&
           new Date(challengeEndDate).getTime() > new Date().getTime() ? (
             <Validation
-              ecoActionId={ecoActionId}
+              ecoActionId={ecoAction.id}
               groupId={groupId}
               refetchParent={refetch}
             />
           ) : (
-            <ValidationDetails groupId={groupId} ecoActionId={ecoActionId} />
+            <ValidationDetails groupId={groupId} ecoActionId={ecoAction.id} />
           )}
         </div>
       </div>
