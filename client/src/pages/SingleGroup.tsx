@@ -118,6 +118,7 @@ const SingleGroup = () => {
                   <EcoCard
                     key={eco.id}
                     name={eco.name}
+                    challengeEndDate={challenge.endDate}
                     description={eco.description}
                     ecoActionId={eco.id}
                     likes={eco.likes}

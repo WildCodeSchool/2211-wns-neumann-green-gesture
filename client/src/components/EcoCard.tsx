@@ -13,6 +13,7 @@ import LikeComponent from "./LikeComponent";
 interface EcoCardProps {
   name: string;
   description: string;
+  challengeEndDate: number;
   ecoActionId: number;
   likes: number;
   groupId: number;
@@ -22,6 +23,7 @@ const EcoCard = ({
   name,
   description,
   ecoActionId,
+  challengeEndDate,
   likes,
   groupId,
 }: EcoCardProps) => {
@@ -73,7 +75,8 @@ const EcoCard = ({
             ecoActionId={ecoActionId}
             description={description}
           />
-          {userEcoAction === undefined ? (
+          {userEcoAction === undefined &&
+          new Date(challengeEndDate).getTime() > new Date().getTime() ? (
             <Validation
               ecoActionId={ecoActionId}
               groupId={groupId}
