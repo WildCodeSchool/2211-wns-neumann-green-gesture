@@ -35,7 +35,7 @@ const ValidationDetails = ({
 
   return (
     <Dialog>
-      <DialogTrigger className="text-xs text-accent-blue hover:text-[#0061c7]">
+      <DialogTrigger className="text-xs text-accent-blue hover:text-[#0061c7] underline">
         MA VALIDATION
       </DialogTrigger>
       <DialogContent className="bg-grey-green border-0">
@@ -47,7 +47,9 @@ const ValidationDetails = ({
         <DialogHeader>
           <DialogTitle className="text-center">Ma note</DialogTitle>
         </DialogHeader>
-        <p className="text-center text-md text-accent-blue font-semibold my-1">{`${userEcoAction?.points} points`}</p>
+        <p className="text-center text-md text-accent-blue font-semibold my-1">{`${
+          userEcoAction?.points !== undefined ? userEcoAction.points : 0
+        } points`}</p>
         {!userEcoAction?.proof ? (
           <h5 className="text-center text-md font-semibold my-1">
             Aucune preuve fournie

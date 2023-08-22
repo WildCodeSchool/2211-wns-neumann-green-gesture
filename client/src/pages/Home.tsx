@@ -6,7 +6,6 @@ import {
   useGetUserGroupsQuery,
 } from "../gql/generated/schema";
 import { Button } from "@/components/ui/button";
-import { challengeCountDown } from "@/lib/utils";
 import DisplayDate from "@/components/DisplayDate";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 
@@ -18,13 +17,14 @@ function Home() {
 
   const { data: dataFreeEcoActions } = useGetFreeEcoActionsQuery();
   const freeEcoActions = dataFreeEcoActions?.getFreeEcoActions || [];
+
   const navigate = useNavigate();
   refetch();
 
   return (
     <>
       <h1 className="text-2xl font-bold mb-4">
-        Bienvenue, {currentUser?.firstName} ! 👋
+        Bienvenue, {currentUser?.firstName} {currentUser?.lastName} ! 👋
       </h1>
       <div className="space-y-8">
         {groups.length > 0 ? (
@@ -46,9 +46,6 @@ function Home() {
                       endDate={group.endDate}
                       size="2xs"
                     />
-                  </div>
-                  <div className="flex flex-row-reverse">
-                    <p className="text-2xs font-semibold">1/3 points</p>
                   </div>
                 </Link>
               ))}

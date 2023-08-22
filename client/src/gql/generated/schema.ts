@@ -127,6 +127,8 @@ export type Mutation = {
   deleteLike: Scalars['Boolean']['output'];
   login: Scalars['String']['output'];
   logout: Scalars['String']['output'];
+  removeFriend: Scalars['String']['output'];
+  removeUserFromGroup: Group;
   sendNotification: Notification;
 };
 
@@ -209,6 +211,16 @@ export type MutationDeleteLikeArgs = {
 
 export type MutationLoginArgs = {
   data: UserInputLogin;
+};
+
+
+export type MutationRemoveFriendArgs = {
+  friendId: Scalars['Int']['input'];
+};
+
+
+export type MutationRemoveUserFromGroupArgs = {
+  data: GroupInputAddOneUser;
 };
 
 
@@ -611,6 +623,20 @@ export type CreateUserMutationVariables = Exact<{
 
 
 export type CreateUserMutation = { __typename?: 'Mutation', createUser: { __typename?: 'User', email: string, firstName: string, lastName: string, password: string } };
+
+export type RemoveFriendMutationVariables = Exact<{
+  friendId: Scalars['Int']['input'];
+}>;
+
+
+export type RemoveFriendMutation = { __typename?: 'Mutation', removeFriend: string };
+
+export type RemoveUserFromGroupMutationVariables = Exact<{
+  data: GroupInputAddOneUser;
+}>;
+
+
+export type RemoveUserFromGroupMutation = { __typename?: 'Mutation', removeUserFromGroup: { __typename?: 'Group', teams: Array<{ __typename?: 'Team', id: number, users?: Array<{ __typename?: 'User', id: number, firstName: string, lastName: string }> | null }>, users: Array<{ __typename?: 'User', id: number, firstName: string, lastName: string }> } };
 
 export type SendNotificationMutationVariables = Exact<{
   data: NotificationInputCreation;
@@ -1798,6 +1824,82 @@ export function useCreateUserMutation(baseOptions?: Apollo.MutationHookOptions<C
 export type CreateUserMutationHookResult = ReturnType<typeof useCreateUserMutation>;
 export type CreateUserMutationResult = Apollo.MutationResult<CreateUserMutation>;
 export type CreateUserMutationOptions = Apollo.BaseMutationOptions<CreateUserMutation, CreateUserMutationVariables>;
+export const RemoveFriendDocument = gql`
+    mutation RemoveFriend($friendId: Int!) {
+  removeFriend(friendId: $friendId)
+}
+    `;
+export type RemoveFriendMutationFn = Apollo.MutationFunction<RemoveFriendMutation, RemoveFriendMutationVariables>;
+
+/**
+ * __useRemoveFriendMutation__
+ *
+ * To run a mutation, you first call `useRemoveFriendMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveFriendMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeFriendMutation, { data, loading, error }] = useRemoveFriendMutation({
+ *   variables: {
+ *      friendId: // value for 'friendId'
+ *   },
+ * });
+ */
+export function useRemoveFriendMutation(baseOptions?: Apollo.MutationHookOptions<RemoveFriendMutation, RemoveFriendMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveFriendMutation, RemoveFriendMutationVariables>(RemoveFriendDocument, options);
+      }
+export type RemoveFriendMutationHookResult = ReturnType<typeof useRemoveFriendMutation>;
+export type RemoveFriendMutationResult = Apollo.MutationResult<RemoveFriendMutation>;
+export type RemoveFriendMutationOptions = Apollo.BaseMutationOptions<RemoveFriendMutation, RemoveFriendMutationVariables>;
+export const RemoveUserFromGroupDocument = gql`
+    mutation RemoveUserFromGroup($data: GroupInputAddOneUser!) {
+  removeUserFromGroup(data: $data) {
+    teams {
+      id
+      users {
+        id
+        firstName
+        lastName
+      }
+    }
+    users {
+      id
+      firstName
+      lastName
+    }
+  }
+}
+    `;
+export type RemoveUserFromGroupMutationFn = Apollo.MutationFunction<RemoveUserFromGroupMutation, RemoveUserFromGroupMutationVariables>;
+
+/**
+ * __useRemoveUserFromGroupMutation__
+ *
+ * To run a mutation, you first call `useRemoveUserFromGroupMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveUserFromGroupMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeUserFromGroupMutation, { data, loading, error }] = useRemoveUserFromGroupMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useRemoveUserFromGroupMutation(baseOptions?: Apollo.MutationHookOptions<RemoveUserFromGroupMutation, RemoveUserFromGroupMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveUserFromGroupMutation, RemoveUserFromGroupMutationVariables>(RemoveUserFromGroupDocument, options);
+      }
+export type RemoveUserFromGroupMutationHookResult = ReturnType<typeof useRemoveUserFromGroupMutation>;
+export type RemoveUserFromGroupMutationResult = Apollo.MutationResult<RemoveUserFromGroupMutation>;
+export type RemoveUserFromGroupMutationOptions = Apollo.BaseMutationOptions<RemoveUserFromGroupMutation, RemoveUserFromGroupMutationVariables>;
 export const SendNotificationDocument = gql`
     mutation sendNotification($data: NotificationInputCreation!) {
   sendNotification(data: $data) {

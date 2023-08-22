@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
+import { FriendList } from "./FriendList";
 
 function ProfileDropDownMenu() {
   const [logout] = useLogoutMutation();
@@ -48,12 +49,12 @@ function ProfileDropDownMenu() {
               <span>Mes challenges</span>
             </DropdownMenuItem>
           </Link>
-          <Link to="/friends">
-            <DropdownMenuItem>
+          <FriendList>
+            <div className="flex items-center hover:bg-accent py-[6px] px-2 cursor-pointer rounded-sm">
               <Users className="mr-2 h-4 w-4" />
               <span>Mes amis</span>
-            </DropdownMenuItem>
-          </Link>
+            </div>
+          </FriendList>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleLogout}>

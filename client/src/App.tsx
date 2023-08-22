@@ -8,7 +8,6 @@ import Profile from "./pages/Profile";
 import Register from "./pages/Register/Register";
 import Layout from "./containers/Layout";
 import { Loading } from "./pages/Loading";
-import { FriendList } from "./pages/FriendList";
 import { useCurrentUser } from "./hooks/useCurrentUser";
 
 function App() {
@@ -35,7 +34,6 @@ function App() {
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/friends" element={<FriendList />} />
           <Route path="/create-group" element={<CreateGroup />} />
           <Route path="/groups" element={<h1>Groups / Challenges</h1>} />
           <Route path="/eco-actions" element={<h1>Eco-actions</h1>} />

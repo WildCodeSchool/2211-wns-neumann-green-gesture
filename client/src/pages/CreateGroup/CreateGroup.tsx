@@ -8,6 +8,7 @@ import { addDays } from "date-fns";
 import {
   useCreateGroupMutation,
   useCreateTeamsMutation,
+  useSendNotificationMutation,
 } from "../../gql/generated/schema";
 import { Form } from "@/components/ui/form";
 import StepOne from "./StepOne";
@@ -16,6 +17,7 @@ import StepThree from "./StepThree";
 import StepFour from "./StepFour";
 import { Progress } from "@/components/ui/progress";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { NotificationTypeEnum } from "@/types/global";
 
 const DEFAULT_GROUP = {
   name: "",
@@ -33,6 +35,8 @@ function CreateGroup() {
   const navigate = useNavigate();
   const [step, setStep] = useState<number>(1);
   const [isTeamChallenge, setIsTeamChallenge] = useState(false);
+
+  const [sendNotification] = useSendNotificationMutation();
 
   const formSchema = z.object({
     name: z.string().min(3, "3 caractères minium").max(150),
@@ -120,6 +124,20 @@ function CreateGroup() {
         });
 
         const createdGroupId = createdGroup.data?.createGroup?.id;
+
+        // send notification to all participants
+        values.participants.forEach(async (user) => {
+          await sendNotification({
+            variables: {
+              data: {
+                receiverId: user.id,
+                type: NotificationTypeEnum.CHALLENGE_REQUEST,
+                groupId: createdGroupId,
+              },
+            },
+          });
+        });
+
         navigate(`/groups/${createdGroupId}`);
         return;
       } catch (err) {
@@ -159,6 +177,19 @@ function CreateGroup() {
                 teams: values.teams,
               },
             },
+          });
+
+          // send notification to all participants
+          values.participants.forEach(async (user) => {
+            await sendNotification({
+              variables: {
+                data: {
+                  receiverId: user.id,
+                  type: NotificationTypeEnum.CHALLENGE_REQUEST,
+                  groupId: createdGroupId,
+                },
+              },
+            });
           });
           navigate(`/groups/${createdGroupId}`);
         }

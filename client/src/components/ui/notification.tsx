@@ -4,6 +4,7 @@ import { NotificationStatusEnum, NotificationTypeEnum } from "@/types/global";
 import { Button } from "./button";
 import {
   useAddFriendMutation,
+  useRemoveUserFromGroupMutation,
   useUpdateNotificationStatusMutation,
 } from "@/gql/generated/schema";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
@@ -13,6 +14,16 @@ type NotificationProps = {
   sender: any;
   notifId: number;
   handleTraitedNotifs: () => void;
+  group?:
+    | {
+        __typename?: "Group" | undefined;
+        id: number;
+        challengeName: string;
+        startDate: any;
+        endDate: any;
+      }
+    | null
+    | undefined;
 };
 
 export const Notification = ({
@@ -20,10 +31,12 @@ export const Notification = ({
   sender,
   notifId,
   handleTraitedNotifs,
+  group,
 }: NotificationProps) => {
-  const { refetchCurrentUser } = useCurrentUser();
+  const { currentUser, refetchCurrentUser } = useCurrentUser();
   const [updateStatusMutation] = useUpdateNotificationStatusMutation();
   const [addFriend] = useAddFriendMutation();
+  const [removeUserFromGroup] = useRemoveUserFromGroupMutation();
 
   const icon =
     type === NotificationTypeEnum.FRIEND_REQUEST ? <UserPlus /> : <Bell />;
@@ -65,7 +78,16 @@ export const Notification = ({
         },
       });
 
-      // TODO: handle if notif from challenge
+      if (group?.id && currentUser?.id) {
+        await removeUserFromGroup({
+          variables: {
+            data: {
+              groupId: group.id,
+              userId: currentUser.id,
+            },
+          },
+        });
+      }
 
       handleTraitedNotifs();
       refetchCurrentUser();
@@ -83,6 +105,20 @@ export const Notification = ({
               {sender.firstName} {sender.lastName}
             </span>
             vous a envoyé une demande d'amis
+          </p>
+        </div>
+      );
+    }
+
+    if (type === NotificationTypeEnum.CHALLENGE_REQUEST) {
+      return (
+        <div>
+          <p className="text-sm">
+            <span className="font-semibold mr-2">
+              {sender.firstName} {sender.lastName}
+            </span>
+            vous a invité à son challenge{" "}
+            <span className="font-semibold">{group?.challengeName}</span>
           </p>
         </div>
       );
