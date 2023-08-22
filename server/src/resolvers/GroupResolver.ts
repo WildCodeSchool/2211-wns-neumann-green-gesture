@@ -80,6 +80,33 @@ export class GroupResolver {
     UserSubscriptionType.FREE,
   ])
   @Mutation(() => Group)
+  async removeUserFromGroup(
+    @Arg("data") { groupId, userId }: GroupInputAddOneUser
+  ): Promise<Group> {
+    const group = await datasource.getRepository(Group).findOne({
+      where: { id: groupId },
+      relations: { users: true, teams: true },
+    });
+
+    const user = await datasource
+      .getRepository(User)
+      .findOne({ where: { id: userId } });
+
+    if (group !== null && user !== null) {
+      group.users = group.users.filter((u) => u.id !== user.id);
+      return await datasource.getRepository(Group).save(group);
+    }
+
+    // TODO: remove user from teams
+
+    throw new Error("Group or user not found");
+  }
+
+  @Authorized<UserSubscriptionType>([
+    UserSubscriptionType.PARTNER,
+    UserSubscriptionType.FREE,
+  ])
+  @Mutation(() => Group)
   async addEcoActionsToGroup(
     @Arg("data") { groupId, ecoActionIds }: GroupInputAddEcoActions
   ): Promise<Group> {

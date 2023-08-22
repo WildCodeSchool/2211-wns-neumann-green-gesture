@@ -48,6 +48,7 @@ function Notifications() {
               type={notif.type as NotificationTypeEnum}
               sender={notif.sender}
               notifId={notif.id}
+              group={notif.group}
               handleTraitedNotifs={handleTraitedNotifs}
             />
           ))}
