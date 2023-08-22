@@ -249,6 +249,7 @@ export type Query = {
   getNumberLikes: Scalars['Float']['output'];
   getPopularFreeEcoActions: Array<EcoAction>;
   getTeamByGroup: Array<Team>;
+  getTotalPossiblePoints: Scalars['Int']['output'];
   getUserById: User;
   getUserEcoAction: UserEcoAction;
   getUserEcoActions: Array<EcoAction>;
@@ -287,6 +288,11 @@ export type QueryGetNumberLikesArgs = {
 
 export type QueryGetTeamByGroupArgs = {
   groupId: Scalars['Float']['input'];
+};
+
+
+export type QueryGetTotalPossiblePointsArgs = {
+  ecoAactionIds: Array<Scalars['Int']['input']>;
 };
 
 
@@ -509,6 +515,13 @@ export type GetPopularFreeEcoActionsQueryVariables = Exact<{ [key: string]: neve
 
 
 export type GetPopularFreeEcoActionsQuery = { __typename?: 'Query', getPopularFreeEcoActions: Array<{ __typename?: 'EcoAction', id: number, name: string, likes: number, description: string }> };
+
+export type GetTotalPossiblePointsQueryVariables = Exact<{
+  ecoAactionIds: Array<Scalars['Int']['input']> | Scalars['Int']['input'];
+}>;
+
+
+export type GetTotalPossiblePointsQuery = { __typename?: 'Query', getTotalPossiblePoints: number };
 
 export type GetUserEcoActionsByGroupIdQueryVariables = Exact<{
   groupId: Scalars['Int']['input'];
@@ -1218,6 +1231,39 @@ export function useGetPopularFreeEcoActionsLazyQuery(baseOptions?: Apollo.LazyQu
 export type GetPopularFreeEcoActionsQueryHookResult = ReturnType<typeof useGetPopularFreeEcoActionsQuery>;
 export type GetPopularFreeEcoActionsLazyQueryHookResult = ReturnType<typeof useGetPopularFreeEcoActionsLazyQuery>;
 export type GetPopularFreeEcoActionsQueryResult = Apollo.QueryResult<GetPopularFreeEcoActionsQuery, GetPopularFreeEcoActionsQueryVariables>;
+export const GetTotalPossiblePointsDocument = gql`
+    query GetTotalPossiblePoints($ecoAactionIds: [Int!]!) {
+  getTotalPossiblePoints(ecoAactionIds: $ecoAactionIds)
+}
+    `;
+
+/**
+ * __useGetTotalPossiblePointsQuery__
+ *
+ * To run a query within a React component, call `useGetTotalPossiblePointsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTotalPossiblePointsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetTotalPossiblePointsQuery({
+ *   variables: {
+ *      ecoAactionIds: // value for 'ecoAactionIds'
+ *   },
+ * });
+ */
+export function useGetTotalPossiblePointsQuery(baseOptions: Apollo.QueryHookOptions<GetTotalPossiblePointsQuery, GetTotalPossiblePointsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetTotalPossiblePointsQuery, GetTotalPossiblePointsQueryVariables>(GetTotalPossiblePointsDocument, options);
+      }
+export function useGetTotalPossiblePointsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetTotalPossiblePointsQuery, GetTotalPossiblePointsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetTotalPossiblePointsQuery, GetTotalPossiblePointsQueryVariables>(GetTotalPossiblePointsDocument, options);
+        }
+export type GetTotalPossiblePointsQueryHookResult = ReturnType<typeof useGetTotalPossiblePointsQuery>;
+export type GetTotalPossiblePointsLazyQueryHookResult = ReturnType<typeof useGetTotalPossiblePointsLazyQuery>;
+export type GetTotalPossiblePointsQueryResult = Apollo.QueryResult<GetTotalPossiblePointsQuery, GetTotalPossiblePointsQueryVariables>;
 export const GetUserEcoActionsByGroupIdDocument = gql`
     query GetUserEcoActionsByGroupId($groupId: Int!) {
   getUserEcoActionsByGroupId(groupId: $groupId) {
