@@ -5,6 +5,7 @@ import { Badge } from "../components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Loading } from "./Loading";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { FriendList } from "@/components/FriendList";
 
 function Profile() {
   const { currentUser, loading } = useCurrentUser();
@@ -98,16 +99,16 @@ function Profile() {
         <div>
           <div className="flex items-center mb-2">
             <h2 className="text-xl font-semibold me-3">Mes amis</h2>
-            <Button
-              asChild={true}
-              variant="accent-orange"
-              className="rounded-full p-1 h-auto"
-              title="Ajouter un ami"
-            >
-              <Link to="/friends">
-                <Plus color="#e8eede" size={15} />
-              </Link>
-            </Button>
+            <FriendList>
+              <Button
+                asChild={true}
+                variant="accent-orange"
+                className="rounded-full p-1 h-auto cursor-pointer"
+                title="Ajouter un ami"
+              >
+                <Plus color="#e8eede" size={22} />
+              </Button>
+            </FriendList>
           </div>
           <div className="elevate-box space-y-4">
             {currentUser?.friends?.length === 0 && (
