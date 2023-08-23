@@ -3,6 +3,8 @@ import { Checkbox } from "../../components/ui/checkbox";
 import { Button } from "../../components/ui/button";
 import { FormControl, FormField, FormMessage } from "../../components/ui/form";
 import { GroupeCreationType, User } from "../../types/global";
+import { FriendList } from "@/components/FriendList";
+import { Plus } from "lucide-react";
 
 type StepThreeProps = {
   control: Control<GroupeCreationType, any>;
@@ -33,7 +35,7 @@ function StepThree({
           <div className="space-y-4 w-full mt-7">
             <p className="font-semibold text-base">Invitez vos amis</p>
             <div className="space-y-3 md:space-y-0 md:flex md:items-center">
-              {friends.length > 0 &&
+              {friends.length > 1 ? (
                 friends.map((friend) => (
                   <div
                     key={friend.id}
@@ -69,7 +71,27 @@ function StepThree({
                       </FormControl>
                     </div>
                   </div>
-                ))}
+                ))
+              ) : (
+                <div className="flex flex-col items-center gap-2">
+                  <p>
+                    Vous n'avez pas encore (ou pas assez) d'amis, ajoutez-en au
+                    moins 2 pour continuer !
+                  </p>
+                  <FriendList>
+                    <Button
+                      asChild={true}
+                      variant="secondary"
+                      className="ml-1 rounded-full p-2 h-auto cursor-pointer"
+                      title="Ajouter un ami"
+                    >
+                      <div>
+                        Ajouter un ami <Plus color="#e8eede" size={22} />
+                      </div>
+                    </Button>
+                  </FriendList>
+                </div>
+              )}
             </div>
             <FormMessage />
           </div>
