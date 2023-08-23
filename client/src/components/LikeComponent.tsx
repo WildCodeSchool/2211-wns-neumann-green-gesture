@@ -1,6 +1,7 @@
 import {
   useCreateLikeMutation,
   useDeleteLikeMutation,
+  useGetNumberLikesQuery,
   useIsLikedQuery,
 } from "@/gql/generated/schema";
 import { Loading } from "@/pages/Loading";
@@ -9,18 +10,19 @@ import { Button } from "./ui/button";
 
 interface LikeComponentProps {
   ecoActionId: number;
-  handleRefreshLikeCount: (n: 0 | 1) => void;
 }
 
-const LikeComponent = ({
-  ecoActionId,
-  handleRefreshLikeCount,
-}: LikeComponentProps) => {
+const LikeComponent = ({ ecoActionId }: LikeComponentProps) => {
   const {
-    data: isLikedData,
+    data,
     loading,
-    refetch,
-  } = useIsLikedQuery({
+    refetch: refetchNumLikes,
+  } = useGetNumberLikesQuery({
+    variables: { ecoActionId: ecoActionId },
+  });
+  const likes = data?.getNumberLikes;
+
+  const { data: isLikedData, refetch: refetchIsLiked } = useIsLikedQuery({
     variables: { ecoActionId },
   });
   const isLiked = isLikedData?.isLiked;
@@ -35,11 +37,11 @@ const LikeComponent = ({
           ecoActionId,
         },
       });
-      handleRefreshLikeCount(1);
     } catch (error) {
       console.log(error);
     } finally {
-      refetch();
+      refetchNumLikes();
+      refetchIsLiked();
     }
   };
 
@@ -50,18 +52,18 @@ const LikeComponent = ({
           ecoActionId,
         },
       });
-      handleRefreshLikeCount(0);
     } catch (error) {
       console.log(error);
     } finally {
-      refetch();
+      refetchNumLikes();
+      refetchIsLiked();
     }
   };
 
   if (loading) return <Loading />;
 
   return (
-    <>
+    <div className="flex items-center gap-1">
       <Button
         size="icon"
         className={`p-1 h-6 w-6 hover:bg-red-500 hover:text-white cursor-pointer ${
@@ -75,7 +77,8 @@ const LikeComponent = ({
       >
         <Heart className="" />
       </Button>
-    </>
+      <p className="text-lg">{likes}</p>
+    </div>
   );
 };
 

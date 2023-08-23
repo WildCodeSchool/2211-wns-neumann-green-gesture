@@ -24,33 +24,12 @@ const EcoActionDetailsCard = ({
   ecoAction,
   trigger,
 }: EcoActionDetailsCardProps) => {
-  const { data, loading, refetch } = useGetNumberLikesQuery({
-    variables: { ecoActionId: ecoAction.id },
-  });
-
-  const [likes, setLikes] = useState(data?.getNumberLikes || 0);
-
-  const handleRefreshLikeCount = async (num: 0 | 1) => {
-    await refetch();
-    setLikes((prev) =>
-      num === 1 ? prev + 1 : prev === 0 && num === 0 ? 0 : prev - 1
-    );
-  };
-
-  if (loading) return <Loading />;
-
   return (
     <Dialog>
       <DialogTrigger asChild={true}>{trigger}</DialogTrigger>
       <DialogContent className="bg-grey-green border-0">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-1">
-            <LikeComponent
-              ecoActionId={ecoAction.id}
-              handleRefreshLikeCount={handleRefreshLikeCount}
-            />
-            <p className="text-lg">{likes}</p>
-          </div>
+          <LikeComponent ecoActionId={ecoAction.id} />
           <DialogClose className="ml-auto">
             <XCircle size={24} />
           </DialogClose>
