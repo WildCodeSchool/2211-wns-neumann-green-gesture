@@ -82,26 +82,26 @@ const Validation = ({
         className="text-xs text-accent-blue hover:text-[#0061c7] underline"
         onClick={() => setOpen(!open)}
       >
-        VALIDER MON DÉFI
+        VALIDER
       </DialogTrigger>
-      <DialogContent className="bg-grey-green border-0">
+      <DialogContent className="bg-grey-green border-0 rounded-xl">
         <div className="flex justify-end items-center">
           <DialogClose onClick={() => setOpen(false)} className="h-4 w-4">
-            <X className="h-4 w-4" />
+            <X className="h-4 w-4 cursor-pointer" />
           </DialogClose>
         </div>
         <DialogHeader>
-          <DialogTitle className=" text-center">Je note mon défi</DialogTitle>
+          <DialogTitle className="text-center">Je note mon défi</DialogTitle>
         </DialogHeader>
         <form onSubmit={(e) => handleSubmit(e)}>
           <RadioGroup
             defaultValue={validations[0].points.toString()}
-            className="flex flex-row justify-center h-11 mb-5"
+            className="flex flex-row justify-center mb-5"
             onValueChange={(value) => handleChange(value as string)}
           >
             {validations?.map((validation) => (
               <div
-                className="flex flex-col-reverse justify-between items-center space-x-2"
+                className="flex flex-col-reverse justify-between items-center space-x-2 gap-2"
                 key={validation.id}
               >
                 <RadioGroupItem
@@ -114,19 +114,19 @@ const Validation = ({
               </div>
             ))}
           </RadioGroup>
-          <h2 className=" text-center">J'ajoute une preuve</h2>
-          <div className=" h-[100px] w-[90%] mt- 2mb-5 mx-auto flex justify-center items-center">
+          <h2 className="text-center">J'ajoute une preuve</h2>
+          <div className="mt-2 mb-5 mx-auto flex justify-center items-center">
             <FilesUploader setFileUrl={setFileUrl} />
           </div>
-          <DialogFooter className="flex flex-row justify-between sm:justify-evenly items-center">
+          <DialogFooter className="flex flex-row justify-center gap-3 sm:justify-evenly items-center">
             <DialogClose
-              className="w-[160px] bg-transparent border border-input hover:bg-accent hover:text-accent-foreground rounded-3xl h-10 py-2"
+              className="bg-transparent border border-input hover:bg-accent hover:text-accent-foreground rounded-3xl h-10 p-2"
               onClick={() => setOpen(!open)}
             >
               ANNULER
             </DialogClose>
             <Button className="bg-accent-blue hover:bg-[#0061c7]" type="submit">
-              VALIDER MON DÉFI
+              JE VALIDE
             </Button>
           </DialogFooter>
         </form>

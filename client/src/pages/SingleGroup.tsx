@@ -115,6 +115,7 @@ const SingleGroup = () => {
                     key={eco.id}
                     ecoAction={eco}
                     challengeEndDate={challenge.endDate}
+                    challengeStartDate={challenge.startDate}
                     groupId={challenge.id}
                   />
                 ))}
