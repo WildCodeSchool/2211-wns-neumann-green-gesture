@@ -6,6 +6,8 @@ export type User = {
   lastName: string;
   email: string;
   password: string;
+  subscriptionType: string;
+  role: string;
   company?: string | undefined;
 };
 
@@ -20,6 +22,17 @@ export type GroupeCreationType = {
   participants: Participant[];
   ecoActionsIds: number[];
   teams: CreateTeamInput[];
+};
+
+export type GroupType = {
+  id: number;
+  challengeName: string;
+  startDate: string;
+  name: string;
+  endDate: string;
+  users: User[];
+  author: User;
+  ecoActions: EcoActionType[];
 };
 
 export type EcoActionType = {

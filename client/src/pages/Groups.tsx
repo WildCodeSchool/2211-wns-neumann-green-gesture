@@ -1,5 +1,7 @@
-import DisplayDate from "@/components/DisplayDate";
+import ChallengeCard from "@/components/ChallengeCard";
+import { Button } from "@/components/ui/button";
 import { useGetUserGroupsQuery } from "@/gql/generated/schema";
+import { GroupType } from "@/types/global";
 import { Link } from "react-router-dom";
 
 function Groups() {
@@ -28,74 +30,47 @@ function Groups() {
     return now > endDate;
   });
 
+  const noChallengeYet = groups.length === 0;
+
   return (
-    <div className="space-y-8">
-      {/* CHALLENGES EN COURS */}
-      <div>
-        <h2 className="font-semibold mb-3">Mes challenges en cours</h2>
-        <div className="flex overflow-scroll snap-mandatory gap-3">
-          {challengeInProgress.map((group) => (
-            <Link
-              key={group.id}
-              to={`/groups/${group.id}`}
-              className="flex flex-col justify-between bg-card rounded-xl h-[125px] min-w-[150px] cursor-pointer p-2 elevate-box border-2 border-transparent hover:border-primary"
-            >
-              <div>
-                <h4 className="text-xs font-semibold">{group.challengeName}</h4>
-                <DisplayDate
-                  startDate={group.startDate}
-                  endDate={group.endDate}
-                  size="2xs"
-                />
-              </div>
-            </Link>
-          ))}
+    <div className="py-4">
+      {noChallengeYet && (
+        <div className="text-center space-y-2">
+          <h2>Pas encore de challenges...</h2>
+          <Button asChild={true} variant="secondary">
+            <Link to="/create-group">Créer mon premier challenge</Link>
+          </Button>
         </div>
-      </div>
-
-      {/* CHALLENGES À VENIR */}
-      <div>
-        <h2 className="font-semibold mb-3">Mes challenges à venir</h2>
-        <div className="flex overflow-scroll snap-mandatory gap-3">
-          {challengeToCome.map((group) => (
-            <Link
-              key={group.id}
-              to={`/groups/${group.id}`}
-              className="flex flex-col justify-between bg-card rounded-xl h-[125px] min-w-[150px] cursor-pointer p-2 elevate-box border-2 border-transparent hover:border-primary"
-            >
-              <div>
-                <h4 className="text-xs font-semibold">{group.challengeName}</h4>
-                <DisplayDate
-                  startDate={group.startDate}
-                  endDate={group.endDate}
-                  size="2xs"
-                />
-              </div>
-            </Link>
-          ))}
+      )}
+      <div className="space-y-8">
+        {/* CHALLENGES EN COURS */}
+        <div>
+          <h2 className="font-semibold mb-3">Mes challenges en cours</h2>
+          <div className="flex overflow-scroll snap-mandatory gap-3">
+            {challengeInProgress.map((group) => (
+              <ChallengeCard key={group.id} group={group as GroupType} />
+            ))}
+          </div>
         </div>
-      </div>
 
-      {/* CHALLENGES TERMINÉS */}
-      <div>
-        <h2 className="font-semibold mb-3">Mes challenges terminés</h2>
-        <div className="flex overflow-scroll snap-mandatory gap-3">
-          {challengeFinished.map((group) => (
-            <Link
-              key={group.id}
-              to={`/groups/${group.id}`}
-              className="flex flex-col justify-between bg-card rounded-xl h-[125px] min-w-[150px] cursor-pointer p-2 elevate-box border-2 border-transparent hover:border-primary"
-            >
-              <div>
-                <h4 className="text-xs font-semibold">{group.challengeName}</h4>
-                <DisplayDate
-                  startDate={group.startDate}
-                  endDate={group.endDate}
-                  size="2xs"
-                />
-              </div>
-            </Link>
-          ))}
+        {/* CHALLENGES À VENIR */}
+        <div>
+          <h2 className="font-semibold mb-3">Mes challenges à venir</h2>
+          <div className="flex overflow-scroll snap-mandatory gap-3">
+            {challengeToCome.map((group) => (
+              <ChallengeCard key={group.id} group={group as GroupType} />
+            ))}
+          </div>
+        </div>
+
+        {/* CHALLENGES TERMINÉS */}
+        <div>
+          <h2 className="font-semibold mb-3">Mes challenges terminés</h2>
+          <div className="flex overflow-scroll snap-mandatory gap-3">
+            {challengeFinished.map((group) => (
+              <ChallengeCard key={group.id} group={group as GroupType} />
+            ))}
+          </div>
         </div>
       </div>
     </div>

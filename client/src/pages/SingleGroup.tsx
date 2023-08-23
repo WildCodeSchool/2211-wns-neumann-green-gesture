@@ -13,7 +13,7 @@ import { Loading } from "./Loading";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ShowChallengeParticipants from "@/components/ShowChallengeParticipants";
 import ShowChallengeComments from "@/components/ShowChallengeComments";
-import EcoCard from "@/components/EcoCard";
+import ChallengeEcoActionCard from "@/components/ChallengeEcoActionCard";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import RankingByTeam from "@/components/RankingByTeam";
 import RankingByUser from "@/components/RankingByUser";
@@ -111,7 +111,7 @@ const SingleGroup = () => {
             <TabsContent key="defis" value="defis">
               <div>
                 {challenge?.ecoActions.map((eco) => (
-                  <EcoCard
+                  <ChallengeEcoActionCard
                     key={eco.id}
                     ecoAction={eco}
                     challengeEndDate={challenge.endDate}
