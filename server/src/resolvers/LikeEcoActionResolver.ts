@@ -32,6 +32,9 @@ export class LikeEcoActionResolver {
 
     if (ecoAction === null) throw new ApolloError("EcoAction not found");
 
+    ecoAction.likes = ecoAction.likes + 1;
+    await datasource.getRepository(EcoAction).save(ecoAction);
+
     return await datasource.getRepository(LikeEcoAction).save({
       user: currentUser,
       ecoAction,
@@ -73,13 +76,13 @@ export class LikeEcoActionResolver {
   async getNumberLikes(
     @Arg("ecoActionId", () => Int) ecoActionId: number
   ): Promise<Number> {
-    const likes = await datasource.getRepository(LikeEcoAction).count({
-      where: {
-        ecoAction: { id: ecoActionId },
-      },
+    const ecoAction = await datasource.getRepository(EcoAction).findOne({
+      where: { id: ecoActionId },
     });
 
-    return likes;
+    if (ecoAction === null) throw new ApolloError("EcoAction not found");
+
+    return ecoAction.likes;
   }
 
   @Authorized<UserSubscriptionType>([
@@ -106,6 +109,9 @@ export class LikeEcoActionResolver {
     });
 
     if (like === null) throw new ApolloError("Like not found");
+
+    ecoAction.likes = ecoAction.likes === 0 ? 0 : ecoAction.likes - 1;
+    await datasource.getRepository(EcoAction).save(ecoAction);
 
     await datasource.getRepository(LikeEcoAction).remove(like);
 

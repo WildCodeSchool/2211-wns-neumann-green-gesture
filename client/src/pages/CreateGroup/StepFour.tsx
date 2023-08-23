@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Control } from "react-hook-form";
 import { Button } from "../../components/ui/button";
 import { Checkbox } from "../../components/ui/checkbox";
@@ -6,6 +6,7 @@ import { FormField, FormLabel, FormMessage } from "../../components/ui/form";
 import { GroupeCreationType, Participant } from "../../types/global";
 import { Input } from "../../components/ui/input";
 import { CreateTeamInput } from "@/gql/generated/schema";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 
 type StepFourProps = {
   control: Control<GroupeCreationType, any>;
@@ -34,8 +35,36 @@ function StepFour({
   const [currentTeams, setCurrentTeams] = useState<CreateTeamInput[]>(
     JSON.parse(JSON.stringify(DEFAULT_TEAMS))
   );
-  const [availableParticipants, setAvailableParticipants] =
-    useState<Participant[]>(selectedParticipants);
+  const { currentUser } = useCurrentUser();
+
+  const [availableParticipants, setAvailableParticipants] = useState<
+    Participant[]
+  >([...selectedParticipants]);
+
+  const [participantsAddedToTeam, setParticipantsAddedToTeam] = useState<
+    Participant[]
+  >([...selectedParticipants]);
+
+  useEffect(() => {
+    if (currentUser?.id === undefined || currentUser?.firstName === undefined) {
+      return;
+    }
+
+    const currentUserAsParticipant: Participant = {
+      id: currentUser.id,
+      name: `${currentUser.firstName} ${currentUser.lastName}`,
+    };
+
+    setAvailableParticipants([
+      ...availableParticipants,
+      currentUserAsParticipant,
+    ]);
+
+    setParticipantsAddedToTeam([
+      ...participantsAddedToTeam,
+      currentUserAsParticipant,
+    ]);
+  }, [currentUser]);
 
   const handleTeamsName = (
     name: string,
@@ -64,12 +93,12 @@ function StepFour({
     hasUser: boolean
   ) => {
     if (!hasUser) {
-      team["userIds"] = team.userIds.filter((id) => id !== participant.id);
+      team.userIds = team.userIds.filter((id) => id !== participant.id);
       const newParticipants = [...availableParticipants];
       newParticipants.push(participant);
       setAvailableParticipants([...newParticipants]);
     } else {
-      team["userIds"].push(participant.id);
+      team.userIds.push(participant.id);
       const newParticipants = [...availableParticipants];
       setAvailableParticipants(
         newParticipants.filter((p) => p.id !== participant.id)
@@ -100,7 +129,7 @@ function StepFour({
       <FormField
         control={control}
         name="teams"
-        render={({ field }) => (
+        render={({}) => (
           <>
             {currentTeams.map((team, index) => (
               <div className="py-4" key={index}>
@@ -115,7 +144,7 @@ function StepFour({
                   />
 
                   {team.userIds.length > 0 && <p>Joueurs sélectionnés :</p>}
-                  {selectedParticipants
+                  {participantsAddedToTeam
                     .filter((part) => team.userIds.includes(part.id))
                     .map((participant) => (
                       <div

@@ -10,6 +10,8 @@ import Layout from "./containers/Layout";
 import { Loading } from "./pages/Loading";
 import { useCurrentUser } from "./hooks/useCurrentUser";
 import CreateEcoAction from "./pages/CreateEcoAction";
+import Groups from "./pages/Groups";
+import EcoActions from "./pages/EcoActions";
 
 function App() {
   const { currentUser, loading } = useCurrentUser();
@@ -36,12 +38,11 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/create-group" element={<CreateGroup />} />
-          <Route path="/groups" element={<h1>Groups / Challenges</h1>} />
-          <Route path="/eco-actions" element={<h1>Eco-actions</h1>} />
-          <Route path="/groups" element={<h1>Groups / Challenges</h1>} />
+          <Route path="/groups" element={<Groups />} />
           <Route path="/groups/:id" element={<SingleGroup />} />
           <Route path="/eco-actions" element={<h1>Eco-actions</h1>} />
           <Route path="/create-eco-action" element={<CreateEcoAction />} />
+          <Route path="/eco-actions" element={<EcoActions />} />
         </Route>
       </Route>
       <Route path="*" element={<Navigate to="/" />} />

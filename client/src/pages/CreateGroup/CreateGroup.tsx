@@ -142,8 +142,6 @@ function CreateGroup() {
         return;
       } catch (err) {
         console.error("err", err);
-      } finally {
-        console.log("groupe créé !");
       }
     } else {
       setStep(4);
@@ -195,8 +193,6 @@ function CreateGroup() {
         }
       } catch (err) {
         console.error("err", err);
-      } finally {
-        console.log("groupe créé !");
       }
     }
   };

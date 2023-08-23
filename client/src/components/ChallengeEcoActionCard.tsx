@@ -12,25 +12,23 @@ import { EcoActionType } from "@/types/global";
 import { Button } from "./ui/button";
 import { Eye } from "lucide-react";
 
-interface EcoCardProps {
+interface ChallengeEcoActionCardProps {
   ecoAction: EcoActionType;
   challengeEndDate: number;
+  challengeStartDate: number;
   groupId: number;
 }
 
-const EcoCard = ({ ecoAction, challengeEndDate, groupId }: EcoCardProps) => {
+const ChallengeEcoActionCard = ({
+  ecoAction,
+  challengeEndDate,
+  challengeStartDate,
+  groupId,
+}: ChallengeEcoActionCardProps) => {
   const { data, loading, refetch } = useGetUserEcoActionQuery({
     variables: { groupId, ecoActionId: ecoAction.id },
   });
   const userEcoAction = data?.getUserEcoAction;
-
-  // const { data: validationData, loading: validationLoading } =
-  //   useGetValidationQuery({
-  //     variables: {
-  //       getValidationId: userEcoAction?.validationId || 0,
-  //     },
-  //   });
-  // const validation = validationData?.getValidation;
 
   const { data: maxPointsData, loading: maxPointsLoading } =
     useGetMaxValidationPointsQuery({
@@ -72,14 +70,18 @@ const EcoCard = ({ ecoAction, challengeEndDate, groupId }: EcoCardProps) => {
           {`${ecoAction.description.slice(0, 250)}...`}
         </p>
         <div className="flex justify-end items-center">
+          {/* VALIDER */}
           {userEcoAction === undefined &&
-          new Date(challengeEndDate).getTime() > new Date().getTime() ? (
-            <Validation
-              ecoActionId={ecoAction.id}
-              groupId={groupId}
-              refetchParent={refetch}
-            />
-          ) : (
+            new Date(challengeEndDate).getTime() > new Date().getTime() &&
+            new Date(challengeStartDate).getTime() < new Date().getTime() && (
+              <Validation
+                ecoActionId={ecoAction.id}
+                groupId={groupId}
+                refetchParent={refetch}
+              />
+            )}
+          {/* MA VALIDATION */}
+          {userEcoAction !== undefined && (
             <ValidationDetails groupId={groupId} ecoActionId={ecoAction.id} />
           )}
         </div>
@@ -88,4 +90,4 @@ const EcoCard = ({ ecoAction, challengeEndDate, groupId }: EcoCardProps) => {
   );
 };
 
-export default EcoCard;
+export default ChallengeEcoActionCard;

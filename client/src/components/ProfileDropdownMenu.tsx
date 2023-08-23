@@ -1,5 +1,12 @@
-import { Goal, LogOut, User, UserCircle2, Users } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import {
+  Goal,
+  LogOut,
+  User,
+  UserCircle2,
+  Users,
+  LayoutList,
+} from "lucide-react";
+import { Link } from "react-router-dom";
 import client from "@/gql/client";
 import { useLogoutMutation } from "@/gql/generated/schema";
 import {
@@ -13,8 +20,10 @@ import {
 } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
 import { FriendList } from "./FriendList";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 
 function ProfileDropDownMenu() {
+  const { currentUser } = useCurrentUser();
   const [logout] = useLogoutMutation();
   const handleLogout = async () => {
     try {
@@ -47,6 +56,12 @@ function ProfileDropDownMenu() {
             <DropdownMenuItem>
               <Goal className="mr-2 h-4 w-4" />
               <span>Mes challenges</span>
+            </DropdownMenuItem>
+          </Link>
+          <Link to="/eco-actions">
+            <DropdownMenuItem>
+              <LayoutList className="mr-2 h-4 w-4" />
+              <span>Les éco-gestes</span>
             </DropdownMenuItem>
           </Link>
           <FriendList>
