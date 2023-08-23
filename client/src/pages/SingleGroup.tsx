@@ -5,22 +5,18 @@ import { Badge } from "@/components/ui/badge";
 import {
   useGetCommentsForGroupQuery,
   useGetGroupQuery,
+  useGetTotalPossiblePointsQuery,
   useGetUserEcoActionsByGroupIdQuery,
 } from "@/gql/generated/schema";
 import { Loading } from "./Loading";
-import {
-  NavigationMenu,
-  NavigationMenuList,
-  NavigationMenuItem,
-  NavigationMenuTrigger,
-  NavigationMenuContent,
-  NavigationMenuLink,
-} from "@radix-ui/react-navigation-menu";
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ShowChallengeParticipants from "@/components/ShowChallengeParticipants";
 import ShowChallengeComments from "@/components/ShowChallengeComments";
 import EcoCard from "@/components/EcoCard";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
+import RankingByTeam from "@/components/RankingByTeam";
+import RankingByUser from "@/components/RankingByUser";
 
 const SingleGroup = () => {
   const { id = "0" } = useParams();
@@ -36,21 +32,20 @@ const SingleGroup = () => {
     });
   const comments = commentData?.getCommentsForGroup;
 
-  const { data: userEcoActionData } = useGetUserEcoActionsByGroupIdQuery({
-    variables: { groupId: challenge?.id || 0 },
-  });
+  const { data: userEcoActionData, refetch: refetchUserEcoAction } =
+    useGetUserEcoActionsByGroupIdQuery({
+      variables: { groupId: challenge?.id || 0 },
+    });
   const userEcoActions = userEcoActionData?.getUserEcoActionsByGroupId;
 
   const { loading: currentUserLoading } = useCurrentUser();
 
-  const getTotalMaxPoints = () => {
-    let total = 0;
-    challenge?.ecoActions.forEach((eco) => {
-      total += Math.max(...eco.validations.map((v) => v.points));
-    });
-    return total;
-  };
-  const totalMaxPoints = getTotalMaxPoints();
+  const { data: maxPointsData } = useGetTotalPossiblePointsQuery({
+    variables: {
+      ecoAactionIds: challenge?.ecoActions.map((eco) => eco.id) ?? [],
+    },
+  });
+  const TotalMaxPoints = maxPointsData?.getTotalPossiblePoints ?? 0;
 
   if (groupLoading || commentLoading || currentUserLoading) return <Loading />;
 
@@ -106,6 +101,7 @@ const SingleGroup = () => {
             </TabsTrigger>
             <TabsTrigger
               value="classement"
+              onClick={() => refetchUserEcoAction()}
               className="w-full rounded-none text-medium-green font-normal border-b-2 border-b-transparent  data-[state=active]:shadow-none  data-[state=active]:border-b-primary"
             >
               Classement
@@ -132,67 +128,19 @@ const SingleGroup = () => {
                 exit={{ x: -100 }}
               >
                 <div>
-                  {challenge?.teams.length
-                    ? challenge?.teams.map((team) => {
-                        if (!team || !team.users) return null;
-                        return (
-                          <div key={team.id}>
-                            <div
-                              className="flex justify-between pt-5"
-                              key={team.id}
-                            >
-                              <NavigationMenu>
-                                <NavigationMenuList>
-                                  <NavigationMenuItem>
-                                    <NavigationMenuTrigger>
-                                      {team.name}
-                                    </NavigationMenuTrigger>
-                                    {team?.users?.map((user) => (
-                                      <NavigationMenuContent key={user.id}>
-                                        <NavigationMenuLink className="text-xs">
-                                          {user.firstName}
-                                        </NavigationMenuLink>
-                                      </NavigationMenuContent>
-                                    ))}
-                                  </NavigationMenuItem>
-                                </NavigationMenuList>
-                              </NavigationMenu>
-                              <p className="text-[.9rem] font-bold">
-                                {`${team?.users
-                                  ?.map((user) =>
-                                    userEcoActions
-                                      ?.filter((ua) => ua.user.id === user.id)
-                                      .reduce(
-                                        (acc, curr) => acc + (curr.points ?? 0),
-                                        0
-                                      )
-                                  )
-                                  .reduce(
-                                    (acc, curr) => (acc ?? 0) + (curr ?? 0),
-                                    0
-                                  )} / ${totalMaxPoints} points`}
-                              </p>
-                            </div>
-                          </div>
-                        );
-                      })
-                    : challenge?.users.map((user) => (
-                        <div
-                          className="flex justify-between pt-5"
-                          key={user.id}
-                        >
-                          <p className="text-[.9rem]">{user.firstName}</p>
-                          <p className="text-[.9rem] font-bold">
-                            {" "}
-                            {`${userEcoActions
-                              ?.filter((ua) => ua.user.id === user.id)
-                              .reduce(
-                                (acc, curr) => acc + (curr.points ?? 0),
-                                0
-                              )} / ${totalMaxPoints} points`}
-                          </p>
-                        </div>
-                      ))}
+                  {challenge?.teams.length ? (
+                    <RankingByTeam
+                      teams={challenge?.teams ?? []}
+                      userEcoActions={userEcoActions ?? []}
+                      totalMaxPoints={TotalMaxPoints}
+                    />
+                  ) : (
+                    <RankingByUser
+                      users={challenge?.users ?? []}
+                      userEcoActions={userEcoActions ?? []}
+                      totalMaxPoints={TotalMaxPoints}
+                    />
+                  )}
                 </div>
               </motion.div>
             </TabsContent>
