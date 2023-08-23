@@ -32,6 +32,7 @@ function EcoActions() {
                 <EcoActionCard
                   key={ecoAction.id}
                   ecoAction={ecoAction as EcoActionType}
+                  isPartner
                 />
               ))}
             </div>

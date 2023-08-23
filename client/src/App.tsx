@@ -40,7 +40,6 @@ function App() {
           <Route path="/create-group" element={<CreateGroup />} />
           <Route path="/groups" element={<Groups />} />
           <Route path="/groups/:id" element={<SingleGroup />} />
-          <Route path="/eco-actions" element={<h1>Eco-actions</h1>} />
           <Route path="/create-eco-action" element={<CreateEcoAction />} />
           <Route path="/eco-actions" element={<EcoActions />} />
         </Route>

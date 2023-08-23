@@ -124,6 +124,7 @@ export type Mutation = {
   createTeams: Array<Team>;
   createUser: User;
   createUserEcoAction: Scalars['String']['output'];
+  deleteEcoAction: Scalars['Boolean']['output'];
   deleteLike: Scalars['Boolean']['output'];
   login: Scalars['String']['output'];
   logout: Scalars['String']['output'];
@@ -201,6 +202,11 @@ export type MutationCreateUserArgs = {
 
 export type MutationCreateUserEcoActionArgs = {
   data: UserEcoActionInputAddPoints;
+};
+
+
+export type MutationDeleteEcoActionArgs = {
+  id: Scalars['Int']['input'];
 };
 
 
@@ -475,6 +481,13 @@ export type CreateUserEcoActionMutationVariables = Exact<{
 
 
 export type CreateUserEcoActionMutation = { __typename?: 'Mutation', createUserEcoAction: string };
+
+export type DeleteEcoActionMutationVariables = Exact<{
+  ecoActionId: Scalars['Int']['input'];
+}>;
+
+
+export type DeleteEcoActionMutation = { __typename?: 'Mutation', deleteEcoAction: boolean };
 
 export type DeleteLikeMutationVariables = Exact<{
   ecoActionId: Scalars['Int']['input'];
@@ -907,6 +920,37 @@ export function useCreateUserEcoActionMutation(baseOptions?: Apollo.MutationHook
 export type CreateUserEcoActionMutationHookResult = ReturnType<typeof useCreateUserEcoActionMutation>;
 export type CreateUserEcoActionMutationResult = Apollo.MutationResult<CreateUserEcoActionMutation>;
 export type CreateUserEcoActionMutationOptions = Apollo.BaseMutationOptions<CreateUserEcoActionMutation, CreateUserEcoActionMutationVariables>;
+export const DeleteEcoActionDocument = gql`
+    mutation DeleteEcoAction($ecoActionId: Int!) {
+  deleteEcoAction(id: $ecoActionId)
+}
+    `;
+export type DeleteEcoActionMutationFn = Apollo.MutationFunction<DeleteEcoActionMutation, DeleteEcoActionMutationVariables>;
+
+/**
+ * __useDeleteEcoActionMutation__
+ *
+ * To run a mutation, you first call `useDeleteEcoActionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteEcoActionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteEcoActionMutation, { data, loading, error }] = useDeleteEcoActionMutation({
+ *   variables: {
+ *      ecoActionId: // value for 'ecoActionId'
+ *   },
+ * });
+ */
+export function useDeleteEcoActionMutation(baseOptions?: Apollo.MutationHookOptions<DeleteEcoActionMutation, DeleteEcoActionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteEcoActionMutation, DeleteEcoActionMutationVariables>(DeleteEcoActionDocument, options);
+      }
+export type DeleteEcoActionMutationHookResult = ReturnType<typeof useDeleteEcoActionMutation>;
+export type DeleteEcoActionMutationResult = Apollo.MutationResult<DeleteEcoActionMutation>;
+export type DeleteEcoActionMutationOptions = Apollo.BaseMutationOptions<DeleteEcoActionMutation, DeleteEcoActionMutationVariables>;
 export const DeleteLikeDocument = gql`
     mutation DeleteLike($ecoActionId: Int!) {
   deleteLike(ecoActionId: $ecoActionId)

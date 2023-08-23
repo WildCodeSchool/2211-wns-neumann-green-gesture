@@ -23,10 +23,10 @@ async function resetDB(): Promise<void> {
   await datasource.getRepository(UserEcoAction).delete({});
   // delete all eco actions in the database
   await datasource.getRepository(EcoAction).delete({});
-  // delete all groups in the database
-  await datasource.getRepository(Group).delete({});
   // detlete all notifications in the database
   await datasource.getRepository(Notification).delete({});
+  // delete all groups in the database
+  await datasource.getRepository(Group).delete({});
   // delete all users in the database
   await datasource.getRepository(User).delete({});
 

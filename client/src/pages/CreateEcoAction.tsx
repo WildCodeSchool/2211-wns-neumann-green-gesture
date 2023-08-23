@@ -10,7 +10,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useCreateEcoActionMutation } from "@/gql/generated/schema";
+import {
+  GetUserEcoActionsDocument,
+  useCreateEcoActionMutation,
+} from "@/gql/generated/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -18,7 +21,9 @@ import * as z from "zod";
 
 const CreateEcoAction = () => {
   const navigate = useNavigate();
-  const [createEcoAction] = useCreateEcoActionMutation();
+  const [createEcoAction] = useCreateEcoActionMutation({
+    refetchQueries: [GetUserEcoActionsDocument, "GetUserEcoActions"],
+  });
 
   const formSchema = z.object({
     name: z

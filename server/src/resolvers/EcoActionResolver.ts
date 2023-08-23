@@ -1,4 +1,12 @@
-import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
+import {
+  Arg,
+  Authorized,
+  Ctx,
+  Int,
+  Mutation,
+  Query,
+  Resolver,
+} from "type-graphql";
 import datasource from "../db";
 import { ContextType } from "..";
 import EcoAction, { EcoActionInputCreation } from "../entity/EcoAction";
@@ -80,5 +88,21 @@ export class EcoActionResolver {
         validations: true,
       },
     });
+  }
+
+  // Delete an eco-action
+  // @Authorized<UserSubscriptionType>([UserSubscriptionType.PARTNER])
+  @Mutation(() => Boolean)
+  async deleteEcoAction(@Arg("id", () => Int) id: number): Promise<Boolean> {
+    const ecoAction = await datasource
+      .getRepository(EcoAction)
+      .findOne({ where: { id } });
+
+    if (ecoAction === null)
+      throw new ApolloError("EcoAction not found", "NOT_FOUND");
+
+    await datasource.getRepository(EcoAction).remove(ecoAction);
+
+    return true;
   }
 }
