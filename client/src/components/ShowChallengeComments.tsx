@@ -35,7 +35,7 @@ function ShowChallengeComments({
             </div>
           </SheetHeader>
           <div className="mt-6 space-y-3">
-            {comments.length === 0 && <p>Aucun commentaires...</p>}
+            {comments.length === 0 && <p>Aucun commentaire...</p>}
             {comments.length > 0 &&
               comments.map((comment) => (
                 <div
