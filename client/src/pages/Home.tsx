@@ -8,9 +8,12 @@ import {
 import { Button } from "@/components/ui/button";
 import DisplayDate from "@/components/DisplayDate";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { useEffect } from "react";
+import EcoActionDetailsCard from "@/components/EcoActionDetailsCard";
 
 function Home() {
   const { currentUser } = useCurrentUser();
+  const navigate = useNavigate();
 
   const { data: userGroups, refetch } = useGetUserGroupsQuery();
   const groups = userGroups?.getUserGroups || [];
@@ -18,8 +21,16 @@ function Home() {
   const { data: dataFreeEcoActions } = useGetFreeEcoActionsQuery();
   const freeEcoActions = dataFreeEcoActions?.getFreeEcoActions || [];
 
-  const navigate = useNavigate();
-  refetch();
+  useEffect(() => {
+    refetch();
+  }, []);
+
+  const challengeInProgress = groups.filter((chall) => {
+    const now = new Date().getTime();
+    const startDate = new Date(chall.startDate).getTime();
+    const endDate = new Date(chall.endDate).getTime();
+    return now >= startDate && now <= endDate;
+  });
 
   return (
     <>
@@ -29,13 +40,18 @@ function Home() {
       <div className="space-y-8">
         {groups.length > 0 ? (
           <div>
-            <h2 className="font-semibold mb-3">Mes challenges en cours</h2>
+            <div className="flex items-center justify-between md:justify-start md:gap-3 mb-3">
+              <h2 className="font-semibold">Mes challenges en cours</h2>
+              <Link to="/groups" className="text-xs underline">
+                Voir tous
+              </Link>
+            </div>
             <div className="flex overflow-scroll snap-mandatory gap-3">
-              {groups.map((group) => (
+              {challengeInProgress.map((group) => (
                 <Link
                   key={group.id}
                   to={`/groups/${group.id}`}
-                  className="flex flex-col justify-between bg-card rounded-xl h-[125px] min-w-[150px] cursor-pointer p-2 elevate-box"
+                  className="flex flex-col justify-between bg-card rounded-xl h-[125px] min-w-[150px] cursor-pointer p-2 elevate-box border-2 border-transparent hover:border-primary"
                 >
                   <div>
                     <h4 className="text-xs font-semibold">
@@ -64,49 +80,65 @@ function Home() {
         )}
 
         <div>
-          <h3 className="font-semibold mb-3">
-            Derniers éco-gestes disponibles
-          </h3>
+          <div className="flex items-center justify-between md:justify-start md:gap-3 mb-3">
+            <h2 className="font-semibold">Nouveaux éco-gestes</h2>
+            <Link to="/eco-actions" className="text-xs underline">
+              Voir tous
+            </Link>
+          </div>
 
           <div className="flex overflow-scroll snap-mandatory gap-3 w-full">
             {freeEcoActions?.map((ecoAction) => (
               <div
                 key={ecoAction.id}
-                className="flex flex-col items-center bg-card rounded-xl h-[125px] min-w-full cursor-pointer p-2"
+                className="flex flex-col items-center justify-evenly bg-card rounded-xl h-[135px] w-full lg:w-[33%] py-2 px-3"
               >
-                <Link to={`/eco-action/${ecoAction.id}`}>
-                  <div>
-                    <h4 className="text-center font-semibold mb-3">
-                      {ecoAction.name}
-                    </h4>
-                    <p className="text-2xs text-center">
-                      {ecoAction.description}
-                    </p>
-                  </div>
-                </Link>
+                <div className="text-center">
+                  <h4 className="font-semibold">{ecoAction.name}</h4>
+                  <p className="text-2xs">
+                    {ecoAction.description.slice(0, 150)}...
+                  </p>
+                </div>
+                <EcoActionDetailsCard
+                  ecoAction={ecoAction}
+                  trigger={
+                    <Button variant="link" size="sm">
+                      Découvrir
+                    </Button>
+                  }
+                />
               </div>
             ))}
           </div>
         </div>
 
         <div>
-          <h3 className="font-semibold mb-3">Éco-gestes les plus populaires</h3>
+          <div className="flex items-center justify-between md:justify-start md:gap-3 mb-3">
+            <h2 className="font-semibold">Éco-gestes populaires</h2>
+            <Link to="/eco-actions" className="text-xs underline">
+              Voir tous
+            </Link>
+          </div>
           <div className="flex overflow-scroll snap-mandatory gap-3 w-full">
             {freeEcoActions?.map((ecoAction) => (
               <div
                 key={ecoAction.id}
-                className="flex flex-col items-center bg-card rounded-xl h-[125px] min-w-full cursor-pointer p-2"
+                className="flex flex-col items-center bg-card rounded-xl h-[125px] w-full lg:w-[33%] py-2 px-3"
               >
-                <Link to={`/eco-action/${ecoAction.id}`}>
-                  <div>
-                    <h4 className="text-center font-semibold mb-3">
-                      {ecoAction.name}
-                    </h4>
-                    <p className="text-2xs text-center">
-                      {ecoAction.description}
-                    </p>
-                  </div>
-                </Link>
+                <div className="text-center">
+                  <h4 className="font-semibold">{ecoAction.name}</h4>
+                  <p className="text-2xs">
+                    {ecoAction.description.slice(0, 150)}...
+                  </p>
+                </div>
+                <EcoActionDetailsCard
+                  ecoAction={ecoAction}
+                  trigger={
+                    <Button variant="link" size="sm">
+                      Découvrir
+                    </Button>
+                  }
+                />
               </div>
             ))}
           </div>
