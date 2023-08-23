@@ -41,7 +41,7 @@ function Notifications() {
             <SheetDescription>Vous êtes à jour !</SheetDescription>
           )}
         </SheetHeader>
-        <div className="space-y-4 mt-4">
+        <div className="space-y-4 pt-6 pb-8 overflow-y-scroll snap-mandatory max-h-full">
           {notifs.map((notif) => (
             <Notification
               key={notif.id}

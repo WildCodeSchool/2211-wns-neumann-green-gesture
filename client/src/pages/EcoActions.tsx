@@ -41,7 +41,7 @@ function EcoActions() {
           <div>
             <h2 className="font-semibold">Mes éco-gestes</h2>
             <p className="my-3 text-sm">
-              Vous n'avez pas encore vos propre éco-gestes...
+              Vous n'avez pas encore vos propres éco-gestes...
             </p>
             <Button asChild={true} variant="secondary" size="sm">
               <Link to="#">Créer mon premier éco-geste</Link>

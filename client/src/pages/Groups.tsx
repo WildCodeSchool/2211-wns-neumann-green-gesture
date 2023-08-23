@@ -54,14 +54,16 @@ function Groups() {
         </div>
 
         {/* CHALLENGES À VENIR */}
-        <div>
-          <h2 className="font-semibold mb-3">Mes challenges à venir</h2>
-          <div className="flex overflow-scroll snap-mandatory gap-3">
-            {challengeToCome.map((group) => (
-              <ChallengeCard key={group.id} group={group as GroupType} />
-            ))}
+        {challengeToCome.length > 0 && (
+          <div>
+            <h2 className="font-semibold mb-3">Mes challenges à venir</h2>
+            <div className="flex overflow-scroll snap-mandatory gap-3">
+              {challengeToCome.map((group) => (
+                <ChallengeCard key={group.id} group={group as GroupType} />
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* CHALLENGES TERMINÉS */}
         <div>
