@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import AddButtonDropdownMenu from "@/components/AddButtonDropdownMenu";
 import ProfileDropDownMenu from "@/components/ProfileDropdownMenu";
 import Notifications from "@/components/Notifications";
+import LoadingEarth from "../assets/images/loading-earth.png";
 
 function Layout() {
   return (
@@ -11,9 +12,9 @@ function Layout() {
       <header className="sticky top-0 z-10 py-3 elevate-box rounded-none bg-background">
         <div className="flex items-center justify-between">
           {/* LOGO */}
-          <Button className="self-start rounded-full p-2 text-base">
-            <Link to="/">GG</Link>
-          </Button>
+          <Link to="/">
+            <img src={LoadingEarth} className="w-12 h-12" />
+          </Link>
           <div className="flex items-center space-x-2">
             {/* ADD BUTTON */}
             <AddButtonDropdownMenu />
