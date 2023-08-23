@@ -81,4 +81,11 @@ export class ValidationResolver {
 
     return total;
   }
+
+  // retrieve all validations
+  @Authorized<UserSubscriptionType>([UserSubscriptionType.PARTNER])
+  @Query(() => [Validation])
+  async getAllValidations(): Promise<Validation[]> {
+    return await datasource.getRepository(Validation).find();
+  }
 }

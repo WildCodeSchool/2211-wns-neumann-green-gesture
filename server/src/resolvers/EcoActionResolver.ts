@@ -1,10 +1,11 @@
 import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import datasource from "../db";
-import Group from "../entity/Group";
 import { ContextType } from "..";
 import EcoAction, { EcoActionInputCreation } from "../entity/EcoAction";
 import { UserSubscriptionType } from "../entity/User";
-import { IsNull } from "typeorm";
+import { In, IsNull } from "typeorm";
+import Validation from "../entity/Validation";
+import { ApolloError } from "apollo-server-errors";
 
 @Resolver(EcoAction)
 export class EcoActionResolver {
@@ -12,10 +13,17 @@ export class EcoActionResolver {
   @Mutation(() => EcoAction)
   async createEcoAction(
     @Arg("data")
-    { name, description, validations }: EcoActionInputCreation,
+    { name, description, validationIds }: EcoActionInputCreation,
     @Ctx() { currentUser }: ContextType
-  ): Promise<Group> {
-    return await datasource.getRepository(Group).save({
+  ): Promise<EcoAction> {
+    const validations = await datasource.getRepository(Validation).find({
+      where: { id: In(validationIds) },
+    });
+
+    if (validations.length !== validationIds.length)
+      throw new ApolloError("Validation not found", "NOT_FOUND");
+
+    return await datasource.getRepository(EcoAction).save({
       name,
       description,
       author: currentUser,

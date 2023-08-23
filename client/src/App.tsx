@@ -9,6 +9,7 @@ import Register from "./pages/Register/Register";
 import Layout from "./containers/Layout";
 import { Loading } from "./pages/Loading";
 import { useCurrentUser } from "./hooks/useCurrentUser";
+import CreateEcoAction from "./pages/CreateEcoAction";
 
 function App() {
   const { currentUser, loading } = useCurrentUser();
@@ -40,6 +41,7 @@ function App() {
           <Route path="/groups" element={<h1>Groups / Challenges</h1>} />
           <Route path="/groups/:id" element={<SingleGroup />} />
           <Route path="/eco-actions" element={<h1>Eco-actions</h1>} />
+          <Route path="/create-eco-action" element={<CreateEcoAction />} />
         </Route>
       </Route>
       <Route path="*" element={<Navigate to="/" />} />
