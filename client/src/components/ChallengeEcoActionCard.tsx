@@ -12,13 +12,17 @@ import { EcoActionType } from "@/types/global";
 import { Button } from "./ui/button";
 import { Eye } from "lucide-react";
 
-interface EcoCardProps {
+interface ChallengeEcoActionCardProps {
   ecoAction: EcoActionType;
   challengeEndDate: number;
   groupId: number;
 }
 
-const EcoCard = ({ ecoAction, challengeEndDate, groupId }: EcoCardProps) => {
+const ChallengeEcoActionCard = ({
+  ecoAction,
+  challengeEndDate,
+  groupId,
+}: ChallengeEcoActionCardProps) => {
   const { data, loading, refetch } = useGetUserEcoActionQuery({
     variables: { groupId, ecoActionId: ecoAction.id },
   });
@@ -88,4 +92,4 @@ const EcoCard = ({ ecoAction, challengeEndDate, groupId }: EcoCardProps) => {
   );
 };
 
-export default EcoCard;
+export default ChallengeEcoActionCard;
