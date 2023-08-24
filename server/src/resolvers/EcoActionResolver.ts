@@ -94,7 +94,7 @@ export class EcoActionResolver {
   }
 
   // Delete an eco-action
-  // @Authorized<UserSubscriptionType>([UserSubscriptionType.PARTNER])
+  @Authorized<UserSubscriptionType>([UserSubscriptionType.PARTNER])
   @Mutation(() => Boolean)
   async deleteEcoAction(@Arg("id", () => Int) id: number): Promise<Boolean> {
     const ecoAction = await datasource
@@ -110,9 +110,7 @@ export class EcoActionResolver {
   }
 
   // Get an eco-action by id
-  // @Authorized<UserSubscriptionType>([
-  //   UserSubscriptionType.PARTNER,
-  // ])
+  @Authorized<UserSubscriptionType>([UserSubscriptionType.PARTNER])
   @Query(() => EcoAction)
   async getEcoActionbyId(@Arg("id", () => Int) id: number): Promise<EcoAction> {
     const ecoAction = await datasource
@@ -126,7 +124,7 @@ export class EcoActionResolver {
   }
 
   // Update an eco-action
-  // @Authorized<UserSubscriptionType>([UserSubscriptionType.PARTNER])
+  @Authorized<UserSubscriptionType>([UserSubscriptionType.PARTNER])
   @Mutation(() => EcoAction)
   async updateEcoAction(
     @Arg("id", () => Int) id: number,
