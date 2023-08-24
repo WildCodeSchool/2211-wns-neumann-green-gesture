@@ -13,30 +13,31 @@ import CustomSelectMultiple from "@/components/CustomSelectMultiple";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { EcoActionUpdateType } from "@/types/global";
-
-type ValidationType = {
-  id: number;
-  points: number;
-};
-
-type EcoActionType = {
-  name?: string;
-  description?: string;
-  validations?: ValidationType[];
-};
+import { EcoActionType, EcoActionUpdateType } from "@/types/global";
+import {
+  GetUserEcoActionsDocument,
+  useDeleteEcoActionMutation,
+} from "@/gql/generated/schema";
+import { useNavigate } from "react-router-dom";
 
 interface EcoActionFormProps {
+  ecoActionId: number;
   ecoAction?: EcoActionType;
   handledata: (values: EcoActionUpdateType) => Promise<void>;
   mode?: "create" | "update";
 }
 
 const EcoActionForm = ({
+  ecoActionId,
   ecoAction,
   handledata,
   mode = "create",
 }: EcoActionFormProps) => {
+  const navigate = useNavigate();
+  const [deleteEcoAction] = useDeleteEcoActionMutation({
+    refetchQueries: [GetUserEcoActionsDocument],
+  });
+
   const formSchema = z.object({
     name: z
       .string()
@@ -70,10 +71,28 @@ const EcoActionForm = ({
     }
   };
 
+  const handleRemoveEcoAction = async () => {
+    try {
+      const confirm = window.confirm("Voulez-vous supprimer cette action ?");
+      if (!confirm) return;
+      await deleteEcoAction({
+        variables: {
+          ecoActionId,
+        },
+      });
+      navigate("/eco-actions");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
+        <form
+          onSubmit={form.handleSubmit(handleSubmit)}
+          className="space-y-8 max-w-3xl mx-auto"
+        >
           <FormField
             control={form.control}
             name="name"
@@ -127,9 +146,19 @@ const EcoActionForm = ({
               </FormItem>
             )}
           />
-          <Button type="submit" className="w-full">
-            {mode === "create" ? "Créer" : "Modifier"}
-          </Button>
+          <div className="space-y-4">
+            <Button type="submit" className="w-full">
+              {mode === "create" ? "Créer" : "Modifier"}
+            </Button>
+            <Button
+              type="button"
+              className="w-full"
+              variant="destructive"
+              onClick={handleRemoveEcoAction}
+            >
+              Supprimer
+            </Button>
+          </div>
         </form>
       </Form>
     </>

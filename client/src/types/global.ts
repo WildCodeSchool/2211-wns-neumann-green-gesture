@@ -35,12 +35,19 @@ export type GroupType = {
   ecoActions: EcoActionType[];
 };
 
+export type ValidationType = {
+  id: number;
+  name: string;
+  points: number;
+};
+
 export type EcoActionType = {
   id: number;
   name: string;
   likes: number;
   description: string;
   author?: Partial<User>;
+  validations?: ValidationType[];
 };
 
 export enum NotificationStatusEnum {

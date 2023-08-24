@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Goal, Plus } from "lucide-react";
+import { Goal, LayoutList, Plus } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,7 +28,7 @@ function AddButtonDropdownMenu() {
         {currentUser?.subscriptionType === "partner" && (
           <Link to="/create-eco-action">
             <DropdownMenuItem>
-              <Goal className="mr-2 h-4 w-4" />
+              <LayoutList className="mr-2 h-4 w-4" />
               <span>Créer un nouvel éco-geste</span>
             </DropdownMenuItem>
           </Link>

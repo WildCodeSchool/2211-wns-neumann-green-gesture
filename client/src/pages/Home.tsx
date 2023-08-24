@@ -26,7 +26,6 @@ function Home() {
   const mostLikedEcoActions =
     dataMostLikedEcoActions?.getPopularFreeEcoActions || [];
 
-  console.log(mostLikedEcoActions);
   useEffect(() => {
     refetch();
   }, []);
