@@ -19,6 +19,12 @@ function Home() {
 
   const { data: dataFreeEcoActions } = useGetFreeEcoActionsQuery();
   const freeEcoActions = dataFreeEcoActions?.getFreeEcoActions || [];
+  const mostLikedEcoActions =
+    [
+      ...(dataFreeEcoActions?.getFreeEcoActions
+        ? dataFreeEcoActions?.getFreeEcoActions
+        : []),
+    ] || [];
 
   useEffect(() => {
     refetch();
@@ -82,9 +88,13 @@ function Home() {
             </Link>
           </div>
           <div className="space-y-3 md:space-y-0 md:flex md:overflow-scroll md:snap-mandatory md:gap-3">
-            {freeEcoActions?.slice(0, 3).map((ecoAction) => (
-              <EcoActionCard key={ecoAction.id} ecoAction={ecoAction} />
-            ))}
+            {mostLikedEcoActions.length > 0 &&
+              mostLikedEcoActions
+                .sort((a, b) => b.likes - a.likes)
+                .slice(0, 3)
+                .map((ecoAction) => (
+                  <EcoActionCard key={ecoAction.id} ecoAction={ecoAction} />
+                ))}
           </div>
         </div>
       </div>
