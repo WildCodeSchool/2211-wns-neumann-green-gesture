@@ -73,7 +73,7 @@ function ShowChallengeComments({
         position="bottom"
         size="eco-geste"
       >
-        <div className="md:container">
+        <div className="max-w-3xl mx-auto">
           <SheetHeader>
             <div>
               <SheetTitle className="text-xl">Commentaires</SheetTitle>
