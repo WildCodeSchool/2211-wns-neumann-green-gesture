@@ -48,7 +48,7 @@ function StepTwo({ control, handleGoBackInStep }: StepTwoProps) {
               <p className="font-semibold text-base">
                 Les Éco-gestes populaires
               </p>
-              <div className="space-y-3 md:space-y-0 md:flex md:items-center">
+              <div className="space-y-3 md:space-y-0 md:flex md:flex-wrap md:items-center md:gap-3">
                 {popularEcoActionsList.map((ecoAction) => (
                   <SelectableEcoAction
                     key={ecoAction.id}

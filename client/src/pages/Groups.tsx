@@ -34,47 +34,48 @@ function Groups() {
 
   return (
     <div className="py-4">
-      {noChallengeYet && (
+      {noChallengeYet ? (
         <div className="text-center space-y-2">
           <h2>Pas encore de challenges...</h2>
           <Button asChild={true} variant="secondary">
             <Link to="/create-group">Créer mon premier challenge</Link>
           </Button>
         </div>
-      )}
-      <div className="space-y-8">
-        {/* CHALLENGES EN COURS */}
-        <div>
-          <h2 className="font-semibold mb-3">Mes challenges en cours</h2>
-          <div className="flex overflow-scroll snap-mandatory gap-3">
-            {challengeInProgress.map((group) => (
-              <ChallengeCard key={group.id} group={group as GroupType} />
-            ))}
-          </div>
-        </div>
-
-        {/* CHALLENGES À VENIR */}
-        {challengeToCome.length > 0 && (
+      ) : (
+        <div className="space-y-8">
+          {/* CHALLENGES EN COURS */}
           <div>
-            <h2 className="font-semibold mb-3">Mes challenges à venir</h2>
+            <h2 className="font-semibold mb-3">Mes challenges en cours</h2>
             <div className="flex overflow-scroll snap-mandatory gap-3">
-              {challengeToCome.map((group) => (
+              {challengeInProgress.map((group) => (
                 <ChallengeCard key={group.id} group={group as GroupType} />
               ))}
             </div>
           </div>
-        )}
 
-        {/* CHALLENGES TERMINÉS */}
-        <div>
-          <h2 className="font-semibold mb-3">Mes challenges terminés</h2>
-          <div className="flex overflow-scroll snap-mandatory gap-3">
-            {challengeFinished.map((group) => (
-              <ChallengeCard key={group.id} group={group as GroupType} />
-            ))}
+          {/* CHALLENGES À VENIR */}
+          {challengeToCome.length > 0 && (
+            <div>
+              <h2 className="font-semibold mb-3">Mes challenges à venir</h2>
+              <div className="flex overflow-scroll snap-mandatory gap-3">
+                {challengeToCome.map((group) => (
+                  <ChallengeCard key={group.id} group={group as GroupType} />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* CHALLENGES TERMINÉS */}
+          <div>
+            <h2 className="font-semibold mb-3">Mes challenges terminés</h2>
+            <div className="flex overflow-scroll snap-mandatory gap-3">
+              {challengeFinished.map((group) => (
+                <ChallengeCard key={group.id} group={group as GroupType} />
+              ))}
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
