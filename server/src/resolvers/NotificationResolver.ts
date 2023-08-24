@@ -5,6 +5,7 @@ import Notification, {
   NotificationInputCreation,
   NotificationInputStatusChange,
   NotificationStatusEnum,
+  NotificationTypeEnum,
 } from "../entity/Notification";
 import { ContextType } from "..";
 import Group from "../entity/Group";
@@ -101,6 +102,7 @@ export class NotificationResolver {
       where: {
         sender: { id: currentUser?.id },
         status: NotificationStatusEnum.PENDING,
+        type: NotificationTypeEnum.FRIEND_REQUEST,
       },
       relations: {
         receiver: true,

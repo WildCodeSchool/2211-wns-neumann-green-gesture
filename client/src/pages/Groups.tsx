@@ -44,14 +44,16 @@ function Groups() {
       ) : (
         <div className="space-y-8">
           {/* CHALLENGES EN COURS */}
-          <div>
-            <h2 className="font-semibold mb-3">Mes challenges en cours</h2>
-            <div className="flex overflow-scroll snap-mandatory gap-3">
-              {challengeInProgress.map((group) => (
-                <ChallengeCard key={group.id} group={group as GroupType} />
-              ))}
+          {challengeInProgress.length > 0 && (
+            <div>
+              <h2 className="font-semibold mb-3">Mes challenges en cours</h2>
+              <div className="flex overflow-scroll snap-mandatory gap-3">
+                {challengeInProgress.map((group) => (
+                  <ChallengeCard key={group.id} group={group as GroupType} />
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* CHALLENGES À VENIR */}
           {challengeToCome.length > 0 && (
@@ -66,14 +68,16 @@ function Groups() {
           )}
 
           {/* CHALLENGES TERMINÉS */}
-          <div>
-            <h2 className="font-semibold mb-3">Mes challenges terminés</h2>
-            <div className="flex overflow-scroll snap-mandatory gap-3">
-              {challengeFinished.map((group) => (
-                <ChallengeCard key={group.id} group={group as GroupType} />
-              ))}
+          {challengeFinished.length > 0 && (
+            <div>
+              <h2 className="font-semibold mb-3">Mes challenges terminés</h2>
+              <div className="flex overflow-scroll snap-mandatory gap-3">
+                {challengeFinished.map((group) => (
+                  <ChallengeCard key={group.id} group={group as GroupType} />
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       )}
     </div>
