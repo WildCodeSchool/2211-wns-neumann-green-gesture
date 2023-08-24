@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 
 import {
   useGetFreeEcoActionsQuery,
+  useGetPopularFreeEcoActionsQuery,
   useGetUserGroupsQuery,
 } from "../gql/generated/schema";
 import { Button } from "@/components/ui/button";
@@ -19,13 +20,13 @@ function Home() {
 
   const { data: dataFreeEcoActions } = useGetFreeEcoActionsQuery();
   const freeEcoActions = dataFreeEcoActions?.getFreeEcoActions || [];
-  const mostLikedEcoActions =
-    [
-      ...(dataFreeEcoActions?.getFreeEcoActions
-        ? dataFreeEcoActions?.getFreeEcoActions
-        : []),
-    ] || [];
 
+  const { data: dataMostLikedEcoActions } = useGetPopularFreeEcoActionsQuery();
+
+  const mostLikedEcoActions =
+    dataMostLikedEcoActions?.getPopularFreeEcoActions || [];
+
+  console.log(mostLikedEcoActions);
   useEffect(() => {
     refetch();
   }, []);
@@ -90,7 +91,6 @@ function Home() {
           <div className="space-y-3 md:space-y-0 md:flex md:overflow-scroll md:snap-mandatory md:gap-3">
             {mostLikedEcoActions.length > 0 &&
               mostLikedEcoActions
-                .sort((a, b) => b.likes - a.likes)
                 .slice(0, 3)
                 .map((ecoAction) => (
                   <EcoActionCard key={ecoAction.id} ecoAction={ecoAction} />
