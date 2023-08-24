@@ -5,15 +5,17 @@ import {
   useUpdateEcoActionMutation,
 } from "@/gql/generated/schema";
 import { useNavigate, useParams } from "react-router-dom";
-import { EcoActionUpdateType } from "@/types/global";
+import { EcoActionType, EcoActionUpdateType } from "@/types/global";
 
-const EditeEcoAction = () => {
+const EditEcoAction = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { data, loading } = useGetEcoActionbyIdQuery({
     variables: { EcoActionId: Number(id) },
   });
   const ecoAction = data?.getEcoActionbyId;
+
+  console.log({ ecoAction });
 
   const [updateEcoAction] = useUpdateEcoActionMutation();
 
@@ -54,12 +56,12 @@ const EditeEcoAction = () => {
 
   return (
     <>
-      {" "}
       <h1 className=" font-bold text-center mt-10 mb-5 text-3xl">
         Modifie ton éco-geste !
-      </h1>{" "}
+      </h1>
       <EcoActionForm
-        ecoAction={ecoAction}
+        ecoActionId={Number(id)}
+        ecoAction={ecoAction as EcoActionType}
         handledata={handleUpdate}
         mode="update"
       />
@@ -67,4 +69,4 @@ const EditeEcoAction = () => {
   );
 };
 
-export default EditeEcoAction;
+export default EditEcoAction;

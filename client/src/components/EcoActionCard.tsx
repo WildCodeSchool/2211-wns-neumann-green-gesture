@@ -3,12 +3,7 @@ import { EcoActionType } from "@/types/global";
 
 import EcoActionDetailsCard from "./EcoActionDetailsCard";
 import { Button } from "./ui/button";
-import { X, PenLine } from "lucide-react";
-
-import {
-  GetUserEcoActionsDocument,
-  useDeleteEcoActionMutation,
-} from "@/gql/generated/schema";
+import { PenLine } from "lucide-react";
 
 interface EcoActionCardProps {
   ecoAction: EcoActionType;
@@ -17,34 +12,11 @@ interface EcoActionCardProps {
 
 function EcoActionCard({ ecoAction, isPartner = false }: EcoActionCardProps) {
   const navigate = useNavigate();
-  const [deleteEcoAction] = useDeleteEcoActionMutation({
-    refetchQueries: [GetUserEcoActionsDocument],
-  });
-
-  const handleRemoveEcoAction = async (ecoActionId: number) => {
-    try {
-      await deleteEcoAction({
-        variables: {
-          ecoActionId,
-        },
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   return (
-    <div className="flex flex-col items-center justify-evenly bg-card rounded-xl h-[135px] w-full lg:w-[33%] py-2 px-3">
+    <div className="relative flex flex-col items-center justify-evenly bg-card rounded-xl h-[135px] w-full lg:w-[32%] py-2 px-3">
       {isPartner && (
-        <>
-          <Button
-            variant="destructive"
-            size="icon"
-            className="p-1 w-6 h-6 self-end"
-            onClick={() => handleRemoveEcoAction(ecoAction.id)}
-          >
-            <X />
-          </Button>
+        <div className="absolute right-2 top-2">
           <Button
             variant="destructive"
             size="icon"
@@ -53,7 +25,7 @@ function EcoActionCard({ ecoAction, isPartner = false }: EcoActionCardProps) {
           >
             <PenLine />
           </Button>
-        </>
+        </div>
       )}
 
       <div className="text-center">
