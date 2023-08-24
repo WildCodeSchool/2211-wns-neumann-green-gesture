@@ -1,7 +1,65 @@
+import fs from "fs";
 import datasource from "./db";
 import User, { hashPassword } from "./entity/User";
 import EcoAction from "./entity/EcoAction";
 import Validation from "./entity/Validation";
+
+interface EcoActionType {
+  name: string | undefined;
+  description: string | undefined;
+  validations: Validation[];
+}
+
+const filePath = "./free-eco-actions.json";
+async function parseAndEcoActions(
+  validations: Validation[]
+): Promise<EcoActionType[]> {
+  const result = fs.readFileSync(filePath, "utf8");
+  const parsedEcoActions: Partial<EcoActionType[]> = JSON.parse(result);
+
+  const ecoActions = parsedEcoActions.map((ecoAction) => {
+    return {
+      name: ecoAction?.name,
+      description: ecoAction?.description,
+      validations: validations.filter(
+        (validation) =>
+          ecoAction?.validations.findIndex(
+            (val) => val.points === validation.points
+          ) !== -1
+      ),
+    };
+  });
+
+  return ecoActions;
+
+  /* fs.readFile(filePath, "utf8", async (err, data) => {
+    if (err != null) {
+      console.error(err);
+      return;
+    }
+
+    try {
+      const parsedEcoActions: Partial<EcoActionType[]> = JSON.parse(data);
+
+      const ecoActions = parsedEcoActions.map((ecoAction) => {
+        return {
+          name: ecoAction?.name,
+          description: ecoAction?.description,
+          validations: validations.filter(
+            (validation) =>
+              ecoAction?.validations.findIndex(
+                (val) => val.points === validation.points
+              ) !== -1
+          ),
+        };
+      });
+
+      return await datasource.getRepository(EcoAction).save(ecoActions);
+    } catch (error) {
+      console.error("Error parsing JSON string: ", error);
+    }
+  }); */
+}
 
 async function resetDB(): Promise<void> {
   // start the connection to the database
@@ -33,41 +91,13 @@ async function resetDB(): Promise<void> {
       points: i,
     });
   }
-  await datasource.getRepository(Validation).save(validations);
+  const savedValidations = await datasource
+    .getRepository(Validation)
+    .save(validations);
 
   // create new eco actions
-  await datasource.getRepository(EcoAction).save([
-    {
-      name: "EcoAction 1",
-      description: "EcoAction 1 description",
-      validations: [
-        validations[0],
-        validations[1],
-        validations[2],
-        validations[3],
-      ],
-    },
-    {
-      name: "EcoAction 2",
-      description: "EcoAction 2 description",
-      validations: [
-        validations[0],
-        validations[2],
-        validations[4],
-        validations[6],
-      ],
-    },
-    {
-      name: "EcoAction 3",
-      description: "EcoAction 3 description",
-      validations: [
-        validations[0],
-        validations[3],
-        validations[6],
-        validations[9],
-      ],
-    },
-  ]);
+  const createdEcoActions = await parseAndEcoActions(savedValidations);
+  await datasource.getRepository(EcoAction).save(createdEcoActions);
 
   // close the connection to the database
   await datasource.destroy();
