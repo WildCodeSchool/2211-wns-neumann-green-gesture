@@ -12,6 +12,7 @@ import { useCurrentUser } from "./hooks/useCurrentUser";
 import CreateEcoAction from "./pages/CreateEcoAction";
 import Groups from "./pages/Groups";
 import EcoActions from "./pages/EcoActions";
+import EditeEcoAction from "./pages/EditeEcoAction";
 
 function App() {
   const { currentUser, loading } = useCurrentUser();
@@ -42,6 +43,7 @@ function App() {
           <Route path="/groups/:id" element={<SingleGroup />} />
           <Route path="/create-eco-action" element={<CreateEcoAction />} />
           <Route path="/eco-actions" element={<EcoActions />} />
+          <Route path="/eco-actions/:id/edit" element={<EditeEcoAction />} />
         </Route>
       </Route>
       <Route path="*" element={<Navigate to="/" />} />

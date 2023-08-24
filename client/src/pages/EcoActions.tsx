@@ -45,7 +45,7 @@ function EcoActions() {
               Vous n'avez pas encore vos propres éco-gestes...
             </p>
             <Button asChild={true} variant="secondary" size="sm">
-              <Link to="#">Créer mon premier éco-geste</Link>
+              <Link to="/create-eco-action">Créer mon premier éco-geste</Link>
             </Button>
           </div>
         )}

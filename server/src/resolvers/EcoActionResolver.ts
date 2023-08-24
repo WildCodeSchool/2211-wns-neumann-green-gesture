@@ -105,4 +105,49 @@ export class EcoActionResolver {
 
     return true;
   }
+
+  // Get an eco-action by id
+  // @Authorized<UserSubscriptionType>([
+  //   UserSubscriptionType.PARTNER,
+  // ])
+  @Query(() => EcoAction)
+  async getEcoActionbyId(@Arg("id", () => Int) id: number): Promise<EcoAction> {
+    const ecoAction = await datasource
+      .getRepository(EcoAction)
+      .findOne({ where: { id }, relations: { validations: true } });
+
+    if (ecoAction === null)
+      throw new ApolloError("EcoAction not found", "NOT_FOUND");
+
+    return ecoAction;
+  }
+
+  // Update an eco-action
+  // @Authorized<UserSubscriptionType>([UserSubscriptionType.PARTNER])
+  @Mutation(() => EcoAction)
+  async updateEcoAction(
+    @Arg("id", () => Int) id: number,
+    @Arg("data") { name, description, validationIds }: EcoActionInputCreation
+  ): Promise<EcoAction> {
+    const ecoAction = await datasource
+      .getRepository(EcoAction)
+      .findOne({ where: { id } });
+
+    if (ecoAction === null)
+      throw new ApolloError("EcoAction not found", "NOT_FOUND");
+
+    const validations = await datasource.getRepository(Validation).find({
+      where: { id: In(validationIds) },
+    });
+
+    if (validations.length !== validationIds.length)
+      throw new ApolloError("Validation not found", "NOT_FOUND");
+
+    return await datasource.getRepository(EcoAction).save({
+      ...ecoAction,
+      name,
+      description,
+      validations,
+    });
+  }
 }

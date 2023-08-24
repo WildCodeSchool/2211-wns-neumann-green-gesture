@@ -53,3 +53,9 @@ export enum NotificationTypeEnum {
   CHALLENGE_REQUEST = "challenge_request",
   FRIEND_REQUEST = "friend_request",
 }
+
+export type EcoActionUpdateType = {
+  name: string;
+  description: string;
+  validationIds: number[];
+};

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ControllerRenderProps } from "react-hook-form";
 
 import {
@@ -10,12 +10,14 @@ import {
 } from "@/components/ui/select";
 
 import { useGetAllValidationsQuery } from "@/gql/generated/schema";
+import { Loading } from "@/pages/Loading";
 
 interface CustomSelectMultipleProps {
   field: ControllerRenderProps<
     { name: string; description: string; validationIds: number[] },
     "validationIds"
   >;
+  validations?: ValidationType[];
 }
 
 type ValidationType = {
@@ -23,27 +25,25 @@ type ValidationType = {
   points: number;
 };
 
-const CustomSelectMultiple = ({ field }: CustomSelectMultipleProps) => {
-  const [selected, setSelected] = useState<ValidationType[]>([]);
+const CustomSelectMultiple = ({
+  field,
+  validations = [],
+}: CustomSelectMultipleProps) => {
+  const [selected, setSelected] = useState<ValidationType[]>(validations);
   const { data, loading } = useGetAllValidationsQuery();
 
-  if (loading) return <div>Loading...</div>;
+  useEffect(() => {
+    field.onChange(selected.map((item) => item.id));
+  }, [selected]);
+
+  if (loading) return <Loading />;
 
   const handleAddSelect = (value: ValidationType) => {
     if (selected.includes(value)) return;
     setSelected((prev) => [...prev, value]);
-
-    const newValue = field.value.includes(value.id)
-      ? field.value.filter((item) => item !== value.id)
-      : [...field.value, value.id];
-
-    field.onChange(newValue);
   };
 
   const handelDeleteSelect = (value: number) => {
-    const newValue = field.value.filter((item) => item !== value);
-    field.onChange(newValue);
-
     setSelected((prev) => prev.filter((item) => item.id !== value));
   };
 
@@ -66,21 +66,20 @@ const CustomSelectMultiple = ({ field }: CustomSelectMultipleProps) => {
         ))}
       </SelectContent>
       <div className="flex w-[190px]">
-        {field.value.length > 0 &&
-          selected.map((value) => (
+        {selected.map((value) => (
+          <div
+            key={value.id}
+            className="flex justify-between w-10 px-1 mx-1 border rounded"
+          >
+            {value.points}
             <div
-              key={value.id}
-              className="flex justify-between w-10 px-1 mx-1 border rounded"
+              className=" cursor-pointer text-red-600"
+              onClick={() => handelDeleteSelect(value.id)}
             >
-              {value.points}
-              <div
-                className=" cursor-pointer text-red-600"
-                onClick={() => handelDeleteSelect(value.id)}
-              >
-                X
-              </div>
+              X
             </div>
-          ))}
+          </div>
+        ))}
       </div>
     </Select>
   );
