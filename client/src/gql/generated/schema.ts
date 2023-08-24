@@ -66,7 +66,7 @@ export type EcoAction = {
 export type EcoActionInputCreation = {
   description: Scalars['String']['input'];
   name: Scalars['String']['input'];
-  validations: Array<ValidationInputCreation>;
+  validationIds: Array<Scalars['Int']['input']>;
 };
 
 export type Group = {
@@ -124,12 +124,14 @@ export type Mutation = {
   createTeams: Array<Team>;
   createUser: User;
   createUserEcoAction: Scalars['String']['output'];
+  deleteEcoAction: Scalars['Boolean']['output'];
   deleteLike: Scalars['Boolean']['output'];
   login: Scalars['String']['output'];
   logout: Scalars['String']['output'];
   removeFriend: Scalars['String']['output'];
   removeUserFromGroup: Group;
   sendNotification: Notification;
+  updateEcoAction: EcoAction;
 };
 
 
@@ -204,6 +206,11 @@ export type MutationCreateUserEcoActionArgs = {
 };
 
 
+export type MutationDeleteEcoActionArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
 export type MutationDeleteLikeArgs = {
   ecoActionId: Scalars['Int']['input'];
 };
@@ -226,6 +233,12 @@ export type MutationRemoveUserFromGroupArgs = {
 
 export type MutationSendNotificationArgs = {
   data: NotificationInputCreation;
+};
+
+
+export type MutationUpdateEcoActionArgs = {
+  data: EcoActionInputCreation;
+  id: Scalars['Int']['input'];
 };
 
 export type Notification = {
@@ -251,8 +264,10 @@ export type NotificationInputStatusChange = {
 
 export type Query = {
   __typename?: 'Query';
+  getAllValidations: Array<Validation>;
   getCommentsForGroup: Array<Comment>;
   getCurrentUser: User;
+  getEcoActionbyId: EcoAction;
   getFreeEcoActions: Array<EcoAction>;
   getGroup: Group;
   getGroups: Array<Group>;
@@ -280,6 +295,11 @@ export type Query = {
 
 export type QueryGetCommentsForGroupArgs = {
   groupId: Scalars['Float']['input'];
+};
+
+
+export type QueryGetEcoActionbyIdArgs = {
+  id: Scalars['Int']['input'];
 };
 
 
@@ -426,11 +446,6 @@ export type Validation = {
   points: Scalars['Float']['output'];
 };
 
-export type ValidationInputCreation = {
-  name: Scalars['String']['input'];
-  points: Scalars['Float']['input'];
-};
-
 export type AddFriendMutationVariables = Exact<{
   friendId: Scalars['Int']['input'];
 }>;
@@ -459,6 +474,13 @@ export type CreateCommentMutationVariables = Exact<{
 
 export type CreateCommentMutation = { __typename?: 'Mutation', createComment: { __typename?: 'Comment', id: number } };
 
+export type CreateEcoActionMutationVariables = Exact<{
+  data: EcoActionInputCreation;
+}>;
+
+
+export type CreateEcoActionMutation = { __typename?: 'Mutation', createEcoAction: { __typename?: 'EcoAction', id: number, name: string, description: string, author?: { __typename?: 'User', id: number, firstName: string, lastName: string } | null, validations: Array<{ __typename?: 'Validation', id: number, points: number }> } };
+
 export type CreateGroupMutationVariables = Exact<{
   data: GroupInputCreation;
 }>;
@@ -480,12 +502,24 @@ export type CreateUserEcoActionMutationVariables = Exact<{
 
 export type CreateUserEcoActionMutation = { __typename?: 'Mutation', createUserEcoAction: string };
 
+export type DeleteEcoActionMutationVariables = Exact<{
+  ecoActionId: Scalars['Int']['input'];
+}>;
+
+
+export type DeleteEcoActionMutation = { __typename?: 'Mutation', deleteEcoAction: boolean };
+
 export type DeleteLikeMutationVariables = Exact<{
   ecoActionId: Scalars['Int']['input'];
 }>;
 
 
 export type DeleteLikeMutation = { __typename?: 'Mutation', deleteLike: boolean };
+
+export type GetAllValidationsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllValidationsQuery = { __typename?: 'Query', getAllValidations: Array<{ __typename?: 'Validation', id: number, points: number }> };
 
 export type GetCommentsForGroupQueryVariables = Exact<{
   groupId: Scalars['Float']['input'];
@@ -498,6 +532,13 @@ export type GetCurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetCurrentUserQuery = { __typename?: 'Query', getCurrentUser: { __typename?: 'User', id: number, firstName: string, lastName: string, email: string, role: string, subscriptionType: string, friends?: Array<{ __typename?: 'User', id: number, firstName: string, lastName: string, email: string, groups?: Array<{ __typename?: 'Group', id: number }> | null }> | null, groups?: Array<{ __typename?: 'Group', startDate: any, endDate: any, name: string, challengeName: string, id: number }> | null, createdEcoActions: Array<{ __typename?: 'EcoAction', id: number, name: string, description: string }>, company?: { __typename?: 'Company', id: number, name: string, users: Array<{ __typename?: 'User', id: number }> } | null } };
+
+export type GetEcoActionbyIdQueryVariables = Exact<{
+  EcoActionId: Scalars['Int']['input'];
+}>;
+
+
+export type GetEcoActionbyIdQuery = { __typename?: 'Query', getEcoActionbyId: { __typename?: 'EcoAction', name: string, description: string, validations: Array<{ __typename?: 'Validation', id: number, points: number }> } };
 
 export type GetFreeEcoActionsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -652,6 +693,14 @@ export type SendNotificationMutationVariables = Exact<{
 
 export type SendNotificationMutation = { __typename?: 'Mutation', sendNotification: { __typename?: 'Notification', id: number } };
 
+export type UpdateEcoActionMutationVariables = Exact<{
+  data: EcoActionInputCreation;
+  updateEcoActionId: Scalars['Int']['input'];
+}>;
+
+
+export type UpdateEcoActionMutation = { __typename?: 'Mutation', updateEcoAction: { __typename?: 'EcoAction', id: number, name: string, description: string, validations: Array<{ __typename?: 'Validation', id: number, points: number }> } };
+
 export type UpdateNotificationStatusMutationVariables = Exact<{
   data: NotificationInputStatusChange;
 }>;
@@ -790,6 +839,50 @@ export function useCreateCommentMutation(baseOptions?: Apollo.MutationHookOption
 export type CreateCommentMutationHookResult = ReturnType<typeof useCreateCommentMutation>;
 export type CreateCommentMutationResult = Apollo.MutationResult<CreateCommentMutation>;
 export type CreateCommentMutationOptions = Apollo.BaseMutationOptions<CreateCommentMutation, CreateCommentMutationVariables>;
+export const CreateEcoActionDocument = gql`
+    mutation CreateEcoAction($data: EcoActionInputCreation!) {
+  createEcoAction(data: $data) {
+    id
+    name
+    description
+    author {
+      id
+      firstName
+      lastName
+    }
+    validations {
+      id
+      points
+    }
+  }
+}
+    `;
+export type CreateEcoActionMutationFn = Apollo.MutationFunction<CreateEcoActionMutation, CreateEcoActionMutationVariables>;
+
+/**
+ * __useCreateEcoActionMutation__
+ *
+ * To run a mutation, you first call `useCreateEcoActionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateEcoActionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createEcoActionMutation, { data, loading, error }] = useCreateEcoActionMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useCreateEcoActionMutation(baseOptions?: Apollo.MutationHookOptions<CreateEcoActionMutation, CreateEcoActionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateEcoActionMutation, CreateEcoActionMutationVariables>(CreateEcoActionDocument, options);
+      }
+export type CreateEcoActionMutationHookResult = ReturnType<typeof useCreateEcoActionMutation>;
+export type CreateEcoActionMutationResult = Apollo.MutationResult<CreateEcoActionMutation>;
+export type CreateEcoActionMutationOptions = Apollo.BaseMutationOptions<CreateEcoActionMutation, CreateEcoActionMutationVariables>;
 export const CreateGroupDocument = gql`
     mutation CreateGroup($data: GroupInputCreation!) {
   createGroup(data: $data) {
@@ -895,6 +988,37 @@ export function useCreateUserEcoActionMutation(baseOptions?: Apollo.MutationHook
 export type CreateUserEcoActionMutationHookResult = ReturnType<typeof useCreateUserEcoActionMutation>;
 export type CreateUserEcoActionMutationResult = Apollo.MutationResult<CreateUserEcoActionMutation>;
 export type CreateUserEcoActionMutationOptions = Apollo.BaseMutationOptions<CreateUserEcoActionMutation, CreateUserEcoActionMutationVariables>;
+export const DeleteEcoActionDocument = gql`
+    mutation DeleteEcoAction($ecoActionId: Int!) {
+  deleteEcoAction(id: $ecoActionId)
+}
+    `;
+export type DeleteEcoActionMutationFn = Apollo.MutationFunction<DeleteEcoActionMutation, DeleteEcoActionMutationVariables>;
+
+/**
+ * __useDeleteEcoActionMutation__
+ *
+ * To run a mutation, you first call `useDeleteEcoActionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteEcoActionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteEcoActionMutation, { data, loading, error }] = useDeleteEcoActionMutation({
+ *   variables: {
+ *      ecoActionId: // value for 'ecoActionId'
+ *   },
+ * });
+ */
+export function useDeleteEcoActionMutation(baseOptions?: Apollo.MutationHookOptions<DeleteEcoActionMutation, DeleteEcoActionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteEcoActionMutation, DeleteEcoActionMutationVariables>(DeleteEcoActionDocument, options);
+      }
+export type DeleteEcoActionMutationHookResult = ReturnType<typeof useDeleteEcoActionMutation>;
+export type DeleteEcoActionMutationResult = Apollo.MutationResult<DeleteEcoActionMutation>;
+export type DeleteEcoActionMutationOptions = Apollo.BaseMutationOptions<DeleteEcoActionMutation, DeleteEcoActionMutationVariables>;
 export const DeleteLikeDocument = gql`
     mutation DeleteLike($ecoActionId: Int!) {
   deleteLike(ecoActionId: $ecoActionId)
@@ -926,6 +1050,41 @@ export function useDeleteLikeMutation(baseOptions?: Apollo.MutationHookOptions<D
 export type DeleteLikeMutationHookResult = ReturnType<typeof useDeleteLikeMutation>;
 export type DeleteLikeMutationResult = Apollo.MutationResult<DeleteLikeMutation>;
 export type DeleteLikeMutationOptions = Apollo.BaseMutationOptions<DeleteLikeMutation, DeleteLikeMutationVariables>;
+export const GetAllValidationsDocument = gql`
+    query GetAllValidations {
+  getAllValidations {
+    id
+    points
+  }
+}
+    `;
+
+/**
+ * __useGetAllValidationsQuery__
+ *
+ * To run a query within a React component, call `useGetAllValidationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllValidationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllValidationsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAllValidationsQuery(baseOptions?: Apollo.QueryHookOptions<GetAllValidationsQuery, GetAllValidationsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAllValidationsQuery, GetAllValidationsQueryVariables>(GetAllValidationsDocument, options);
+      }
+export function useGetAllValidationsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllValidationsQuery, GetAllValidationsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAllValidationsQuery, GetAllValidationsQueryVariables>(GetAllValidationsDocument, options);
+        }
+export type GetAllValidationsQueryHookResult = ReturnType<typeof useGetAllValidationsQuery>;
+export type GetAllValidationsLazyQueryHookResult = ReturnType<typeof useGetAllValidationsLazyQuery>;
+export type GetAllValidationsQueryResult = Apollo.QueryResult<GetAllValidationsQuery, GetAllValidationsQueryVariables>;
 export const GetCommentsForGroupDocument = gql`
     query GetCommentsForGroup($groupId: Float!) {
   getCommentsForGroup(groupId: $groupId) {
@@ -1039,6 +1198,46 @@ export function useGetCurrentUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type GetCurrentUserQueryHookResult = ReturnType<typeof useGetCurrentUserQuery>;
 export type GetCurrentUserLazyQueryHookResult = ReturnType<typeof useGetCurrentUserLazyQuery>;
 export type GetCurrentUserQueryResult = Apollo.QueryResult<GetCurrentUserQuery, GetCurrentUserQueryVariables>;
+export const GetEcoActionbyIdDocument = gql`
+    query GetEcoActionbyId($EcoActionId: Int!) {
+  getEcoActionbyId(id: $EcoActionId) {
+    name
+    description
+    validations {
+      id
+      points
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetEcoActionbyIdQuery__
+ *
+ * To run a query within a React component, call `useGetEcoActionbyIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetEcoActionbyIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetEcoActionbyIdQuery({
+ *   variables: {
+ *      EcoActionId: // value for 'EcoActionId'
+ *   },
+ * });
+ */
+export function useGetEcoActionbyIdQuery(baseOptions: Apollo.QueryHookOptions<GetEcoActionbyIdQuery, GetEcoActionbyIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetEcoActionbyIdQuery, GetEcoActionbyIdQueryVariables>(GetEcoActionbyIdDocument, options);
+      }
+export function useGetEcoActionbyIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetEcoActionbyIdQuery, GetEcoActionbyIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetEcoActionbyIdQuery, GetEcoActionbyIdQueryVariables>(GetEcoActionbyIdDocument, options);
+        }
+export type GetEcoActionbyIdQueryHookResult = ReturnType<typeof useGetEcoActionbyIdQuery>;
+export type GetEcoActionbyIdLazyQueryHookResult = ReturnType<typeof useGetEcoActionbyIdLazyQuery>;
+export type GetEcoActionbyIdQueryResult = Apollo.QueryResult<GetEcoActionbyIdQuery, GetEcoActionbyIdQueryVariables>;
 export const GetFreeEcoActionsDocument = gql`
     query GetFreeEcoActions {
   getFreeEcoActions {
@@ -1973,6 +2172,46 @@ export function useSendNotificationMutation(baseOptions?: Apollo.MutationHookOpt
 export type SendNotificationMutationHookResult = ReturnType<typeof useSendNotificationMutation>;
 export type SendNotificationMutationResult = Apollo.MutationResult<SendNotificationMutation>;
 export type SendNotificationMutationOptions = Apollo.BaseMutationOptions<SendNotificationMutation, SendNotificationMutationVariables>;
+export const UpdateEcoActionDocument = gql`
+    mutation UpdateEcoAction($data: EcoActionInputCreation!, $updateEcoActionId: Int!) {
+  updateEcoAction(data: $data, id: $updateEcoActionId) {
+    id
+    name
+    description
+    validations {
+      id
+      points
+    }
+  }
+}
+    `;
+export type UpdateEcoActionMutationFn = Apollo.MutationFunction<UpdateEcoActionMutation, UpdateEcoActionMutationVariables>;
+
+/**
+ * __useUpdateEcoActionMutation__
+ *
+ * To run a mutation, you first call `useUpdateEcoActionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateEcoActionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateEcoActionMutation, { data, loading, error }] = useUpdateEcoActionMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *      updateEcoActionId: // value for 'updateEcoActionId'
+ *   },
+ * });
+ */
+export function useUpdateEcoActionMutation(baseOptions?: Apollo.MutationHookOptions<UpdateEcoActionMutation, UpdateEcoActionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateEcoActionMutation, UpdateEcoActionMutationVariables>(UpdateEcoActionDocument, options);
+      }
+export type UpdateEcoActionMutationHookResult = ReturnType<typeof useUpdateEcoActionMutation>;
+export type UpdateEcoActionMutationResult = Apollo.MutationResult<UpdateEcoActionMutation>;
+export type UpdateEcoActionMutationOptions = Apollo.BaseMutationOptions<UpdateEcoActionMutation, UpdateEcoActionMutationVariables>;
 export const UpdateNotificationStatusDocument = gql`
     mutation updateNotificationStatus($data: NotificationInputStatusChange!) {
   changeNotificationStatus(data: $data) {

@@ -1,5 +1,5 @@
 import { MaxLength, MinLength } from "class-validator";
-import { Field, InputType, ObjectType } from "type-graphql";
+import { Field, InputType, Int, ObjectType } from "type-graphql";
 import {
   Column,
   Entity,
@@ -11,7 +11,7 @@ import {
 } from "typeorm";
 import Group from "./Group";
 import User from "./User";
-import Validation, { ValidationInputCreation } from "./Validation";
+import Validation from "./Validation";
 import { UserEcoAction } from "./UserEcoAction";
 import LikeEcoAction from "./LikeEcoAction";
 
@@ -74,10 +74,11 @@ export class EcoActionInputCreation {
   name: string;
 
   @Field()
+  @MinLength(3)
   description: string;
 
-  @Field(() => [ValidationInputCreation])
-  validations: ValidationInputCreation[];
+  @Field(() => [Int])
+  validationIds: number[];
 }
 
 export default EcoAction;
