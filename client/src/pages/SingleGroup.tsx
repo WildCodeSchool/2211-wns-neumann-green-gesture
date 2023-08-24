@@ -26,10 +26,13 @@ const SingleGroup = () => {
   });
   const challenge = challengeData?.getGroup;
 
-  const { data: commentData, loading: commentLoading } =
-    useGetCommentsForGroupQuery({
-      variables: { groupId: challenge?.id || 0 },
-    });
+  const {
+    data: commentData,
+    loading: commentLoading,
+    refetch: refetchComments,
+  } = useGetCommentsForGroupQuery({
+    variables: { groupId: challenge?.id || 0 },
+  });
   const comments = commentData?.getCommentsForGroup;
 
   const { data: userEcoActionData, refetch: refetchUserEcoAction } =
@@ -87,6 +90,8 @@ const SingleGroup = () => {
               </Badge>
             }
             comments={comments ?? []}
+            groupId={Number(id)}
+            refetchComments={refetchComments}
           />
         </div>
       </div>
