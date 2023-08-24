@@ -83,6 +83,9 @@ export class EcoActionResolver {
       where: {
         author: IsNull(),
       },
+      order: {
+        likes: "DESC",
+      },
       take: 5,
       relations: {
         validations: true,

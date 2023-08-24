@@ -26,10 +26,13 @@ const SingleGroup = () => {
   });
   const challenge = challengeData?.getGroup;
 
-  const { data: commentData, loading: commentLoading } =
-    useGetCommentsForGroupQuery({
-      variables: { groupId: challenge?.id || 0 },
-    });
+  const {
+    data: commentData,
+    loading: commentLoading,
+    refetch: refetchComments,
+  } = useGetCommentsForGroupQuery({
+    variables: { groupId: challenge?.id || 0 },
+  });
   const comments = commentData?.getCommentsForGroup;
 
   const { data: userEcoActionData, refetch: refetchUserEcoAction } =
@@ -50,7 +53,7 @@ const SingleGroup = () => {
   if (groupLoading || commentLoading || currentUserLoading) return <Loading />;
 
   return (
-    <>
+    <section className="max-w-5xl mx-auto">
       <h1 className="text-2xl font-bold">{challenge?.challengeName}</h1>
       <div className="space-y-3">
         <div className="flex flex-wrap justify-between items-center gap-2 md:gap-8 md:justify-start">
@@ -87,6 +90,8 @@ const SingleGroup = () => {
               </Badge>
             }
             comments={comments ?? []}
+            groupId={Number(id)}
+            refetchComments={refetchComments}
           />
         </div>
       </div>
@@ -95,14 +100,14 @@ const SingleGroup = () => {
           <TabsList className="w-full bg-transparent p-0">
             <TabsTrigger
               value="defis"
-              className="w-full rounded-none text-medium-green font-normal border-b-2 border-b-transparent  data-[state=active]:shadow-none  data-[state=active]:border-b-primary"
+              className="w-full rounded-none text-medium-green font-normal border-b-2 border-b-transparent  data-[state=active]:shadow-none  data-[state=active]:border-b-primary data-[state=active]:bg-zinc-100"
             >
               Défis
             </TabsTrigger>
             <TabsTrigger
               value="classement"
               onClick={() => refetchUserEcoAction()}
-              className="w-full rounded-none text-medium-green font-normal border-b-2 border-b-transparent  data-[state=active]:shadow-none  data-[state=active]:border-b-primary"
+              className="w-full rounded-none text-medium-green font-normal border-b-2 border-b-transparent  data-[state=active]:shadow-none  data-[state=active]:border-b-primary data-[state=active]:bg-zinc-100"
             >
               Classement
             </TabsTrigger>
@@ -148,7 +153,7 @@ const SingleGroup = () => {
           </AnimatePresence>
         </Tabs>
       </div>
-    </>
+    </section>
   );
 };
 

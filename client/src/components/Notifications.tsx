@@ -31,7 +31,9 @@ function Notifications() {
           <Button className="rounded-full p-2">
             <Bell color="#e8eede" />
           </Button>
-          <span className="absolute top-0 right-1 h-2 w-2 rounded-full bg-accent-orange"></span>
+          {notifs.length > 0 && (
+            <span className="absolute top-0 right-1 h-2 w-2 rounded-full bg-accent-orange"></span>
+          )}
         </div>
       </SheetTrigger>
       <SheetContent position="right" className="w-full md:w-[540px]">

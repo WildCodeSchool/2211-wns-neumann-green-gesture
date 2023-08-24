@@ -57,7 +57,7 @@ export const FriendList = ({ children }: PropsWithChildren) => {
           },
         },
       });
-      refetchUsersAlreadyAdded();
+      await refetchUsersAlreadyAdded();
       setSearch("");
     } catch (error) {
       console.error(error);

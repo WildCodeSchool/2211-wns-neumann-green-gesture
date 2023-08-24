@@ -124,11 +124,12 @@ function Register() {
         initial={{ x: 300, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         exit={{ x: -300, opacity: 0 }}
+        className="lg:h-full"
       >
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(handleSubmit)}
-            className="flex flex-col items-center h-full pb-10"
+            className="flex flex-col items-center lg:justify-center h-full pb-10 max-w-xl mx-auto"
           >
             {step === 1 && <StepOne control={form.control} />}
             {step === 2 && (

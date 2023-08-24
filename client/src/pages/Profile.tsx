@@ -13,7 +13,7 @@ function Profile() {
   if (loading) return <Loading />;
 
   return (
-    <>
+    <div className="max-w-5xl mx-auto">
       <div className="flex items-center flex-wrap gap-2">
         <h1 className="text-2xl font-bold">
           Bienvenue, {currentUser?.firstName} {currentUser?.lastName}
@@ -27,7 +27,7 @@ function Profile() {
       {/* BUTTONS */}
       <div className="flex items-center flex-wrap gap-2 my-8">
         <Button className="flex w-full sm:w-auto" asChild={true}>
-          <Link to="/groups?own=true">
+          <Link to="/groups">
             Mes challenges <ArrowRight className="ms-3" />
           </Link>
         </Button>
@@ -36,7 +36,7 @@ function Profile() {
           className="flex w-full sm:w-auto"
           asChild={true}
         >
-          <Link to="/eco-actions?own=true">
+          <Link to="/eco-actions">
             Mes eco-gestes <ArrowRight className="ms-3" />
           </Link>
         </Button>
@@ -132,7 +132,7 @@ function Profile() {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

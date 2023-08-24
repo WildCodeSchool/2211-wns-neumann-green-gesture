@@ -56,7 +56,7 @@ function Login() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(handleSubmit)}
-        className="flex flex-col items-center h-full justify-center"
+        className="flex flex-col items-center h-full justify-center max-w-xl mx-auto"
       >
         <>
           <img src={RegisterImg} className="w-[260px]" />

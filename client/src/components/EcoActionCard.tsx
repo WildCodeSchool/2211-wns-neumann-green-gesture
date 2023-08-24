@@ -57,13 +57,13 @@ function EcoActionCard({ ecoAction, isPartner = false }: EcoActionCardProps) {
       )}
 
       <div className="text-center">
-        <h4 className="font-semibold">{ecoAction.name}</h4>
-        <p className="text-2xs">{ecoAction.description.slice(0, 150)}...</p>
+        <h4 className="font-semibold text-sm">{ecoAction.name}</h4>
+        <p className="text-2xs">{ecoAction.description.slice(0, 100)}...</p>
       </div>
       <EcoActionDetailsCard
         ecoAction={ecoAction}
         trigger={
-          <Button variant="link" size="sm">
+          <Button variant="link" size="sm" className="text-xs">
             Découvrir
           </Button>
         }

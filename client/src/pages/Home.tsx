@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 
 import {
   useGetFreeEcoActionsQuery,
+  useGetPopularFreeEcoActionsQuery,
   useGetUserGroupsQuery,
 } from "../gql/generated/schema";
 import { Button } from "@/components/ui/button";
@@ -20,6 +21,12 @@ function Home() {
   const { data: dataFreeEcoActions } = useGetFreeEcoActionsQuery();
   const freeEcoActions = dataFreeEcoActions?.getFreeEcoActions || [];
 
+  const { data: dataMostLikedEcoActions } = useGetPopularFreeEcoActionsQuery();
+
+  const mostLikedEcoActions =
+    dataMostLikedEcoActions?.getPopularFreeEcoActions || [];
+
+  console.log(mostLikedEcoActions);
   useEffect(() => {
     refetch();
   }, []);
@@ -52,8 +59,8 @@ function Home() {
             </div>
           </div>
         ) : (
-          <div className="flex flex-col-reverse flex-end bg-card rounded-lg p-3 h-32">
-            <Button asChild={true} variant="secondary">
+          <div className="flex flex-col justify-center bg-zinc-200 border-2 border-dashed rounded-lg p-3 h-32 md:max-w-max">
+            <Button asChild={true} variant="secondary" className="md:max-w-max">
               <Link to="/create-group">Créer mon premier challenge</Link>
             </Button>
           </div>
@@ -67,8 +74,8 @@ function Home() {
             </Link>
           </div>
 
-          <div className="flex overflow-scroll snap-mandatory gap-3 w-full">
-            {freeEcoActions?.map((ecoAction) => (
+          <div className="space-y-3 md:space-y-0 md:flex md:overflow-scroll md:snap-mandatory md:gap-3">
+            {freeEcoActions?.slice(0, 3).map((ecoAction) => (
               <EcoActionCard key={ecoAction.id} ecoAction={ecoAction} />
             ))}
           </div>
@@ -81,10 +88,13 @@ function Home() {
               Voir tous
             </Link>
           </div>
-          <div className="flex overflow-scroll snap-mandatory gap-3 w-full">
-            {freeEcoActions?.map((ecoAction) => (
-              <EcoActionCard key={ecoAction.id} ecoAction={ecoAction} />
-            ))}
+          <div className="space-y-3 md:space-y-0 md:flex md:overflow-scroll md:snap-mandatory md:gap-3">
+            {mostLikedEcoActions.length > 0 &&
+              mostLikedEcoActions
+                .slice(0, 3)
+                .map((ecoAction) => (
+                  <EcoActionCard key={ecoAction.id} ecoAction={ecoAction} />
+                ))}
           </div>
         </div>
       </div>
