@@ -8,15 +8,15 @@ interface EcoActionCardProps {
 
 function EcoActionCard({ ecoAction }: EcoActionCardProps) {
   return (
-    <div className="flex flex-col items-center justify-evenly bg-card rounded-xl h-[135px] w-full lg:w-[33%] py-2 px-3">
+    <div className="flex flex-col items-center justify-evenly bg-card rounded-xl h-[115px] w-full lg:w-[32%] py-2 px-3">
       <div className="text-center">
-        <h4 className="font-semibold">{ecoAction.name}</h4>
-        <p className="text-2xs">{ecoAction.description.slice(0, 150)}...</p>
+        <h4 className="font-semibold text-sm">{ecoAction.name}</h4>
+        <p className="text-2xs">{ecoAction.description.slice(0, 100)}...</p>
       </div>
       <EcoActionDetailsCard
         ecoAction={ecoAction}
         trigger={
-          <Button variant="link" size="sm">
+          <Button variant="link" size="sm" className="text-xs">
             Découvrir
           </Button>
         }

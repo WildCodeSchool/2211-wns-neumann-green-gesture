@@ -200,7 +200,10 @@ function CreateGroup() {
   return (
     <>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)}>
+        <form
+          onSubmit={form.handleSubmit(handleSubmit)}
+          className="max-w-3xl mx-auto"
+        >
           <Progress
             value={progressValue}
             max={maxSteps}
