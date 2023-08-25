@@ -102,7 +102,7 @@ export class EcoActionResolver {
   ): Promise<Boolean> {
     const ecoAction = await datasource
       .getRepository(EcoAction)
-      .findOne({ where: { id, author: currentUser } });
+      .findOne({ where: { id, author: { id: currentUser?.id } } });
 
     if (ecoAction === null)
       throw new ApolloError("EcoAction not found", "NOT_FOUND");
@@ -136,7 +136,7 @@ export class EcoActionResolver {
   ): Promise<EcoAction> {
     const ecoAction = await datasource
       .getRepository(EcoAction)
-      .findOne({ where: { id, author: currentUser } });
+      .findOne({ where: { id, author: { id: currentUser?.id } } });
 
     if (ecoAction === null)
       throw new ApolloError("EcoAction not found", "NOT_FOUND");
