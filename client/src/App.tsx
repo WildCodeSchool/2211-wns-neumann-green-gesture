@@ -46,12 +46,7 @@ function App() {
           <Route
             element={
               <ProtectedRoute
-                isAllowed={
-                  currentUser &&
-                  currentUser?.subscriptionType.includes("partner")
-                    ? true
-                    : false
-                }
+                isAllowed={currentUser?.subscriptionType === "partner"}
                 redirectPath="/"
               />
             }
