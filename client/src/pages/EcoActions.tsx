@@ -27,7 +27,7 @@ function EcoActions() {
         {isPartner && userEcoActionsList.length > 0 && (
           <div>
             <h2 className="font-semibold mb-3">Mes éco-gestes</h2>
-            <div className="flex overflow-scroll snap-mandatory gap-3 w-full">
+            <div className="flex overflow-scroll snap-mandatory gap-3 w-full no-scrollbar">
               {userEcoActionsList?.map((ecoAction) => (
                 <EcoActionCard
                   key={ecoAction.id}
