@@ -96,10 +96,13 @@ export class EcoActionResolver {
   // Delete an eco-action
   @Authorized<UserSubscriptionType>([UserSubscriptionType.PARTNER])
   @Mutation(() => Boolean)
-  async deleteEcoAction(@Arg("id", () => Int) id: number): Promise<Boolean> {
+  async deleteEcoAction(
+    @Arg("id", () => Int) id: number,
+    @Ctx() { currentUser }: ContextType
+  ): Promise<Boolean> {
     const ecoAction = await datasource
       .getRepository(EcoAction)
-      .findOne({ where: { id } });
+      .findOne({ where: { id, author: currentUser } });
 
     if (ecoAction === null)
       throw new ApolloError("EcoAction not found", "NOT_FOUND");
