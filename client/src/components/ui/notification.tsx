@@ -1,6 +1,11 @@
 import { Bell, UserPlus } from "lucide-react";
+import toast from "react-hot-toast";
 
-import { NotificationStatusEnum, NotificationTypeEnum } from "@/types/global";
+import {
+  NotificationStatusEnum,
+  NotificationTypeEnum,
+  User,
+} from "@/types/global";
 import { Button } from "./button";
 import {
   useAddFriendMutation,
@@ -11,7 +16,7 @@ import { useCurrentUser } from "@/hooks/useCurrentUser";
 
 type NotificationProps = {
   type: NotificationTypeEnum;
-  sender: any;
+  sender: User;
   notifId: number;
   handleTraitedNotifs: () => void;
   group?:
@@ -58,6 +63,10 @@ export const Notification = ({
             friendId: sender.id,
           },
         });
+
+        toast.success(
+          `Vous êtes maintenant ami avec ${sender.firstName} ${sender.lastName} !`
+        );
       }
 
       handleTraitedNotifs();

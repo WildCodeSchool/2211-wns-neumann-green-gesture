@@ -1,3 +1,6 @@
+import toast from "react-hot-toast";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -11,8 +14,6 @@ import {
 import { Input } from "@/components/ui/input";
 import CustomSelectMultiple from "@/components/CustomSelectMultiple";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
 import { EcoActionType, EcoActionUpdateType } from "@/types/global";
 import {
   GetUserEcoActionsDocument,
@@ -64,6 +65,10 @@ const EcoActionForm = ({
   const handleSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       await handledata(values);
+
+      const toastMsg =
+        mode === "create" ? "Éco-geste crée" : "Éco-geste modifié";
+      toast.success(toastMsg);
     } catch (error) {
       console.log(error);
     } finally {
@@ -80,6 +85,7 @@ const EcoActionForm = ({
           ecoActionId,
         },
       });
+      toast.success("Éco-geste supprimé");
       navigate("/eco-actions");
     } catch (error) {
       console.log(error);

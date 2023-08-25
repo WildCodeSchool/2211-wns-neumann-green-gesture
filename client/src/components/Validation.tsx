@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -13,7 +15,6 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "./ui/label";
 import FilesUploader from "./FilesUploader";
-import { X } from "lucide-react";
 import {
   useCreateUserEcoActionMutation,
   useGetValidationsByEcoActionQuery,
@@ -70,6 +71,8 @@ const Validation = ({
             },
           },
         });
+
+      toast.success("Défi validé !");
       refetchParent();
     } catch (error) {
       console.log(error);
