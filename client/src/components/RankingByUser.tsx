@@ -50,8 +50,17 @@ const RankingByUser = ({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {sortedUsers.map((user) => (
-            <TableRow key={user.id}>
+          {sortedUsers.map((user, idx) => (
+            <TableRow
+              key={user.id}
+              className={`${
+                idx === 0
+                  ? "bg-green-800 hover:bg-green-800 text-white"
+                  : idx === 1
+                  ? "bg-green-500 hover:bg-green-500"
+                  : "bg-green-200 hover:bg-green-200"
+              }`}
+            >
               <TableCell>{user.firstName}</TableCell>
               <TableCell className="text-right">
                 {`${user.points} / ${totalMaxPoints} points`}

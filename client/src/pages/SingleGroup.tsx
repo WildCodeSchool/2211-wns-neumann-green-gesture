@@ -17,6 +17,7 @@ import ChallengeEcoActionCard from "@/components/ChallengeEcoActionCard";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import RankingByTeam from "@/components/RankingByTeam";
 import RankingByUser from "@/components/RankingByUser";
+import { EcoActionType } from "@/types/global";
 
 const SingleGroup = () => {
   const { id = "0" } = useParams();
@@ -118,7 +119,7 @@ const SingleGroup = () => {
                 {challenge?.ecoActions.map((eco) => (
                   <ChallengeEcoActionCard
                     key={eco.id}
-                    ecoAction={eco}
+                    ecoAction={eco as EcoActionType}
                     challengeEndDate={challenge.endDate}
                     challengeStartDate={challenge.startDate}
                     groupId={challenge.id}
