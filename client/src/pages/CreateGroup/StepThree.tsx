@@ -34,7 +34,7 @@ function StepThree({
         render={({ field }) => (
           <div className="space-y-4 w-full mt-7">
             <p className="font-semibold text-base">Invitez vos amis</p>
-            <div className="space-y-3 md:space-y-0 md:flex md:items-center">
+            <div className="space-y-3 md:space-y-0 md:flex md:items-center md:gap-3">
               {friends.length > 1 ? (
                 friends.map((friend) => (
                   <div
