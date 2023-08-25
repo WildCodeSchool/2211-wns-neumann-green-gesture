@@ -41,9 +41,19 @@ function App() {
           <Route path="/create-group" element={<CreateGroup />} />
           <Route path="/groups" element={<Groups />} />
           <Route path="/groups/:id" element={<SingleGroup />} />
-          <Route path="/create-eco-action" element={<CreateEcoAction />} />
           <Route path="/eco-actions" element={<EcoActions />} />
-          <Route path="/eco-actions/:id/edit" element={<EditEcoAction />} />
+
+          <Route
+            element={
+              <ProtectedRoute
+                isAllowed={currentUser?.subscriptionType === "partner"}
+                redirectPath="/"
+              />
+            }
+          >
+            <Route path="/create-eco-action" element={<CreateEcoAction />} />
+            <Route path="/eco-actions/:id/edit" element={<EditEcoAction />} />
+          </Route>
         </Route>
       </Route>
       <Route path="*" element={<Navigate to="/" />} />
