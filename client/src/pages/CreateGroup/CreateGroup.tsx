@@ -4,8 +4,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { addDays } from "date-fns";
-import toast from "react-hot-toast";
+import Lottie, { Options as LottieOptions } from "react-lottie";
 
+import animationData from "@/assets/lotties/success.json";
 import {
   useCreateGroupMutation,
   useCreateTeamsMutation,
@@ -36,8 +37,17 @@ function CreateGroup() {
   const navigate = useNavigate();
   const [step, setStep] = useState<number>(1);
   const [isTeamChallenge, setIsTeamChallenge] = useState(false);
+  const [showLottie, setShowLottie] = useState(false);
 
   const [sendNotification] = useSendNotificationMutation();
+
+  // Lottie options
+  const defaultOptions: LottieOptions = {
+    loop: false,
+    autoplay: true,
+    animationData: animationData,
+    rendererSettings: {},
+  };
 
   const formSchema = z.object({
     name: z.string().min(3, "3 caractères minium").max(150),
@@ -139,9 +149,12 @@ function CreateGroup() {
           });
         });
 
-        navigate(`/groups/${createdGroupId}`);
+        setShowLottie(true);
+        setTimeout(() => {
+          setShowLottie(false);
+          navigate(`/groups/${createdGroupId}`);
+        }, 1500);
 
-        toast.success("Challenge créé !");
         return;
       } catch (err) {
         console.error("err", err);
@@ -192,9 +205,12 @@ function CreateGroup() {
               },
             });
           });
-          navigate(`/groups/${createdGroupId}`);
 
-          toast.success("Challenge par équipes créé !");
+          setShowLottie(true);
+          setTimeout(() => {
+            setShowLottie(false);
+            navigate(`/groups/${createdGroupId}`);
+          }, 1500);
         }
       } catch (err) {
         console.error("err", err);
@@ -204,6 +220,11 @@ function CreateGroup() {
 
   return (
     <>
+      {showLottie && (
+        <div className="bg-white absolute inset-0 z-50">
+          <Lottie options={defaultOptions} />
+        </div>
+      )}
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(handleSubmit)}
