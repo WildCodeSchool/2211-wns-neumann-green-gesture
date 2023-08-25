@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import AddButtonDropdownMenu from "@/components/AddButtonDropdownMenu";
 import ProfileDropDownMenu from "@/components/ProfileDropdownMenu";
 import Notifications from "@/components/Notifications";
-import LoadingEarth from "../assets/images/loading-earth.png";
+import Logo from "../assets/images/logo.png";
 
 function Layout() {
   return (
@@ -13,7 +13,7 @@ function Layout() {
         <div className="flex items-center justify-between">
           {/* LOGO */}
           <Link to="/">
-            <img src={LoadingEarth} className="w-12 h-12" />
+            <img src={Logo} className="w-12 h-12" />
           </Link>
           <div className="flex items-center space-x-2">
             {/* ADD BUTTON */}

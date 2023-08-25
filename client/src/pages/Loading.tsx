@@ -1,4 +1,4 @@
-import LoadingEarth from "../assets/images/loading-earth.png";
+import LoadingEarth from "../assets/images/logo.png";
 
 export const Loading = () => {
   return (
