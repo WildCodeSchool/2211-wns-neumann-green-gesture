@@ -128,11 +128,12 @@ export class EcoActionResolver {
   @Mutation(() => EcoAction)
   async updateEcoAction(
     @Arg("id", () => Int) id: number,
-    @Arg("data") { name, description, validationIds }: EcoActionInputCreation
+    @Arg("data") { name, description, validationIds }: EcoActionInputCreation,
+    @Ctx() { currentUser }: ContextType
   ): Promise<EcoAction> {
     const ecoAction = await datasource
       .getRepository(EcoAction)
-      .findOne({ where: { id } });
+      .findOne({ where: { id, author: currentUser } });
 
     if (ecoAction === null)
       throw new ApolloError("EcoAction not found", "NOT_FOUND");
