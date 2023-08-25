@@ -51,7 +51,7 @@ function Home() {
                 Voir tous
               </Link>
             </div>
-            <div className="flex overflow-scroll snap-mandatory gap-3">
+            <div className="flex overflow-scroll snap-mandatory gap-3 no-scrollbar">
               {challengeInProgress.map((group) => (
                 <ChallengeCard key={group.id} group={group as GroupType} />
               ))}
@@ -73,7 +73,7 @@ function Home() {
             </Link>
           </div>
 
-          <div className="space-y-3 md:space-y-0 md:flex md:overflow-scroll md:snap-mandatory md:gap-3">
+          <div className="space-y-3 md:space-y-0 md:flex md:overflow-scroll md:snap-mandatory md:gap-3 no-scrollbar">
             {freeEcoActions?.slice(0, 3).map((ecoAction) => (
               <EcoActionCard key={ecoAction.id} ecoAction={ecoAction} />
             ))}
@@ -87,7 +87,7 @@ function Home() {
               Voir tous
             </Link>
           </div>
-          <div className="space-y-3 md:space-y-0 md:flex md:overflow-scroll md:snap-mandatory md:gap-3">
+          <div className="space-y-3 md:space-y-0 md:flex md:overflow-scroll md:snap-mandatory md:gap-3 no-scrollbar">
             {mostLikedEcoActions.length > 0 &&
               mostLikedEcoActions
                 .slice(0, 3)
