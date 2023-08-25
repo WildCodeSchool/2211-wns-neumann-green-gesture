@@ -15,8 +15,6 @@ const EditEcoAction = () => {
   });
   const ecoAction = data?.getEcoActionbyId;
 
-  console.log({ ecoAction });
-
   const [updateEcoAction] = useUpdateEcoActionMutation();
 
   const handleUpdate = async ({

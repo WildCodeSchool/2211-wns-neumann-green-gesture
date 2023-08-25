@@ -1,3 +1,6 @@
+import { useState } from "react";
+import toast from "react-hot-toast";
+
 import {
   Sheet,
   SheetContent,
@@ -7,7 +10,6 @@ import {
 } from "./ui/sheet";
 import { User } from "@/types/global";
 import { Textarea } from "./ui/textarea";
-import { useState } from "react";
 import { useCreateCommentMutation } from "@/gql/generated/schema";
 import { Button } from "./ui/button";
 
@@ -53,7 +55,9 @@ function ShowChallengeComments({
           },
         },
       });
+
       setMessageHasBeenSent(true);
+      toast.success("Votre commentaire a bien été envoyé !");
     } catch (error) {
       setError(true);
       console.error(error);

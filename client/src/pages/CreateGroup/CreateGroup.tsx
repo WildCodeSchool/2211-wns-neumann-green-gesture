@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { addDays } from "date-fns";
+import toast from "react-hot-toast";
 
 import {
   useCreateGroupMutation,
@@ -139,6 +140,8 @@ function CreateGroup() {
         });
 
         navigate(`/groups/${createdGroupId}`);
+
+        toast.success("Challenge créé !");
         return;
       } catch (err) {
         console.error("err", err);
@@ -190,6 +193,8 @@ function CreateGroup() {
             });
           });
           navigate(`/groups/${createdGroupId}`);
+
+          toast.success("Challenge par équipes créé !");
         }
       } catch (err) {
         console.error("err", err);

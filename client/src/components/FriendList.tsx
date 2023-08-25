@@ -1,3 +1,7 @@
+import { PropsWithChildren, useEffect, useState } from "react";
+import { Hourglass, UserPlus2, X } from "lucide-react";
+import toast from "react-hot-toast";
+
 import { Input } from "@/components/ui/input";
 import {
   User,
@@ -6,8 +10,6 @@ import {
   useRemoveFriendMutation,
   useSendNotificationMutation,
 } from "@/gql/generated/schema";
-import { PropsWithChildren, useEffect, useState } from "react";
-import { Hourglass, UserPlus2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { NotificationTypeEnum } from "@/types/global";
@@ -70,6 +72,8 @@ export const FriendList = ({ children }: PropsWithChildren) => {
     try {
       await removeFriend({ variables: { friendId } });
       refetchCurrentUser();
+
+      toast.success("Ami supprimé");
     } catch (error) {
       console.error(error);
     }
