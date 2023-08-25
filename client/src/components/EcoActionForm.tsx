@@ -21,7 +21,7 @@ import {
 import { useNavigate } from "react-router-dom";
 
 interface EcoActionFormProps {
-  ecoActionId: number;
+  ecoActionId?: number;
   ecoAction?: EcoActionType;
   handledata: (values: EcoActionUpdateType) => Promise<void>;
   mode?: "create" | "update";
@@ -74,7 +74,7 @@ const EcoActionForm = ({
   const handleRemoveEcoAction = async () => {
     try {
       const confirm = window.confirm("Voulez-vous supprimer cette action ?");
-      if (!confirm) return;
+      if (!confirm || ecoActionId === undefined) return;
       await deleteEcoAction({
         variables: {
           ecoActionId,
@@ -150,14 +150,16 @@ const EcoActionForm = ({
             <Button type="submit" className="w-full">
               {mode === "create" ? "Créer" : "Modifier"}
             </Button>
-            <Button
-              type="button"
-              className="w-full"
-              variant="destructive"
-              onClick={handleRemoveEcoAction}
-            >
-              Supprimer
-            </Button>
+            {mode === "update" && (
+              <Button
+                type="button"
+                className="w-full"
+                variant="destructive"
+                onClick={handleRemoveEcoAction}
+              >
+                Supprimer
+              </Button>
+            )}
           </div>
         </form>
       </Form>
