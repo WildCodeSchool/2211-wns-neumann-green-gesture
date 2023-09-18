@@ -11,6 +11,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Home from "./screens/Home";
 import Login from "./screens/Login";
+import SingleGroup from "./screens/SingleGroup";
 import * as SecureStore from "expo-secure-store";
 import { useLogoutMutation } from "./gql/generated/schema";
 
@@ -62,7 +63,7 @@ export default function App() {
             component={Login}
             options={{ headerBackVisible: false }}
           />
-          <Stack.Screen name="Drawer" component={DrawerComponent} />
+          <Stack.Screen name="SingleGroup" component={SingleGroup} />
         </Stack.Navigator>
       </NavigationContainer>
     </ApolloProvider>

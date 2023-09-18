@@ -1,4 +1,5 @@
 import { View, Text, StyleSheet } from "react-native";
+import { Link } from "@react-navigation/native";
 import { Group } from "../gql/generated/schema";
 
 interface GroupListItemProps {
@@ -7,23 +8,22 @@ interface GroupListItemProps {
 
 export const GroupListItem = ({ group }: GroupListItemProps) => {
   return (
-    <View style={styles.group}>
+    <Link
+      to={{ screen: "SingleGroup", params: { id: group.id } }}
+      style={styles.link}
+    >
       <Text style={styles.text}>{group.challengeName}</Text>
-      <Text style={styles.text}>Créé par {group.author.firstName}</Text>
-    </View>
+    </Link>
   );
 };
 
 const styles = StyleSheet.create({
-  group: {
+  link: {
     display: "flex",
-    alignItems: "center",
-    alignSelf: "center",
-    width: "80%",
+    width: "100%",
     backgroundColor: "green",
+    textAlign: "center",
     padding: 10,
-    gap: 10,
-    marginTop: 30,
   },
   text: {
     color: "white",
