@@ -43,7 +43,7 @@ function Home() {
         Bienvenue, {currentUser?.firstName} {currentUser?.lastName} ! 👋
       </h1>
       <div className="space-y-8">
-        {groups.length > 0 ? (
+        {challengeInProgress.length > 0 ? (
           <div>
             <div className="flex items-center justify-between md:justify-start md:gap-3 mb-3">
               <h2 className="font-semibold">Mes challenges en cours</h2>
@@ -60,7 +60,9 @@ function Home() {
         ) : (
           <div className="flex flex-col justify-center bg-zinc-200 border-2 border-dashed rounded-lg p-3 h-32 md:max-w-max">
             <Button asChild={true} variant="secondary" className="md:max-w-max">
-              <Link to="/create-group">Créer mon premier challenge</Link>
+              <Link to="/create-group">
+                Créer {groups.length > 0 ? "un" : "mon premier"} challenge
+              </Link>
             </Button>
           </div>
         )}
