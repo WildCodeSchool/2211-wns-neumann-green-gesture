@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 import EcoActionForm from "@/components/EcoActionForm";
 import {
   GetEcoActionbyIdDocument,
@@ -6,16 +7,24 @@ import {
 } from "@/gql/generated/schema";
 import { useNavigate, useParams } from "react-router-dom";
 import { EcoActionType, EcoActionUpdateType } from "@/types/global";
+import { useEffect } from "react";
 
 const EditEcoAction = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { data, loading } = useGetEcoActionbyIdQuery({
+  const { data, loading, error } = useGetEcoActionbyIdQuery({
     variables: { EcoActionId: Number(id) },
   });
   const ecoAction = data?.getEcoActionbyId;
 
   const [updateEcoAction] = useUpdateEcoActionMutation();
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error.message);
+      navigate("/eco-actions");
+    }
+  }, [error]);
 
   const handleUpdate = async ({
     name,

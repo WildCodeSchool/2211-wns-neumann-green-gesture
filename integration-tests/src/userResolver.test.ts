@@ -45,23 +45,25 @@ describe("User Resolver", () => {
       expect(res.data.createUser).toHaveProperty("email", "partner@gmail.com");
       expect(res.data.createUser).toHaveProperty("subscriptionType", "partner");
     });
-  });
 
-  it("should not create wilder given invalid attributes and return an error", async () => {
-    expect(() =>
-      client.mutate({
-        mutation: createUserMutation,
-        variables: {
-          data: {
-            firstName: "",
-            lastName: "",
-            email: "",
-            password: "",
-            subscriptionType: "",
+    it("should not create wilder given invalid attributes and return an error", async () => {
+      expect(() =>
+        client.mutate({
+          mutation: createUserMutation,
+          variables: {
+            data: {
+              firstName: "",
+              lastName: "",
+              email: "",
+              password: "",
+              subscriptionType: "",
+            },
           },
-        },
-      })
-    ).rejects.toThrowErrorMatchingInlineSnapshot(`"Argument Validation Error"`);
+        })
+      ).rejects.toThrowErrorMatchingInlineSnapshot(
+        `"Argument Validation Error"`
+      );
+    });
   });
 
   describe("get user by id", () => {
@@ -69,7 +71,7 @@ describe("User Resolver", () => {
       const user = await db.getRepository(User).save({
         firstName: "User",
         lastName: "Partner",
-        email: "user3@gmail.com",
+        email: "user1@gmail.com",
         password: "testtest",
         subscriptionType: "partner",
       });
