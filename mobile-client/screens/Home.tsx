@@ -9,6 +9,7 @@ export default function Home() {
 
   const { loading: loadingGroups, data } = useGetUserGroupsQuery();
   const groups = data?.getUserGroups || [];
+  const reversedGroups = [...groups].reverse();
 
   return (
     <View style={styles.container}>
@@ -16,7 +17,7 @@ export default function Home() {
         Bienvenue, {currentUser?.firstName} {currentUser?.lastName} ! 👋
       </Text>
       <FlatList
-        data={groups}
+        data={reversedGroups}
         refreshing={loadingGroups}
         renderItem={({ item }) => <GroupListItem group={item as Group} />}
         style={{ width: "80%" }}
