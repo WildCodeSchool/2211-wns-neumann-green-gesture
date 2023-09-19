@@ -2,6 +2,7 @@ import React from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 import { EcoAction, useGetGroupQuery } from "../gql/generated/schema";
 import { EcoActionListItem } from "../components/EcoActionListItem";
+import DisplayDate from "../components/DisplayDate";
 
 interface Props {
   route: any;
@@ -24,8 +25,10 @@ export default function SingleGroup({ route }: Props) {
             {challenge?.author.firstName} {challenge?.author.lastName}
           </Text>
         </Text>
-        {/* Utiliser le composant qui permet de dire "Commence dans" ou "Termine dans" */}
-        <Text style={styles.basicText}>{challenge?.endDate}</Text>
+        <DisplayDate
+          startDate={challenge?.startDate}
+          endDate={challenge?.endDate}
+        />
       </View>
       <FlatList
         data={challenge?.ecoActions}
@@ -33,7 +36,7 @@ export default function SingleGroup({ route }: Props) {
         renderItem={({ item: ecoAction }) => (
           <EcoActionListItem
             ecoAction={ecoAction as EcoAction}
-            // userEcoActions={}
+            groupId={+groupId}
           />
         )}
         contentContainerStyle={{
@@ -58,6 +61,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: "bold",
     color: "green",
+    marginBottom: 8,
   },
   challengeInfos: {
     display: "flex",

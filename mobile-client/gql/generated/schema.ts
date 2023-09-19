@@ -444,6 +444,13 @@ export type Validation = {
   points: Scalars['Float'];
 };
 
+export type CreateUserEcoActionMutationVariables = Exact<{
+  data: UserEcoActionInputAddPoints;
+}>;
+
+
+export type CreateUserEcoActionMutation = { __typename?: 'Mutation', createUserEcoAction: string };
+
 export type GetCurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -456,6 +463,21 @@ export type GetGroupQueryVariables = Exact<{
 
 export type GetGroupQuery = { __typename?: 'Query', getGroup: { __typename?: 'Group', id: number, name: string, challengeName: string, startDate: any, endDate: any, author: { __typename?: 'User', id: number, firstName: string, lastName: string }, users: Array<{ __typename?: 'User', id: number, firstName: string, lastName: string }>, ecoActions: Array<{ __typename?: 'EcoAction', id: number, name: string, description: string, likes: number, validations: Array<{ __typename?: 'Validation', points: number, id: number }> }>, teams: Array<{ __typename?: 'Team', id: number, name: string, users?: Array<{ __typename?: 'User', id: number, firstName: string, lastName: string }> | null }> } };
 
+export type GetMaxValidationPointsQueryVariables = Exact<{
+  ecoActionId: Scalars['Int'];
+}>;
+
+
+export type GetMaxValidationPointsQuery = { __typename?: 'Query', getMaxValidationPoints: { __typename?: 'Validation', id: number, points: number } };
+
+export type GetUserEcoActionQueryVariables = Exact<{
+  groupId: Scalars['Int'];
+  ecoActionId: Scalars['Int'];
+}>;
+
+
+export type GetUserEcoActionQuery = { __typename?: 'Query', getUserEcoAction: { __typename?: 'UserEcoAction', id: number, proof?: string | null, points?: number | null, groupId: number, ecoAction: { __typename?: 'EcoAction', name: string, description: string, likes: number } } };
+
 export type GetUserEcoActionsByGroupIdQueryVariables = Exact<{
   groupId: Scalars['Int'];
 }>;
@@ -467,6 +489,13 @@ export type GetUserGroupsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetUserGroupsQuery = { __typename?: 'Query', getUserGroups: Array<{ __typename?: 'Group', id: number, challengeName: string, startDate: any, name: string, endDate: any, users: Array<{ __typename?: 'User', id: number, firstName: string, lastName: string }>, author: { __typename?: 'User', id: number, firstName: string, lastName: string }, ecoActions: Array<{ __typename?: 'EcoAction', id: number, name: string }> }> };
+
+export type GetValidationsByEcoActionQueryVariables = Exact<{
+  ecoActionId: Scalars['Int'];
+}>;
+
+
+export type GetValidationsByEcoActionQuery = { __typename?: 'Query', getValidationsByEcoAction: Array<{ __typename?: 'Validation', id: number, points: number }> };
 
 export type LoginMutationVariables = Exact<{
   loginData: UserInputLogin;
@@ -481,6 +510,37 @@ export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 export type LogoutMutation = { __typename?: 'Mutation', logout: string };
 
 
+export const CreateUserEcoActionDocument = gql`
+    mutation CreateUserEcoAction($data: UserEcoActionInputAddPoints!) {
+  createUserEcoAction(data: $data)
+}
+    `;
+export type CreateUserEcoActionMutationFn = Apollo.MutationFunction<CreateUserEcoActionMutation, CreateUserEcoActionMutationVariables>;
+
+/**
+ * __useCreateUserEcoActionMutation__
+ *
+ * To run a mutation, you first call `useCreateUserEcoActionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateUserEcoActionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createUserEcoActionMutation, { data, loading, error }] = useCreateUserEcoActionMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useCreateUserEcoActionMutation(baseOptions?: Apollo.MutationHookOptions<CreateUserEcoActionMutation, CreateUserEcoActionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateUserEcoActionMutation, CreateUserEcoActionMutationVariables>(CreateUserEcoActionDocument, options);
+      }
+export type CreateUserEcoActionMutationHookResult = ReturnType<typeof useCreateUserEcoActionMutation>;
+export type CreateUserEcoActionMutationResult = Apollo.MutationResult<CreateUserEcoActionMutation>;
+export type CreateUserEcoActionMutationOptions = Apollo.BaseMutationOptions<CreateUserEcoActionMutation, CreateUserEcoActionMutationVariables>;
 export const GetCurrentUserDocument = gql`
     query GetCurrentUser {
   getCurrentUser {
@@ -620,6 +680,86 @@ export function useGetGroupLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<G
 export type GetGroupQueryHookResult = ReturnType<typeof useGetGroupQuery>;
 export type GetGroupLazyQueryHookResult = ReturnType<typeof useGetGroupLazyQuery>;
 export type GetGroupQueryResult = Apollo.QueryResult<GetGroupQuery, GetGroupQueryVariables>;
+export const GetMaxValidationPointsDocument = gql`
+    query GetMaxValidationPoints($ecoActionId: Int!) {
+  getMaxValidationPoints(ecoActionId: $ecoActionId) {
+    id
+    points
+  }
+}
+    `;
+
+/**
+ * __useGetMaxValidationPointsQuery__
+ *
+ * To run a query within a React component, call `useGetMaxValidationPointsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMaxValidationPointsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetMaxValidationPointsQuery({
+ *   variables: {
+ *      ecoActionId: // value for 'ecoActionId'
+ *   },
+ * });
+ */
+export function useGetMaxValidationPointsQuery(baseOptions: Apollo.QueryHookOptions<GetMaxValidationPointsQuery, GetMaxValidationPointsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetMaxValidationPointsQuery, GetMaxValidationPointsQueryVariables>(GetMaxValidationPointsDocument, options);
+      }
+export function useGetMaxValidationPointsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMaxValidationPointsQuery, GetMaxValidationPointsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetMaxValidationPointsQuery, GetMaxValidationPointsQueryVariables>(GetMaxValidationPointsDocument, options);
+        }
+export type GetMaxValidationPointsQueryHookResult = ReturnType<typeof useGetMaxValidationPointsQuery>;
+export type GetMaxValidationPointsLazyQueryHookResult = ReturnType<typeof useGetMaxValidationPointsLazyQuery>;
+export type GetMaxValidationPointsQueryResult = Apollo.QueryResult<GetMaxValidationPointsQuery, GetMaxValidationPointsQueryVariables>;
+export const GetUserEcoActionDocument = gql`
+    query GetUserEcoAction($groupId: Int!, $ecoActionId: Int!) {
+  getUserEcoAction(groupId: $groupId, ecoActionId: $ecoActionId) {
+    id
+    proof
+    points
+    groupId
+    ecoAction {
+      name
+      description
+      likes
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetUserEcoActionQuery__
+ *
+ * To run a query within a React component, call `useGetUserEcoActionQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUserEcoActionQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUserEcoActionQuery({
+ *   variables: {
+ *      groupId: // value for 'groupId'
+ *      ecoActionId: // value for 'ecoActionId'
+ *   },
+ * });
+ */
+export function useGetUserEcoActionQuery(baseOptions: Apollo.QueryHookOptions<GetUserEcoActionQuery, GetUserEcoActionQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetUserEcoActionQuery, GetUserEcoActionQueryVariables>(GetUserEcoActionDocument, options);
+      }
+export function useGetUserEcoActionLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUserEcoActionQuery, GetUserEcoActionQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetUserEcoActionQuery, GetUserEcoActionQueryVariables>(GetUserEcoActionDocument, options);
+        }
+export type GetUserEcoActionQueryHookResult = ReturnType<typeof useGetUserEcoActionQuery>;
+export type GetUserEcoActionLazyQueryHookResult = ReturnType<typeof useGetUserEcoActionLazyQuery>;
+export type GetUserEcoActionQueryResult = Apollo.QueryResult<GetUserEcoActionQuery, GetUserEcoActionQueryVariables>;
 export const GetUserEcoActionsByGroupIdDocument = gql`
     query GetUserEcoActionsByGroupId($groupId: Int!) {
   getUserEcoActionsByGroupId(groupId: $groupId) {
@@ -712,6 +852,42 @@ export function useGetUserGroupsLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
 export type GetUserGroupsQueryHookResult = ReturnType<typeof useGetUserGroupsQuery>;
 export type GetUserGroupsLazyQueryHookResult = ReturnType<typeof useGetUserGroupsLazyQuery>;
 export type GetUserGroupsQueryResult = Apollo.QueryResult<GetUserGroupsQuery, GetUserGroupsQueryVariables>;
+export const GetValidationsByEcoActionDocument = gql`
+    query GetValidationsByEcoAction($ecoActionId: Int!) {
+  getValidationsByEcoAction(ecoActionId: $ecoActionId) {
+    id
+    points
+  }
+}
+    `;
+
+/**
+ * __useGetValidationsByEcoActionQuery__
+ *
+ * To run a query within a React component, call `useGetValidationsByEcoActionQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetValidationsByEcoActionQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetValidationsByEcoActionQuery({
+ *   variables: {
+ *      ecoActionId: // value for 'ecoActionId'
+ *   },
+ * });
+ */
+export function useGetValidationsByEcoActionQuery(baseOptions: Apollo.QueryHookOptions<GetValidationsByEcoActionQuery, GetValidationsByEcoActionQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetValidationsByEcoActionQuery, GetValidationsByEcoActionQueryVariables>(GetValidationsByEcoActionDocument, options);
+      }
+export function useGetValidationsByEcoActionLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetValidationsByEcoActionQuery, GetValidationsByEcoActionQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetValidationsByEcoActionQuery, GetValidationsByEcoActionQueryVariables>(GetValidationsByEcoActionDocument, options);
+        }
+export type GetValidationsByEcoActionQueryHookResult = ReturnType<typeof useGetValidationsByEcoActionQuery>;
+export type GetValidationsByEcoActionLazyQueryHookResult = ReturnType<typeof useGetValidationsByEcoActionLazyQuery>;
+export type GetValidationsByEcoActionQueryResult = Apollo.QueryResult<GetValidationsByEcoActionQuery, GetValidationsByEcoActionQueryVariables>;
 export const LoginDocument = gql`
     mutation Login($loginData: UserInputLogin!) {
   login(data: $loginData)
