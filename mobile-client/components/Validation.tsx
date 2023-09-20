@@ -8,10 +8,17 @@ import {
   Alert,
 } from "react-native";
 import RadioGroup, { RadioButtonProps } from "react-native-radio-buttons-group";
+import { ImagePickerAsset } from "expo-image-picker";
+import axios from "axios";
+import Constants from "expo-constants";
+
 import {
   useCreateUserEcoActionMutation,
   useGetValidationsByEcoActionQuery,
 } from "../gql/generated/schema";
+import ImagePickerElement from "./ImagePicker";
+
+const env = Constants.expoConfig?.extra || {};
 
 interface ValidationProps {
   ecoActionId: number;
@@ -26,22 +33,97 @@ const Validation = ({
 }: ValidationProps) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedPoint, setSelectedPoint] = useState<string>("0");
+  const [fileData, setFileData] = useState<null | ImagePickerAsset>(null);
 
-  const [createUserEcoAction] = useCreateUserEcoActionMutation();
-  const { data, loading } = useGetValidationsByEcoActionQuery({
+  const [createUserEcoAction, { loading: loadingCreateUserEcoAction }] =
+    useCreateUserEcoActionMutation();
+
+  const { data, loading: loadingPoints } = useGetValidationsByEcoActionQuery({
     variables: { ecoActionId },
   });
-  const validations = data?.getValidationsByEcoAction;
+  const validationPoints = data?.getValidationsByEcoAction;
 
   const radioButtons: RadioButtonProps[] = useMemo(
     () =>
-      validations?.map((validation) => ({
-        id: validation.id.toString(),
+      validationPoints?.map((validation) => ({
+        id: validation.points.toString(),
         label: validation.points.toString() + " pts",
         value: validation.points.toString(),
       })) || [],
-    []
+    [validationPoints]
   );
+
+  const showConfirmDialog = () => {
+    return Alert.alert(
+      "Valider mon défi",
+      `Voulez-vous valider votre défi avec ${selectedPoint} points ?`,
+      [
+        // The "Yes" button
+        {
+          text: "Oui",
+          onPress: () => {
+            handleValidation();
+          },
+        },
+        // The "No" button
+        // Does nothing but dismiss the dialog when tapped
+        {
+          text: "Non",
+        },
+      ]
+    );
+  };
+
+  const photoUploader = async () => {
+    if (!fileData) return;
+    const url = "https://upload.uploadcare.com/base/";
+    const photo = {
+      name: fileData.uri.split("/").pop() || "photo.jpg",
+      uri: fileData.uri,
+      type: "image/jpg",
+    };
+    const body = new FormData();
+    body.append("file", photo);
+    body.append("UPLOADCARE_PUB_KEY", env?.REACT_APP_UPLOADCARE_PUBLIC_KEY);
+    body.append("UPLOADCARE_STORE", "auto");
+
+    try {
+      let response = await axios.post(url, body, { timeout: 20000 });
+
+      return response.data;
+    } catch (e: any) {
+      console.error("error: ", e.response.data);
+      return e.response;
+    }
+  };
+
+  const handleValidation = async () => {
+    const uploadcareResponse = await photoUploader();
+
+    if (uploadcareResponse.status >= 400) {
+      return;
+    }
+
+    const fileUrl = "https://ucarecdn.com/" + uploadcareResponse.file + "/";
+
+    try {
+      const res = await createUserEcoAction({
+        variables: {
+          data: {
+            ecoActionId,
+            groupId,
+            points: parseInt(selectedPoint),
+            proof: fileUrl,
+          },
+        },
+      });
+
+      refetchParent();
+      setModalVisible(false);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <View>
@@ -56,7 +138,6 @@ const Validation = ({
         transparent={false}
         visible={modalVisible}
         onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
           setModalVisible(!modalVisible);
         }}
       >
@@ -77,9 +158,32 @@ const Validation = ({
                 containerStyle={styles.radioGroup}
               />
             </View>
-            <View>
-              <Text>J'ajoute une preuve</Text>
+            <View style={{ marginVertical: 25 }}>
+              <Text style={{ textAlign: "center", fontSize: 18 }}>
+                J'ajoute une preuve
+              </Text>
+              <ImagePickerElement
+                getFileData={(data: ImagePickerAsset) => setFileData(data)}
+              />
             </View>
+            <TouchableOpacity
+              style={styles.confirmButton}
+              onPress={showConfirmDialog}
+              disabled={loadingCreateUserEcoAction}
+            >
+              <Text
+                style={{
+                  textAlign: "center",
+                  color: "white",
+                  textTransform: "uppercase",
+                  fontWeight: "600",
+                }}
+              >
+                {loadingCreateUserEcoAction
+                  ? "Validation en cours..."
+                  : "Confirmer"}
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>
@@ -110,7 +214,8 @@ const styles = StyleSheet.create({
     top: 10,
     right: 10,
     backgroundColor: "green",
-    padding: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
     borderRadius: 50,
   },
   buttonCLoseText: {
@@ -123,7 +228,7 @@ const styles = StyleSheet.create({
     gap: 10,
     position: "relative",
     backgroundColor: "#DDE2D2",
-    margin: 20,
+    maxWidth: "90%",
     padding: 35,
     borderRadius: 20,
     alignItems: "center",
@@ -145,5 +250,11 @@ const styles = StyleSheet.create({
   },
   radioGroup: {
     flexDirection: "row",
+  },
+  confirmButton: {
+    backgroundColor: "teal",
+    padding: 14,
+    borderRadius: 5,
+    width: 250,
   },
 });

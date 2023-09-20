@@ -13,14 +13,14 @@ export default function Home() {
 
   return (
     <View style={styles.container}>
-      <Text>
+      <Text style={styles.mainTitle}>
         Bienvenue, {currentUser?.firstName} {currentUser?.lastName} ! 👋
       </Text>
       <FlatList
         data={reversedGroups}
         refreshing={loadingGroups}
         renderItem={({ item }) => <GroupListItem group={item as Group} />}
-        style={{ width: "80%" }}
+        style={{ width: "90%" }}
         contentContainerStyle={{
           width: "100%",
           gap: 30,
@@ -34,9 +34,15 @@ export default function Home() {
 
 const styles = StyleSheet.create({
   container: {
-    display: "flex",
-    width: "100%",
     alignItems: "center",
+    flex: 1,
+    width: "100%",
     marginTop: 30,
+    paddingBottom: 60,
+  },
+  mainTitle: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 20,
   },
 });

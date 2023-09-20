@@ -5,15 +5,20 @@ import {
   useGetUserEcoActionQuery,
 } from "../gql/generated/schema";
 import Validation from "./Validation";
+import ValidationDetails from "./ValidationDetails";
 
 interface EcoActionListItemProps {
   ecoAction: EcoAction;
   groupId: number;
+  challengeStartDate: number;
+  challengeEndDate: number;
 }
 
 export const EcoActionListItem = ({
   ecoAction,
   groupId,
+  challengeStartDate,
+  challengeEndDate,
 }: EcoActionListItemProps) => {
   const { data, loading, refetch } = useGetUserEcoActionQuery({
     variables: { groupId, ecoActionId: ecoAction.id },
@@ -39,11 +44,19 @@ export const EcoActionListItem = ({
       </View>
       <Text style={styles.ecoActionDescription}>{ecoAction.description}</Text>
       <View style={styles.cardFooter}>
-        <Validation
-          ecoActionId={ecoAction.id}
-          groupId={groupId}
-          refetchParent={refetch}
-        />
+        {userEcoAction === undefined &&
+          new Date(challengeEndDate).getTime() > new Date().getTime() &&
+          new Date(challengeStartDate).getTime() < new Date().getTime() && (
+            <Validation
+              ecoActionId={ecoAction.id}
+              groupId={groupId}
+              refetchParent={refetch}
+            />
+          )}
+        {/* MA VALIDATION */}
+        {userEcoAction !== undefined && (
+          <ValidationDetails groupId={groupId} ecoActionId={ecoAction.id} />
+        )}
       </View>
     </View>
   );
