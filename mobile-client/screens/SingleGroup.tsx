@@ -37,6 +37,8 @@ export default function SingleGroup({ route }: Props) {
           <EcoActionListItem
             ecoAction={ecoAction as EcoAction}
             groupId={+groupId}
+            challengeStartDate={challenge?.startDate}
+            challengeEndDate={challenge?.endDate}
           />
         )}
         contentContainerStyle={{
