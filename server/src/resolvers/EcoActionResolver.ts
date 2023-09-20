@@ -28,7 +28,7 @@ export class EcoActionResolver {
       where: { id: In(validationIds) },
     });
 
-    if (validations.length !== validationIds.length)
+    if (validations.length !== validationIds.length || validations.length === 0)
       throw new ApolloError("Validation not found", "NOT_FOUND");
 
     return await datasource.getRepository(EcoAction).save({
@@ -115,13 +115,23 @@ export class EcoActionResolver {
   // Get an eco-action by id
   @Authorized<UserSubscriptionType>([UserSubscriptionType.PARTNER])
   @Query(() => EcoAction)
-  async getEcoActionbyId(@Arg("id", () => Int) id: number): Promise<EcoAction> {
-    const ecoAction = await datasource
-      .getRepository(EcoAction)
-      .findOne({ where: { id }, relations: { validations: true } });
+  async getEcoActionbyId(
+    @Arg("id", () => Int) id: number,
+    @Ctx() { currentUser }: ContextType
+  ): Promise<EcoAction> {
+    const ecoAction = await datasource.getRepository(EcoAction).findOne({
+      where: { id },
+      relations: { validations: true, author: true },
+    });
 
     if (ecoAction === null)
-      throw new ApolloError("EcoAction not found", "NOT_FOUND");
+      throw new ApolloError("EcoAction introuvable", "NOT_FOUND");
+
+    if (
+      (ecoAction.author === null && currentUser?.role !== "admin") ||
+      (ecoAction.author !== null && ecoAction.author?.id !== currentUser?.id)
+    )
+      throw new ApolloError("Accès refusé", "ACCESS_DENIED");
 
     return ecoAction;
   }
