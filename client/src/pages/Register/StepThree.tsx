@@ -3,35 +3,55 @@ import { motion } from "framer-motion";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 
-import { User } from "@/types/global";
 import EarthMoneyImg from "../../assets/images/register.png";
-import { Button } from "../../components/ui/button";
-import RadioButtons, { Radio } from "../../components/RadioButtons";
 import CustomFormField from "../../components/CustomFormField";
 import StepBackButton from "../../components/StepBackButton";
 import { useEffect, useState } from "react";
 import PaymentForm from "@/components/PaymentForm";
 
 type StepThreeProps = {
-  control: Control<Omit<User, "id">, any>;
+  control: Control<
+    {
+      firstName: string;
+      lastName: string;
+      email: string;
+      password: string;
+      company?: string | undefined;
+    },
+    any
+  >;
+  email: string;
+  firstName: string;
+  lastName: string;
   handleGoBackInStep: () => void;
+  triggerSubmit: () => void;
 };
 
-export const StepThree = ({ control, handleGoBackInStep }: StepThreeProps) => {
+export const StepThree = ({
+  control,
+  handleGoBackInStep,
+  email,
+  firstName,
+  lastName,
+  triggerSubmit,
+}: StepThreeProps) => {
   const [clientSecret, setClientSecret] = useState<string>("");
 
   useEffect(() => {
     fetch("http://localhost:4002/payment", {
       method: "POST",
-      body: JSON.stringify({}),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email,
+        firstName,
+        lastName,
+      }),
     }).then(async (res) => {
       const { clientSecret } = await res.json();
       setClientSecret(clientSecret);
     });
   }, []);
-  const stripePromise = loadStripe(
-    import.meta.env.VITE_PUBLIC_STRIPE_KEY as string
-  );
+  const stripePromise = loadStripe(import.meta.env.VITE_PUBLIC_STRIPE_KEY);
 
   return (
     <motion.div
@@ -53,14 +73,19 @@ export const StepThree = ({ control, handleGoBackInStep }: StepThreeProps) => {
       <div className="w-full mt-8">
         <p className="text-sm font-semibold mb-2">Moyen de paiement</p>
         {clientSecret && (
-          <Elements stripe={stripePromise} options={{ clientSecret }}>
-            <PaymentForm />
+          <Elements
+            stripe={stripePromise}
+            options={{
+              clientSecret,
+            }}
+          >
+            <PaymentForm
+              triggerSubmit={triggerSubmit}
+              isFormValid={control._formValues.company?.length >= 2}
+            />
           </Elements>
         )}
       </div>
-      <Button type="submit" className="w-full mt-8">
-        Je procède au paiement
-      </Button>
     </motion.div>
   );
 };

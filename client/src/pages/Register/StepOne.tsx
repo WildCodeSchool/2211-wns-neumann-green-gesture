@@ -4,10 +4,18 @@ import { Link } from "react-router-dom";
 import RegisterImg from "../../assets/images/register.png";
 import { Button } from "../../components/ui/button";
 import CustomFormField from "../../components/CustomFormField";
-import { User } from "../../types/global";
 
 type StepOneProps = {
-  control: Control<Omit<User, "id">, any>;
+  control: Control<
+    {
+      firstName: string;
+      lastName: string;
+      email: string;
+      password: string;
+      company?: string | undefined;
+    },
+    any
+  >;
 };
 
 export const StepOne = ({ control }: StepOneProps) => {
