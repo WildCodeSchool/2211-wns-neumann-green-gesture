@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,6 +15,7 @@ import { StepTwo } from "./StepTwo";
 import { StepThree } from "./StepThree";
 import { Form } from "../../components/ui/form";
 import { Formula, User } from "../../types/global";
+import { set } from "date-fns";
 
 const DEFAULT_USER: Omit<User, "id"> = {
   firstName: "",
@@ -22,6 +23,8 @@ const DEFAULT_USER: Omit<User, "id"> = {
   email: "",
   password: "",
   company: undefined,
+  role: "",
+  subscriptionType: "",
 };
 
 const DEFAULT_FORMULA_RADIOS: Radio[] = [

@@ -1,5 +1,7 @@
 import { Control } from "react-hook-form";
 import { motion } from "framer-motion";
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
 
 import { User } from "@/types/global";
 import EarthMoneyImg from "../../assets/images/register.png";
@@ -7,34 +9,30 @@ import { Button } from "../../components/ui/button";
 import RadioButtons, { Radio } from "../../components/RadioButtons";
 import CustomFormField from "../../components/CustomFormField";
 import StepBackButton from "../../components/StepBackButton";
+import { useEffect, useState } from "react";
+import PaymentForm from "@/components/PaymentForm";
 
 type StepThreeProps = {
   control: Control<Omit<User, "id">, any>;
   handleGoBackInStep: () => void;
 };
 
-const PAYMENT_METHODS_RADIOS: Radio[] = [
-  {
-    id: "paypal",
-    label: "Paypal",
-    type: "primary",
-    value: "paypal",
-  },
-  {
-    id: "credit-card",
-    label: "Carte de crédit",
-    type: "primary",
-    value: "credit-card",
-  },
-  {
-    id: "apple-pay",
-    label: "Apple Pay",
-    type: "primary",
-    value: "apple-pay",
-  },
-];
-
 export const StepThree = ({ control, handleGoBackInStep }: StepThreeProps) => {
+  const [clientSecret, setClientSecret] = useState<string>("");
+
+  useEffect(() => {
+    fetch("http://localhost:4002/payment", {
+      method: "POST",
+      body: JSON.stringify({}),
+    }).then(async (res) => {
+      const { clientSecret } = await res.json();
+      setClientSecret(clientSecret);
+    });
+  }, []);
+  const stripePromise = loadStripe(
+    import.meta.env.VITE_PUBLIC_STRIPE_KEY as string
+  );
+
   return (
     <motion.div
       key={3}
@@ -54,11 +52,11 @@ export const StepThree = ({ control, handleGoBackInStep }: StepThreeProps) => {
       />
       <div className="w-full mt-8">
         <p className="text-sm font-semibold mb-2">Moyen de paiement</p>
-        <RadioButtons
-          radios={PAYMENT_METHODS_RADIOS}
-          onChange={() => null}
-          defaultValue="paypal"
-        />
+        {clientSecret && (
+          <Elements stripe={stripePromise} options={{ clientSecret }}>
+            <PaymentForm />
+          </Elements>
+        )}
       </div>
       <Button type="submit" className="w-full mt-8">
         Je procède au paiement
