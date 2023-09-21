@@ -34,3 +34,11 @@ services:
       - 3000:3000
     volumes:
       - ./client/src:/app/src
+
+  stripe-service:
+    restart: always
+    build: ./stripe-service
+    ports:
+      - 4002:4002
+    volumes:
+      - ./stripe-service/index.js:/app/index.js
