@@ -61,6 +61,17 @@ export class UserResolver {
     return user;
   }
 
+  @Query(() => Boolean)
+  async isEmailAlreadyUsed(
+    @Arg("email", () => String) email: string
+  ): Promise<boolean> {
+    const user = await datasource.getRepository(User).findOne({
+      where: { email },
+    });
+
+    return user !== null;
+  }
+
   @Authorized<UserSubscriptionType>([
     UserSubscriptionType.PARTNER,
     UserSubscriptionType.FREE,

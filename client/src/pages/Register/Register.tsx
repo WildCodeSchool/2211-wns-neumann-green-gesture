@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 
 import {
   useCreateUserMutation,
+  useIsEmailAlreadyUsedQuery,
   UsersDocument,
 } from "../../gql/generated/schema";
 import { Radio } from "../../components/RadioButtons";
@@ -16,10 +17,10 @@ import { Form } from "../../components/ui/form";
 import { Formula, User } from "../../types/global";
 
 const DEFAULT_USER: Omit<User, "id"> = {
-  firstName: "fsdfds",
-  lastName: "sdfds",
-  email: "fsdfds@gmail.com",
-  password: "testtest",
+  firstName: "",
+  lastName: "",
+  email: "",
+  password: "",
   company: undefined,
   role: "",
   subscriptionType: "",
@@ -43,6 +44,7 @@ const DEFAULT_FORMULA_RADIOS: Radio[] = [
 
 function Register() {
   const [createUser, { loading: processing }] = useCreateUserMutation();
+
   const [step, setStep] = useState<number>(1);
   const [selectedFormula, setSelectedFormula] = useState<Formula>("free");
 
@@ -70,6 +72,11 @@ function Register() {
     defaultValues: DEFAULT_USER,
     shouldFocusError: true,
   });
+
+  const { refetch: refetchIsEmailAlreadyUsed } = useIsEmailAlreadyUsedQuery({
+    variables: { email: form.getValues("email") },
+  });
+
   const handleGoBackInStep = () => {
     setStep((prevStep) => (prevStep === 1 ? 1 : prevStep - 1));
   };
@@ -80,7 +87,18 @@ function Register() {
 
   const handleSubmit = async (values: z.infer<typeof formSchema>) => {
     if (step === 1) {
-      setStep(2);
+      const { data: isEmailAlreadyUsedData } = await refetchIsEmailAlreadyUsed({
+        email: values.email,
+      });
+
+      const isEmailAlreadyUsed = isEmailAlreadyUsedData?.isEmailAlreadyUsed;
+
+      isEmailAlreadyUsed
+        ? form.setError("email", {
+            type: "string",
+            message: "Cet email existe déjà.",
+          })
+        : setStep(2);
       return;
     }
 

@@ -288,6 +288,7 @@ export type Query = {
   getUsersByTeam: Array<User>;
   getValidation: Validation;
   getValidationsByEcoAction: Array<Validation>;
+  isEmailAlreadyUsed: Scalars['Boolean']['output'];
   isLiked: Scalars['Boolean']['output'];
   users: Array<User>;
 };
@@ -361,6 +362,11 @@ export type QueryGetValidationArgs = {
 
 export type QueryGetValidationsByEcoActionArgs = {
   ecoActionId: Scalars['Int']['input'];
+};
+
+
+export type QueryIsEmailAlreadyUsedArgs = {
+  email: Scalars['String']['input'];
 };
 
 
@@ -645,6 +651,13 @@ export type GetValidationsByEcoActionQueryVariables = Exact<{
 
 
 export type GetValidationsByEcoActionQuery = { __typename?: 'Query', getValidationsByEcoAction: Array<{ __typename?: 'Validation', id: number, points: number }> };
+
+export type IsEmailAlreadyUsedQueryVariables = Exact<{
+  email: Scalars['String']['input'];
+}>;
+
+
+export type IsEmailAlreadyUsedQuery = { __typename?: 'Query', isEmailAlreadyUsed: boolean };
 
 export type IsLikedQueryVariables = Exact<{
   ecoActionId: Scalars['Int']['input'];
@@ -1933,6 +1946,39 @@ export function useGetValidationsByEcoActionLazyQuery(baseOptions?: Apollo.LazyQ
 export type GetValidationsByEcoActionQueryHookResult = ReturnType<typeof useGetValidationsByEcoActionQuery>;
 export type GetValidationsByEcoActionLazyQueryHookResult = ReturnType<typeof useGetValidationsByEcoActionLazyQuery>;
 export type GetValidationsByEcoActionQueryResult = Apollo.QueryResult<GetValidationsByEcoActionQuery, GetValidationsByEcoActionQueryVariables>;
+export const IsEmailAlreadyUsedDocument = gql`
+    query IsEmailAlreadyUsed($email: String!) {
+  isEmailAlreadyUsed(email: $email)
+}
+    `;
+
+/**
+ * __useIsEmailAlreadyUsedQuery__
+ *
+ * To run a query within a React component, call `useIsEmailAlreadyUsedQuery` and pass it any options that fit your needs.
+ * When your component renders, `useIsEmailAlreadyUsedQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useIsEmailAlreadyUsedQuery({
+ *   variables: {
+ *      email: // value for 'email'
+ *   },
+ * });
+ */
+export function useIsEmailAlreadyUsedQuery(baseOptions: Apollo.QueryHookOptions<IsEmailAlreadyUsedQuery, IsEmailAlreadyUsedQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<IsEmailAlreadyUsedQuery, IsEmailAlreadyUsedQueryVariables>(IsEmailAlreadyUsedDocument, options);
+      }
+export function useIsEmailAlreadyUsedLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<IsEmailAlreadyUsedQuery, IsEmailAlreadyUsedQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<IsEmailAlreadyUsedQuery, IsEmailAlreadyUsedQueryVariables>(IsEmailAlreadyUsedDocument, options);
+        }
+export type IsEmailAlreadyUsedQueryHookResult = ReturnType<typeof useIsEmailAlreadyUsedQuery>;
+export type IsEmailAlreadyUsedLazyQueryHookResult = ReturnType<typeof useIsEmailAlreadyUsedLazyQuery>;
+export type IsEmailAlreadyUsedQueryResult = Apollo.QueryResult<IsEmailAlreadyUsedQuery, IsEmailAlreadyUsedQueryVariables>;
 export const IsLikedDocument = gql`
     query IsLiked($ecoActionId: Int!) {
   isLiked(ecoActionId: $ecoActionId)
