@@ -50,7 +50,6 @@ export const StepThree = ({
       const { clientSecret, subscriptionId } = await res.json();
       setClientSecret(clientSecret);
       control._formValues.subscriptionId = subscriptionId;
-      console.log(control._formValues);
     });
   }, []);
   const stripePromise = loadStripe(import.meta.env.VITE_PUBLIC_STRIPE_KEY);

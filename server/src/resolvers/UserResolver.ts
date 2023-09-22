@@ -257,4 +257,27 @@ export class UserResolver {
 
     return "Successfully removed friend";
   }
+
+  @Authorized<UserSubscriptionType>([UserSubscriptionType.PARTNER])
+  @Mutation(() => Boolean)
+  async unsubscribe(@Ctx() { currentUser }: ContextType): Promise<Boolean> {
+    const user = await datasource.getRepository(User).findOne({
+      where: { id: currentUser?.id },
+      relations: { company: true },
+    });
+
+    if (user === null) throw new ApolloError("user not found", "NOT_FOUND");
+
+    const currentCompany = currentUser?.company as Company;
+
+    if (currentCompany.id !== user.company?.id) {
+      throw new ApolloError("user not in your company", "NOT_IN_COMPANY");
+    }
+
+    user.subscriptionType = UserSubscriptionType.FREE;
+    user.subscriptionId = "";
+    await datasource.getRepository(User).save(user);
+
+    return true;
+  }
 }

@@ -52,16 +52,19 @@ app.post("/payment", cors(), async (req, res) => {
 app.post("/unsubscribe", cors(), async (req, res) => {
   try {
     const subscriptionId = req.body.subscriptionId;
-    console.log("subscriptionId", subscriptionId);
-    // const deletedSubscription = await stripe.subscriptions.cancel(subscriptionId);
-    // res.send({
-    //   message: "Subscription deleted",
-    //   deletedSubscription,
-    // });
+    const updatedSubscription = await stripe.subscriptions.update(
+      subscriptionId,
+      {
+        cancel_at_period_end: true,
+      }
+    );
+    res.send({
+      success: true,
+    });
   } catch (error) {
     console.log("Error", error);
     res.send({
-      message: "Subscription deletion failed",
+      success: false,
     });
   }
 });

@@ -131,6 +131,7 @@ export type Mutation = {
   removeFriend: Scalars['String']['output'];
   removeUserFromGroup: Group;
   sendNotification: Notification;
+  unsubscribe: Scalars['Boolean']['output'];
   updateEcoAction: EcoAction;
 };
 
@@ -533,7 +534,7 @@ export type GetCommentsForGroupQuery = { __typename?: 'Query', getCommentsForGro
 export type GetCurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetCurrentUserQuery = { __typename?: 'Query', getCurrentUser: { __typename?: 'User', id: number, firstName: string, lastName: string, email: string, role: string, subscriptionType: string, friends?: Array<{ __typename?: 'User', id: number, firstName: string, lastName: string, email: string, groups?: Array<{ __typename?: 'Group', id: number }> | null }> | null, groups?: Array<{ __typename?: 'Group', startDate: any, endDate: any, name: string, challengeName: string, id: number }> | null, createdEcoActions: Array<{ __typename?: 'EcoAction', id: number, name: string, description: string }>, company?: { __typename?: 'Company', id: number, name: string, users: Array<{ __typename?: 'User', id: number }> } | null } };
+export type GetCurrentUserQuery = { __typename?: 'Query', getCurrentUser: { __typename?: 'User', id: number, firstName: string, lastName: string, email: string, role: string, subscriptionType: string, subscriptionId: string, friends?: Array<{ __typename?: 'User', id: number, firstName: string, lastName: string, email: string, groups?: Array<{ __typename?: 'Group', id: number }> | null }> | null, groups?: Array<{ __typename?: 'Group', startDate: any, endDate: any, name: string, challengeName: string, id: number }> | null, createdEcoActions: Array<{ __typename?: 'EcoAction', id: number, name: string, description: string }>, company?: { __typename?: 'Company', id: number, name: string, users: Array<{ __typename?: 'User', id: number }> } | null } };
 
 export type GetEcoActionbyIdQueryVariables = Exact<{
   EcoActionId: Scalars['Int']['input'];
@@ -694,6 +695,11 @@ export type SendNotificationMutationVariables = Exact<{
 
 
 export type SendNotificationMutation = { __typename?: 'Mutation', sendNotification: { __typename?: 'Notification', id: number } };
+
+export type UnsubscribeMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type UnsubscribeMutation = { __typename?: 'Mutation', unsubscribe: boolean };
 
 export type UpdateEcoActionMutationVariables = Exact<{
   data: EcoActionInputCreation;
@@ -1138,6 +1144,7 @@ export const GetCurrentUserDocument = gql`
     email
     role
     subscriptionType
+    subscriptionId
     friends {
       id
       firstName
@@ -2174,6 +2181,36 @@ export function useSendNotificationMutation(baseOptions?: Apollo.MutationHookOpt
 export type SendNotificationMutationHookResult = ReturnType<typeof useSendNotificationMutation>;
 export type SendNotificationMutationResult = Apollo.MutationResult<SendNotificationMutation>;
 export type SendNotificationMutationOptions = Apollo.BaseMutationOptions<SendNotificationMutation, SendNotificationMutationVariables>;
+export const UnsubscribeDocument = gql`
+    mutation Unsubscribe {
+  unsubscribe
+}
+    `;
+export type UnsubscribeMutationFn = Apollo.MutationFunction<UnsubscribeMutation, UnsubscribeMutationVariables>;
+
+/**
+ * __useUnsubscribeMutation__
+ *
+ * To run a mutation, you first call `useUnsubscribeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUnsubscribeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [unsubscribeMutation, { data, loading, error }] = useUnsubscribeMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useUnsubscribeMutation(baseOptions?: Apollo.MutationHookOptions<UnsubscribeMutation, UnsubscribeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UnsubscribeMutation, UnsubscribeMutationVariables>(UnsubscribeDocument, options);
+      }
+export type UnsubscribeMutationHookResult = ReturnType<typeof useUnsubscribeMutation>;
+export type UnsubscribeMutationResult = Apollo.MutationResult<UnsubscribeMutation>;
+export type UnsubscribeMutationOptions = Apollo.BaseMutationOptions<UnsubscribeMutation, UnsubscribeMutationVariables>;
 export const UpdateEcoActionDocument = gql`
     mutation UpdateEcoAction($data: EcoActionInputCreation!, $updateEcoActionId: Int!) {
   updateEcoAction(data: $data, id: $updateEcoActionId) {
