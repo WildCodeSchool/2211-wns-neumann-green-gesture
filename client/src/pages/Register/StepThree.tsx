@@ -7,7 +7,7 @@ import EarthMoneyImg from "../../assets/images/register.png";
 import CustomFormField from "../../components/CustomFormField";
 import StepBackButton from "../../components/StepBackButton";
 import { useEffect, useState } from "react";
-import PaymentForm from "@/components/PaymentForm";
+import PaymentForm from "../../components/PaymentForm";
 
 type StepThreeProps = {
   control: Control<
@@ -52,7 +52,9 @@ export const StepThree = ({
       control._formValues.subscriptionId = subscriptionId;
     });
   }, []);
-  const stripePromise = loadStripe(import.meta.env.VITE_PUBLIC_STRIPE_KEY);
+  const stripePromise = loadStripe(
+    process.env.VITE_PUBLIC_STRIPE_KEY as string
+  );
 
   return (
     <motion.div
