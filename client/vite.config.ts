@@ -1,10 +1,16 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
+import EnvironmentPlugin from "vite-plugin-environment";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react({ include: "**/*.tsx" })],
+  plugins: [
+    react({ include: "**/*.tsx" }),
+    EnvironmentPlugin({
+      VITE_PUBLIC_STRIPE_KEY: null,
+    }),
+  ],
   server: {
     watch: {
       usePolling: true,
