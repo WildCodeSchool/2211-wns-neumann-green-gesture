@@ -47,8 +47,9 @@ export const StepThree = ({
         lastName,
       }),
     }).then(async (res) => {
-      const { clientSecret } = await res.json();
+      const { clientSecret, subscriptionId } = await res.json();
       setClientSecret(clientSecret);
+      control._formValues.subscriptionId = subscriptionId;
     });
   }, []);
   const stripePromise = loadStripe(

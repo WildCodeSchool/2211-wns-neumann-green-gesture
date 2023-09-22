@@ -18,6 +18,7 @@ const createEcoActionMutation = gql`
         email
         subscriptionType
         role
+        subscriptionId
       }
       validations {
         id

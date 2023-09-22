@@ -1,5 +1,7 @@
+import toast from "react-hot-toast";
 import { ArrowRight, Plus, Eye } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useUnsubscribeMutation } from "@/gql/generated/schema";
 
 import { Badge } from "../components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -8,7 +10,30 @@ import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { FriendList } from "@/components/FriendList";
 
 function Profile() {
-  const { currentUser, loading } = useCurrentUser();
+  const { currentUser, loading, refetchCurrentUser } = useCurrentUser();
+  const [Unsubscribe] = useUnsubscribeMutation();
+
+  const handleUnsubscribe = async () => {
+    try {
+      if (confirm("Êtes-vous sûr de vouloir vous désabonner ?")) {
+        const res = await fetch("http://localhost:4002/unsubscribe", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            subscriptionId: currentUser?.subscriptionId,
+          }),
+        }).then((res) => res.json());
+        if (res.success) await Unsubscribe();
+        toast.success("Vous êtes désormais désabonné !");
+        await refetchCurrentUser();
+      }
+    } catch (error) {
+      toast.error("Une erreur est survenue");
+      console.log(error);
+    }
+  };
 
   if (loading) return <Loading />;
 
@@ -25,21 +50,31 @@ function Profile() {
         )}
       </div>
       {/* BUTTONS */}
-      <div className="flex items-center flex-wrap gap-2 my-8">
-        <Button className="flex w-full sm:w-auto" asChild={true}>
-          <Link to="/groups">
-            Mes challenges <ArrowRight className="ms-3" />
-          </Link>
-        </Button>
-        <Button
-          variant="outline"
-          className="flex w-full sm:w-auto"
-          asChild={true}
-        >
-          <Link to="/eco-actions">
-            Mes eco-gestes <ArrowRight className="ms-3" />
-          </Link>
-        </Button>
+      <div className="flex justify-between items-center flex-wrap gap-2 my-8">
+        <div className="flex items-center flex-wrap gap-2 my-8">
+          <Button className="flex w-full sm:w-auto" asChild={true}>
+            <Link to="/groups">
+              Mes challenges <ArrowRight className="ms-3" />
+            </Link>
+          </Button>
+          <Button
+            variant="outline"
+            className="flex w-full sm:w-auto"
+            asChild={true}
+          >
+            <Link to="/eco-actions">
+              Mes eco-gestes <ArrowRight className="ms-3" />
+            </Link>
+          </Button>
+        </div>
+        {currentUser?.subscriptionType === "partner" && (
+          <Button
+            className="flex w-full sm:w-auto bg-red-600 hover:bg-red-700"
+            onClick={handleUnsubscribe}
+          >
+            Me désabonner
+          </Button>
+        )}
       </div>
       {/* PROFILE */}
       <div className="space-y-8">

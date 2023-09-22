@@ -17,6 +17,7 @@ export async function getUserAndToken() {
     email: "user@gmail.com",
     password: "testtest",
     subscriptionType: "partner",
+    subscriptionId: "123",
   });
 
   // create a token for the user

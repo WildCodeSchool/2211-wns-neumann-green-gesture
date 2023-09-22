@@ -57,6 +57,7 @@ function Register() {
       step < 3
         ? z.string().max(50).optional()
         : z.string().min(2, "2 caractères minimum").max(50),
+    subscriptionId: step < 3 ? z.string().optional() : z.string(),
   });
 
   const formRef = useRef<HTMLFormElement>(null);
@@ -126,6 +127,7 @@ function Register() {
               password: values.password,
               company: values.company,
               subscriptionType: selectedFormula,
+              subscriptionId: values.subscriptionId,
             },
           },
           refetchQueries: [{ query: UsersDocument }],
