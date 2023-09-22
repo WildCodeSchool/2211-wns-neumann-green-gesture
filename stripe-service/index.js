@@ -1,14 +1,11 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import bodyParser from "body-parser";
 import Stripe from "stripe";
 
 dotenv.config();
 const app = express();
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
 app.use(express.json());
 app.use(cors());
 
@@ -48,6 +45,23 @@ app.post("/payment", cors(), async (req, res) => {
     console.log("Error", error);
     res.json({
       message: "Payment Failed",
+    });
+  }
+});
+
+app.post("/unsubscribe", cors(), async (req, res) => {
+  try {
+    const subscriptionId = req.body.subscriptionId;
+    console.log("subscriptionId", subscriptionId);
+    // const deletedSubscription = await stripe.subscriptions.cancel(subscriptionId);
+    // res.send({
+    //   message: "Subscription deleted",
+    //   deletedSubscription,
+    // });
+  } catch (error) {
+    console.log("Error", error);
+    res.send({
+      message: "Subscription deletion failed",
     });
   }
 });

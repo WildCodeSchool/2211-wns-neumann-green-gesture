@@ -397,6 +397,7 @@ export type User = {
   password: Scalars['String']['output'];
   relatedEcoActions: Array<UserEcoAction>;
   role: Scalars['String']['output'];
+  subscriptionId: Scalars['String']['output'];
   subscriptionType: Scalars['String']['output'];
   teams?: Maybe<Team>;
 };
@@ -435,6 +436,7 @@ export type UserInputSubscribe = {
   lastName: Scalars['String']['input'];
   password: Scalars['String']['input'];
   role?: InputMaybe<Scalars['String']['input']>;
+  subscriptionId?: InputMaybe<Scalars['String']['input']>;
   subscriptionType?: InputMaybe<Scalars['String']['input']>;
 };
 

@@ -59,6 +59,10 @@ class User {
   @Column({ default: UserSubscriptionType.FREE, enum: UserSubscriptionType })
   subscriptionType: string;
 
+  @Field()
+  @Column({ default: null })
+  subscriptionId: string;
+
   @Field(() => Company, { nullable: true })
   @ManyToOne(() => Company, (company) => company.users, { cascade: true })
   company?: Company;
@@ -140,6 +144,9 @@ export class UserInputSubscribe {
 
   @Field({ nullable: true, defaultValue: UserSubscriptionType.FREE })
   subscriptionType?: string;
+
+  @Field({ nullable: true, defaultValue: null })
+  subscriptionId?: string;
 }
 
 @InputType()

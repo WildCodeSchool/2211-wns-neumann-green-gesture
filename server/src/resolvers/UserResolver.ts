@@ -105,6 +105,7 @@ export class UserResolver {
       company,
       role,
       subscriptionType,
+      subscriptionId,
     }: UserInputSubscribe,
     @Ctx() { res }: ContextType
   ): Promise<User> {
@@ -117,6 +118,7 @@ export class UserResolver {
       password: hashedPassword,
       role,
       subscriptionType,
+      subscriptionId,
     });
 
     if (company !== null && subscriptionType === UserSubscriptionType.PARTNER) {
