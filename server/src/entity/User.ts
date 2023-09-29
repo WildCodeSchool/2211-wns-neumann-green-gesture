@@ -59,9 +59,9 @@ class User {
   @Column({ default: UserSubscriptionType.FREE, enum: UserSubscriptionType })
   subscriptionType: string;
 
-  @Field()
-  @Column({ default: null })
-  subscriptionId: string;
+  @Field({ nullable: true })
+  @Column({ default: null, nullable: true })
+  subscriptionId?: string;
 
   @Field(() => Company, { nullable: true })
   @ManyToOne(() => Company, (company) => company.users, { cascade: true })
