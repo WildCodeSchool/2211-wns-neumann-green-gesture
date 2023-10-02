@@ -15,6 +15,7 @@ import User, {
   hashPassword,
   UserInputLogin,
   UserInputSubscribe,
+  UserRole,
   UserSubscriptionType,
   verifyPassword,
 } from "../entity/User";
@@ -26,6 +27,7 @@ import { Company } from "../entity/Company";
 
 @Resolver(User)
 export class UserResolver {
+  @Authorized<UserRole>([UserRole.ADMIN])
   @Query(() => [User])
   async users(): Promise<User[]> {
     return await datasource.getRepository(User).find({
