@@ -82,7 +82,7 @@ describe("EcoAction Resolver", () => {
       // create a user
       const { token } = await getUserAndToken();
 
-      expect(() =>
+      await expect(() =>
         client.mutate({
           mutation: createEcoActionMutation,
           variables: {
@@ -149,7 +149,7 @@ describe("EcoAction Resolver", () => {
       // create a user
       const { token } = await getUserAndToken();
 
-      expect(() =>
+      await expect(() =>
         client.query({
           query: getEcoActionByIdQuery,
           variables: {
@@ -242,11 +242,11 @@ describe("EcoAction Resolver", () => {
 
       // create another user
       const user = await db.getRepository(User).save({
-        firstName: "User",
-        lastName: "Partner",
-        email: "user@gmain.com",
+        firstName: "User2",
+        lastName: "Partner2",
+        email: "partner@gmain.com",
         password: "testtest",
-        subscriptionType: "user",
+        subscriptionType: "partner",
       });
       // create token for other user
       const token = await getJWTFor(user);
@@ -262,7 +262,7 @@ describe("EcoAction Resolver", () => {
         author: userWithoutPassword,
       });
 
-      expect(
+      await expect(
         client.mutate({
           mutation: updateEcoActionMutation,
           variables: {
@@ -359,7 +359,7 @@ describe("EcoAction Resolver", () => {
         author: userWithoutPassword,
       });
 
-      expect(
+      await expect(
         client.mutate({
           mutation: deleteEcoActionMutation,
           variables: {
