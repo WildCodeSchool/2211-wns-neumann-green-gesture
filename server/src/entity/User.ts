@@ -60,7 +60,7 @@ class User {
   subscriptionType: string;
 
   @Field({ nullable: true })
-  @Column({ nullable: true })
+  @Column({ default: null, nullable: true })
   subscriptionId?: string;
 
   @Field(() => Company, { nullable: true })
