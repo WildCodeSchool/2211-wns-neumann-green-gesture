@@ -10,7 +10,7 @@ import {
 } from "./ui/sheet";
 import { Notification } from "./ui/notification";
 import { useGetNotificationsQuery } from "@/gql/generated/schema";
-import { NotificationTypeEnum } from "@/types/global";
+import { NotificationTypeEnum, User } from "@/types/global";
 
 function Notifications() {
   const {
@@ -48,7 +48,7 @@ function Notifications() {
             <Notification
               key={notif.id}
               type={notif.type as NotificationTypeEnum}
-              sender={notif.sender}
+              sender={notif.sender as User}
               notifId={notif.id}
               group={notif.group}
               handleTraitedNotifs={handleTraitedNotifs}
