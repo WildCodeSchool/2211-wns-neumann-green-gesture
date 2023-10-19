@@ -35,7 +35,7 @@ export const StepThree = ({
   lastName,
   triggerSubmit,
 }: StepThreeProps) => {
-  const [clientSecret, setClientSecret] = useState<string>("");
+  const [clientSecretKey, setClientSecret] = useState<string>("");
 
   useEffect(() => {
     fetch("http://localhost:4002/payment", {
@@ -53,7 +53,7 @@ export const StepThree = ({
     });
   }, []);
   const stripePromise = loadStripe(
-    process.env.VITE_PUBLIC_STRIPE_KEY as string
+    import.meta.env.VITE_PUBLIC_STRIPE_KEY as string
   );
 
   return (
@@ -75,11 +75,11 @@ export const StepThree = ({
       />
       <div className="w-full mt-8">
         <p className="text-sm font-semibold mb-2">Moyen de paiement</p>
-        {clientSecret && (
+        {clientSecretKey && (
           <Elements
             stripe={stripePromise}
             options={{
-              clientSecret,
+              clientSecret: clientSecretKey,
             }}
           >
             <PaymentForm
