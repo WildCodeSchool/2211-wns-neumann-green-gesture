@@ -53,7 +53,7 @@ export const StepThree = ({
     });
   }, []);
   const stripePromise = loadStripe(
-    import.meta.env.VITE_PUBLIC_STRIPE_KEY as string
+    process.env.VITE_PUBLIC_STRIPE_KEY as string
   );
 
   return (
