@@ -6,6 +6,7 @@ query GetCurrentUser {
     email
     role
     subscriptionType
+    subscriptionId
     friends {
       id
       firstName

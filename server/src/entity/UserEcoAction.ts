@@ -1,11 +1,5 @@
-import { Field, InputType, ObjectType } from "type-graphql";
-import {
-  Column,
-  Entity,
-  JoinTable,
-  ManyToMany,
-  PrimaryGeneratedColumn,
-} from "typeorm";
+import { Field, InputType, Int, ObjectType } from "type-graphql";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import User from "./User";
 import EcoAction from "./EcoAction";
 
@@ -18,31 +12,29 @@ export class UserEcoAction {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Field(() => [User])
-  @ManyToMany(() => User, (user) => user.relatedEcoActions, {
+  @Field(() => User)
+  @ManyToOne(() => User, (user) => user.relatedEcoActions, {
     onDelete: "CASCADE",
   })
-  @JoinTable()
-  user: User[];
+  user: User;
 
-  @Field(() => [EcoAction])
-  @ManyToMany(() => EcoAction, (ecoAction) => ecoAction.relatedUsers, {
+  @Field(() => EcoAction)
+  @ManyToOne(() => EcoAction, (ecoAction) => ecoAction.userEcoActions, {
     onDelete: "CASCADE",
   })
-  @JoinTable()
-  ecoAction: EcoAction[];
+  ecoAction: EcoAction;
+
+  @Field(() => Int)
+  @Column({ default: 0 })
+  groupId: number;
 
   @Field({ nullable: true, defaultValue: null })
   @Column({ nullable: true })
   proof?: string;
 
-  @Field()
-  @Column({ default: false })
-  hasLiked?: boolean;
-
   @Field(() => Number, { nullable: true })
   @Column({ nullable: true })
-  validationId?: number;
+  points?: number;
 }
 
 @InputType()
@@ -52,29 +44,20 @@ export class UserEcoActionInputAddProof {
   proof: string;
 
   @Field()
-  ecoActionId: number;
-
-  @Field()
-  groupId: number;
+  userEcoActionId: number;
 }
 
 @InputType()
-export class UserEcoActionInputAddLike {
-  @Field()
-  hasLiked: boolean;
-
-  @Field()
+export class UserEcoActionInputAddPoints {
+  @Field(() => Int)
   ecoActionId: number;
 
-  @Field()
+  @Field(() => Int)
   groupId: number;
-}
 
-@InputType()
-export class UserEcoActionInputAddValidation {
-  @Field()
-  validationId: number;
+  @Field(() => Int)
+  points: number;
 
-  @Field()
-  validationPoints: number;
+  @Field({ nullable: true })
+  proof?: string;
 }

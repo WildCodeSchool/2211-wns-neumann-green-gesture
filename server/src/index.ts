@@ -16,6 +16,8 @@ import { GroupResolver } from "./resolvers/GroupResolver";
 import { TeamResolver } from "./resolvers/TeamResolver";
 import { UserEcoActionResolver } from "./resolvers/UserEcoActionResolver";
 import { ValidationResolver } from "./resolvers/ValidationResolver";
+import { NotificationResolver } from "./resolvers/NotificationResolver";
+import { LikeEcoActionResolver } from "./resolvers/LikeEcoActionResolver";
 
 export interface JWTPayload {
   userId: number;
@@ -40,14 +42,50 @@ async function start(): Promise<void> {
       TeamResolver,
       UserEcoActionResolver,
       ValidationResolver,
+      NotificationResolver,
+      LikeEcoActionResolver,
     ],
     validate: {
       forbidUnknownValues: false,
     },
-    authChecker: async ({ context }: { context: ContextType }) => {
-      const {
-        req: { headers },
-      } = context;
+    authChecker: async (
+      { context }: { context: ContextType },
+      roles: string | string[]
+    ) => {
+      const userSubscriptionType = context.currentUser?.subscriptionType;
+      const userRole = context.currentUser?.role;
+
+      // if @Authorized() without roles
+      if (roles.length === 0) {
+        return userSubscriptionType !== undefined || userRole !== undefined;
+      }
+
+      // if @Authorized(['roles']) with roles
+
+      if (userSubscriptionType === undefined || userRole === undefined) {
+        return false;
+      }
+
+      if (Object.values(roles).includes(userSubscriptionType)) {
+        return true;
+      }
+
+      if (Object.values(roles).includes(userRole)) {
+        return true;
+      }
+
+      return false;
+    },
+  });
+
+  const server = new ApolloServer({
+    schema,
+    csrfPrevention: true,
+    cache: "bounded",
+    plugins: [ApolloServerPluginLandingPageLocalDefault({ embed: true })],
+    context: async ({ req, res }) => {
+      const { headers } = req;
+
       const tokenInAuthHeaders = headers.authorization?.split(" ")[1];
       const tokenInCookie = cookie.parse(headers.cookie ?? "").token;
 
@@ -69,23 +107,16 @@ async function start(): Promise<void> {
               createdCompany: true,
             },
           });
-          if (currentUser !== null) context.currentUser = currentUser;
-          return true;
+          if (currentUser !== null) {
+            return { req, res, currentUser };
+          } else {
+            throw new Error("User not found");
+          }
         }
+      } else {
+        return { req, res };
       }
-      return false;
     },
-  });
-
-  const server = new ApolloServer({
-    schema,
-    csrfPrevention: true,
-    cache: "bounded",
-    plugins: [ApolloServerPluginLandingPageLocalDefault({ embed: true })],
-    context: ({ req, res }) => ({
-      req,
-      res,
-    }),
     cors: {
       origin: env.CORS_ALLOWED_ORIGINS.split(","),
       credentials: true,

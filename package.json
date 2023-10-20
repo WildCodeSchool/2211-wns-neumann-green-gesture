@@ -13,7 +13,9 @@
     "publish:client": "cd client && docker build -f Dockerfile.production . -t samwildcode/green-gesture-client && docker push samwildcode/green-gesture-client && cd ..",
     "publish-staging:client": "cd client && docker build -f Dockerfile.production . -t samwildcode/green-gesture-client:staging && docker push samwildcode/green-gesture-client:staging && cd ..",
     "start:prod": "docker compose -f docker-compose.production.yml pull && docker compose -f docker-compose.production.yml --env-file .env.production up",
-    "start:staging": "docker compose -f docker-compose.staging.yml pull && docker compose -f docker-compose.staging.yml --env-file .env.staging up"
+    "start:staging": "docker compose -f docker-compose.staging.yml pull && docker compose -f docker-compose.staging.yml --env-file .env.staging up",
+    "publish:stripe-service": "cd stripe-service && docker build -f Dockerfile.production . -t samwildcode/green-gesture-microservice-stripe:latest && docker push samwildcode/green-gesture-microservice-stripe:latest && cd ..",
+    "publish:discord-bot": "cd discord-bot && docker build -f Dockerfile . -t samwildcode/discord-bot && docker push samwildcode/discord-bot && cd .."
   },
   "repository": {
     "type": "git",

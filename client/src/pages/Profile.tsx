@@ -1,20 +1,44 @@
-import { useGetCurrentUserQuery } from "@/gql/generated/schema";
+import toast from "react-hot-toast";
 import { ArrowRight, Plus, Eye } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useUnsubscribeMutation } from "@/gql/generated/schema";
 
 import { Badge } from "../components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Loading } from "./Loading";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { FriendList } from "@/components/FriendList";
 
 function Profile() {
-  const { data, loading } = useGetCurrentUserQuery();
+  const { currentUser, loading, refetchCurrentUser } = useCurrentUser();
+  const [Unsubscribe] = useUnsubscribeMutation();
 
-  const currentUser = data?.getCurrentUser;
+  const handleUnsubscribe = async () => {
+    try {
+      if (confirm("Êtes-vous sûr de vouloir vous désabonner ?")) {
+        const res = await fetch("http://localhost:4002/unsubscribe", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            subscriptionId: currentUser?.subscriptionId,
+          }),
+        }).then((res) => res.json());
+        if (res.success) await Unsubscribe();
+        toast.success("Vous êtes désormais désabonné !");
+        await refetchCurrentUser();
+      }
+    } catch (error) {
+      toast.error("Une erreur est survenue");
+      console.log(error);
+    }
+  };
 
   if (loading) return <Loading />;
 
   return (
-    <>
+    <div className="max-w-5xl mx-auto">
       <div className="flex items-center flex-wrap gap-2">
         <h1 className="text-2xl font-bold">
           Bienvenue, {currentUser?.firstName} {currentUser?.lastName}
@@ -26,21 +50,31 @@ function Profile() {
         )}
       </div>
       {/* BUTTONS */}
-      <div className="flex items-center flex-wrap gap-2 my-8">
-        <Button className="flex w-full sm:w-auto" asChild={true}>
-          <Link to="/groups?own=true">
-            Mes challenges <ArrowRight className="ms-3" />
-          </Link>
-        </Button>
-        <Button
-          variant="outline"
-          className="flex w-full sm:w-auto"
-          asChild={true}
-        >
-          <Link to="/eco-actions?own=true">
-            Mes eco-gestes <ArrowRight className="ms-3" />
-          </Link>
-        </Button>
+      <div className="flex justify-between items-center flex-wrap gap-2 my-8">
+        <div className="flex items-center flex-wrap gap-2 my-8">
+          <Button className="flex w-full sm:w-auto" asChild={true}>
+            <Link to="/groups">
+              Mes challenges <ArrowRight className="ms-3" />
+            </Link>
+          </Button>
+          <Button
+            variant="outline"
+            className="flex w-full sm:w-auto"
+            asChild={true}
+          >
+            <Link to="/eco-actions">
+              Mes eco-gestes <ArrowRight className="ms-3" />
+            </Link>
+          </Button>
+        </div>
+        {currentUser?.subscriptionType === "partner" && (
+          <Button
+            className="flex w-full sm:w-auto bg-red-600 hover:bg-red-700"
+            onClick={handleUnsubscribe}
+          >
+            Me désabonner
+          </Button>
+        )}
       </div>
       {/* PROFILE */}
       <div className="space-y-8">
@@ -100,16 +134,16 @@ function Profile() {
         <div>
           <div className="flex items-center mb-2">
             <h2 className="text-xl font-semibold me-3">Mes amis</h2>
-            <Button
-              asChild={true}
-              variant="accent-orange"
-              className="rounded-full p-1 h-auto"
-              title="Ajouter un ami"
-            >
-              <Link to="/friends">
-                <Plus color="#e8eede" size={15} />
-              </Link>
-            </Button>
+            <FriendList>
+              <Button
+                asChild={true}
+                variant="accent-orange"
+                className="rounded-full p-1 h-auto cursor-pointer"
+                title="Ajouter un ami"
+              >
+                <Plus color="#e8eede" size={22} />
+              </Button>
+            </FriendList>
           </div>
           <div className="elevate-box space-y-4">
             {currentUser?.friends?.length === 0 && (
@@ -133,7 +167,7 @@ function Profile() {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

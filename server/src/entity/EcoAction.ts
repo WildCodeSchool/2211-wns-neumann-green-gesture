@@ -1,8 +1,9 @@
 import { MaxLength, MinLength } from "class-validator";
-import { Field, InputType, ObjectType } from "type-graphql";
+import { Field, InputType, Int, ObjectType } from "type-graphql";
 import {
   Column,
   Entity,
+  JoinTable,
   ManyToMany,
   ManyToOne,
   OneToMany,
@@ -10,8 +11,9 @@ import {
 } from "typeorm";
 import Group from "./Group";
 import User from "./User";
-import Validation, { ValidationInputCreation } from "./Validation";
+import Validation from "./Validation";
 import { UserEcoAction } from "./UserEcoAction";
+import LikeEcoAction from "./LikeEcoAction";
 
 @Entity()
 @ObjectType()
@@ -45,16 +47,23 @@ class EcoAction {
   groups?: Group[];
 
   @Field(() => [Validation])
-  @OneToMany(() => Validation, (validation) => validation.ecoAction, {
+  @ManyToMany(() => Validation, (validation) => validation.ecoAction, {
     cascade: true,
   })
+  @JoinTable({ name: "ecoAction_validations" })
   validations: Validation[];
 
   @Field(() => [UserEcoAction])
-  @ManyToMany(() => UserEcoAction, (userEcoAction) => userEcoAction.ecoAction, {
+  @OneToMany(() => UserEcoAction, (userEcoAction) => userEcoAction.ecoAction, {
     cascade: true,
   })
-  relatedUsers: EcoAction[];
+  userEcoActions: UserEcoAction[];
+
+  @Field(() => [LikeEcoAction])
+  @OneToMany(() => LikeEcoAction, (like) => like.ecoAction, {
+    cascade: true,
+  })
+  likesList: LikeEcoAction[];
 }
 
 @InputType()
@@ -65,10 +74,11 @@ export class EcoActionInputCreation {
   name: string;
 
   @Field()
+  @MinLength(3)
   description: string;
 
-  @Field(() => [ValidationInputCreation])
-  validations: ValidationInputCreation[];
+  @Field(() => [Int])
+  validationIds: number[];
 }
 
 export default EcoAction;

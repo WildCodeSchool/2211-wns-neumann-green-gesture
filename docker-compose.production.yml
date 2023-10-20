@@ -55,5 +55,26 @@ services:
       - ./nginx.conf:/etc/nginx/nginx.conf
       - ./logs:/var/log/nginx
 
+  stripe-service:
+    restart: always
+    image: samwildcode/green-gesture-microservice-stripe:latest
+    environment:
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY:-}
+      - STRIPE_PRICE_ID=${STRIPE_PRICE_ID:-}
+    ports:
+      - 4002:4002
+    volumes:
+      - ./stripe-service/index.js:/app/index.js
+
+  discord-bot:
+    image: samwildcode/discord-bot
+    depends_on:
+      nginx:
+        condition: service_started
+    environment:
+      - BOT_TOKEN=${BOT_TOKEN:-}
+      - CHANNEL_ID=${CHANNEL_ID:-}
+    command: "npm run send-message 'Green Gesture Production environment has been updated ! See you here : https://neumann2.wns.wilders.dev/'"
+
 volumes:
   prodDB:

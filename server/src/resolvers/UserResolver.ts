@@ -15,6 +15,7 @@ import User, {
   hashPassword,
   UserInputLogin,
   UserInputSubscribe,
+  UserRole,
   UserSubscriptionType,
   verifyPassword,
 } from "../entity/User";
@@ -26,6 +27,7 @@ import { Company } from "../entity/Company";
 
 @Resolver(User)
 export class UserResolver {
+  @Authorized<UserRole>([UserRole.ADMIN])
   @Query(() => [User])
   async users(): Promise<User[]> {
     return await datasource.getRepository(User).find({
@@ -61,6 +63,17 @@ export class UserResolver {
     return user;
   }
 
+  @Query(() => Boolean)
+  async isEmailAlreadyUsed(
+    @Arg("email", () => String) email: string
+  ): Promise<boolean> {
+    const user = await datasource.getRepository(User).findOne({
+      where: { email },
+    });
+
+    return user !== null;
+  }
+
   @Authorized<UserSubscriptionType>([
     UserSubscriptionType.PARTNER,
     UserSubscriptionType.FREE,
@@ -84,8 +97,7 @@ export class UserResolver {
       .getMany();
 
     const currentFriends = currentUser.friends.map((friend) => friend.id);
-    console.log(currentUser.id);
-    console.log(foundUsers);
+
     const searchedUsers = foundUsers.filter(
       (foundUser) =>
         !currentFriends.includes(foundUser.id) &&
@@ -106,6 +118,7 @@ export class UserResolver {
       company,
       role,
       subscriptionType,
+      subscriptionId,
     }: UserInputSubscribe,
     @Ctx() { res }: ContextType
   ): Promise<User> {
@@ -118,6 +131,7 @@ export class UserResolver {
       password: hashedPassword,
       role,
       subscriptionType,
+      subscriptionId,
     });
 
     if (company !== null && subscriptionType === UserSubscriptionType.PARTNER) {
@@ -224,5 +238,59 @@ export class UserResolver {
     await datasource.getRepository(User).save(friend);
 
     return user;
+  }
+
+  @Authorized<UserSubscriptionType>([
+    UserSubscriptionType.PARTNER,
+    UserSubscriptionType.FREE,
+  ])
+  @Mutation(() => String)
+  async removeFriend(
+    @Arg("friendId", () => Int) friendId: number,
+    @Ctx() { currentUser }: ContextType
+  ): Promise<String> {
+    const friend = await datasource
+      .getRepository(User)
+      .findOne({ where: { id: friendId }, relations: { friends: true } });
+
+    if (friend === null) throw new ApolloError("friend not found", "NOT_FOUND");
+
+    const user = currentUser as User;
+
+    const friendIndex = user.friends?.findIndex((f) => f.id === friend.id);
+    if (friendIndex === undefined || friendIndex < 0) {
+      throw new ApolloError("friend not found", "NOT_FOUND");
+    }
+
+    user.friends = user.friends?.filter((f) => f.id !== friend.id);
+    friend.friends = friend.friends?.filter((f) => f.id !== user.id);
+
+    await datasource.getRepository(User).save(user);
+    await datasource.getRepository(User).save(friend);
+
+    return "Successfully removed friend";
+  }
+
+  @Authorized<UserSubscriptionType>([UserSubscriptionType.PARTNER])
+  @Mutation(() => Boolean)
+  async unsubscribe(@Ctx() { currentUser }: ContextType): Promise<Boolean> {
+    const user = await datasource.getRepository(User).findOne({
+      where: { id: currentUser?.id },
+      relations: { company: true },
+    });
+
+    if (user === null) throw new ApolloError("user not found", "NOT_FOUND");
+
+    const currentCompany = currentUser?.company as Company;
+
+    if (currentCompany.id !== user.company?.id) {
+      throw new ApolloError("user not in your company", "NOT_IN_COMPANY");
+    }
+
+    user.subscriptionType = UserSubscriptionType.FREE;
+    user.subscriptionId = "";
+    await datasource.getRepository(User).save(user);
+
+    return true;
   }
 }

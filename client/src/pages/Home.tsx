@@ -1,118 +1,101 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
 
 import {
-  useGetCurrentUserQuery,
   useGetFreeEcoActionsQuery,
+  useGetPopularFreeEcoActionsQuery,
   useGetUserGroupsQuery,
 } from "../gql/generated/schema";
 import { Button } from "@/components/ui/button";
-import { challengeCountDown } from "@/lib/utils";
-import DisplayDate from "@/components/DisplayDate";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
+import ChallengeCard from "@/components/ChallengeCard";
+import { GroupType } from "@/types/global";
+import EcoActionCard from "@/components/EcoActionCard";
 
 function Home() {
-  const { data: userData } = useGetCurrentUserQuery();
-  const currentUser = userData?.getCurrentUser;
+  const { currentUser } = useCurrentUser();
 
   const { data: userGroups, refetch } = useGetUserGroupsQuery();
   const groups = userGroups?.getUserGroups || [];
 
   const { data: dataFreeEcoActions } = useGetFreeEcoActionsQuery();
   const freeEcoActions = dataFreeEcoActions?.getFreeEcoActions || [];
-  const navigate = useNavigate();
-  refetch();
+
+  const { data: dataMostLikedEcoActions } = useGetPopularFreeEcoActionsQuery();
+
+  const mostLikedEcoActions =
+    dataMostLikedEcoActions?.getPopularFreeEcoActions || [];
+
+  useEffect(() => {
+    refetch();
+  }, []);
+
+  const challengeInProgress = groups.filter((chall) => {
+    const now = new Date().getTime();
+    const startDate = new Date(chall.startDate).getTime();
+    const endDate = new Date(chall.endDate).getTime();
+    return now >= startDate && now <= endDate;
+  });
 
   return (
     <>
       <h1 className="text-2xl font-bold mb-4">
-        Bienvenue, {currentUser?.firstName} ! 👋
+        Bienvenue, {currentUser?.firstName} {currentUser?.lastName} ! 👋
       </h1>
       <div className="space-y-8">
-        {groups.length > 0 ? (
+        {challengeInProgress.length > 0 ? (
           <div>
-            <h2 className="font-semibold mb-3">Mes challenges en cours</h2>
-            <div className="flex overflow-scroll snap-mandatory gap-3">
-              {groups.map((group) => (
-                <Link
-                  key={group.id}
-                  to={`/groups/${group.id}`}
-                  className="flex flex-col justify-between bg-card rounded-xl h-[125px] min-w-[150px] cursor-pointer p-2 elevate-box"
-                >
-                  <div>
-                    <h4 className="text-xs font-semibold">
-                      {group.challengeName}
-                    </h4>
-                    <DisplayDate
-                      startDate={group.startDate}
-                      endDate={group.endDate}
-                      size="2xs"
-                    />
-                  </div>
-                  <div className="flex flex-row-reverse">
-                    <p className="text-2xs font-semibold">1/3 points</p>
-                  </div>
-                </Link>
+            <div className="flex items-center justify-between md:justify-start md:gap-3 mb-3">
+              <h2 className="font-semibold">Mes challenges en cours</h2>
+              <Link to="/groups" className="text-xs underline">
+                Voir tous
+              </Link>
+            </div>
+            <div className="flex overflow-scroll snap-mandatory gap-3 no-scrollbar">
+              {challengeInProgress.map((group) => (
+                <ChallengeCard key={group.id} group={group as GroupType} />
               ))}
             </div>
           </div>
         ) : (
-          <div className="flex flex-col-reverse flex-end bg-card rounded-lg p-3 h-32">
-            <Button
-              variant="secondary"
-              onClick={() => navigate("/create-group")}
-              data-testid="no-challenge"
-            >
-              Créer mon premier challenge
+          <div className="flex flex-col justify-center bg-zinc-200 border-2 border-dashed rounded-lg p-3 h-32 md:max-w-max">
+            <Button asChild={true} variant="secondary" className="md:max-w-max">
+              <Link to="/create-group">
+                Créer {groups.length > 0 ? "un" : "mon premier"} challenge
+              </Link>
             </Button>
           </div>
         )}
 
         <div>
-          <h3 className="font-semibold mb-3">
-            Derniers éco-gestes disponibles
-          </h3>
+          <div className="flex items-center justify-between md:justify-start md:gap-3 mb-3">
+            <h2 className="font-semibold">Nouveaux éco-gestes</h2>
+            <Link to="/eco-actions" className="text-xs underline">
+              Voir tous
+            </Link>
+          </div>
 
-          <div className="flex overflow-scroll snap-mandatory gap-3 w-full">
-            {freeEcoActions?.map((ecoAction) => (
-              <div
-                key={ecoAction.id}
-                className="flex flex-col items-center bg-card rounded-xl h-[125px] min-w-full cursor-pointer p-2"
-              >
-                <Link to={`/eco-action/${ecoAction.id}`}>
-                  <div>
-                    <h4 className="text-center font-semibold mb-3">
-                      {ecoAction.name}
-                    </h4>
-                    <p className="text-2xs text-center">
-                      {ecoAction.description}
-                    </p>
-                  </div>
-                </Link>
-              </div>
+          <div className="space-y-3 md:space-y-0 md:flex md:overflow-scroll md:snap-mandatory md:gap-3 no-scrollbar">
+            {freeEcoActions?.slice(0, 3).map((ecoAction) => (
+              <EcoActionCard key={ecoAction.id} ecoAction={ecoAction} />
             ))}
           </div>
         </div>
 
         <div>
-          <h3 className="font-semibold mb-3">Éco-gestes les plus populaires</h3>
-          <div className="flex overflow-scroll snap-mandatory gap-3 w-full">
-            {freeEcoActions?.map((ecoAction) => (
-              <div
-                key={ecoAction.id}
-                className="flex flex-col items-center bg-card rounded-xl h-[125px] min-w-full cursor-pointer p-2"
-              >
-                <Link to={`/eco-action/${ecoAction.id}`}>
-                  <div>
-                    <h4 className="text-center font-semibold mb-3">
-                      {ecoAction.name}
-                    </h4>
-                    <p className="text-2xs text-center">
-                      {ecoAction.description}
-                    </p>
-                  </div>
-                </Link>
-              </div>
-            ))}
+          <div className="flex items-center justify-between md:justify-start md:gap-3 mb-3">
+            <h2 className="font-semibold">Éco-gestes populaires</h2>
+            <Link to="/eco-actions" className="text-xs underline">
+              Voir tous
+            </Link>
+          </div>
+          <div className="space-y-3 md:space-y-0 md:flex md:overflow-scroll md:snap-mandatory md:gap-3 no-scrollbar">
+            {mostLikedEcoActions.length > 0 &&
+              mostLikedEcoActions
+                .slice(0, 3)
+                .map((ecoAction) => (
+                  <EcoActionCard key={ecoAction.id} ecoAction={ecoAction} />
+                ))}
           </div>
         </div>
       </div>

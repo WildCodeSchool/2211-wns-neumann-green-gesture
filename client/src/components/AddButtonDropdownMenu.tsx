@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Goal, Plus } from "lucide-react";
+import { Goal, LayoutList, Plus } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -7,8 +7,10 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 
 function AddButtonDropdownMenu() {
+  const { currentUser } = useCurrentUser();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -23,6 +25,14 @@ function AddButtonDropdownMenu() {
             <span>Créer un nouveau challenge</span>
           </DropdownMenuItem>
         </Link>
+        {currentUser?.subscriptionType === "partner" && (
+          <Link to="/create-eco-action">
+            <DropdownMenuItem>
+              <LayoutList className="mr-2 h-4 w-4" />
+              <span>Créer un nouvel éco-geste</span>
+            </DropdownMenuItem>
+          </Link>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );

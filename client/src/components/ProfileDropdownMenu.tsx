@@ -1,5 +1,12 @@
-import { Goal, LogOut, User, UserCircle2, Users } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import {
+  Goal,
+  LogOut,
+  User,
+  UserCircle2,
+  Users,
+  LayoutList,
+} from "lucide-react";
+import { Link } from "react-router-dom";
 import client from "@/gql/client";
 import { useLogoutMutation } from "@/gql/generated/schema";
 import {
@@ -12,12 +19,16 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
+import { FriendList } from "./FriendList";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 
 function ProfileDropDownMenu() {
+  const { currentUser } = useCurrentUser();
   const [logout] = useLogoutMutation();
   const handleLogout = async () => {
     try {
       await logout();
+      window.location.href = "/login";
     } catch (err) {
       console.error("err", err);
     } finally {
@@ -47,12 +58,18 @@ function ProfileDropDownMenu() {
               <span>Mes challenges</span>
             </DropdownMenuItem>
           </Link>
-          <Link to="/friends">
+          <Link to="/eco-actions">
             <DropdownMenuItem>
-              <Users className="mr-2 h-4 w-4" />
-              <span>Mes amis</span>
+              <LayoutList className="mr-2 h-4 w-4" />
+              <span>Les éco-gestes</span>
             </DropdownMenuItem>
           </Link>
+          <FriendList>
+            <div className="flex items-center hover:bg-accent py-[6px] px-2 cursor-pointer rounded-sm">
+              <Users className="mr-2 h-4 w-4" />
+              <span>Mes amis</span>
+            </div>
+          </FriendList>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleLogout}>

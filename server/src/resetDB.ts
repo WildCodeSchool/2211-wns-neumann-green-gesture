@@ -3,6 +3,7 @@ import Comment from "./entity/Comment";
 import { Company } from "./entity/Company";
 import EcoAction from "./entity/EcoAction";
 import Group from "./entity/Group";
+import Notification from "./entity/Notification";
 import { Team } from "./entity/Team";
 import User, { hashPassword } from "./entity/User";
 import { UserEcoAction } from "./entity/UserEcoAction";
@@ -22,6 +23,8 @@ async function resetDB(): Promise<void> {
   await datasource.getRepository(UserEcoAction).delete({});
   // delete all eco actions in the database
   await datasource.getRepository(EcoAction).delete({});
+  // detlete all notifications in the database
+  await datasource.getRepository(Notification).delete({});
   // delete all groups in the database
   await datasource.getRepository(Group).delete({});
   // delete all users in the database
@@ -42,7 +45,6 @@ async function resetDB(): Promise<void> {
     lastName: "Free",
     email: "user@gmail.com",
     password: await hashPassword("testtest"),
-    friends: [admin],
   });
 
   const userPartner = await datasource.getRepository(User).save({
@@ -51,8 +53,18 @@ async function resetDB(): Promise<void> {
     email: "partner@gmail.com",
     password: await hashPassword("testtest"),
     subscriptionType: "partner",
-    friends: [admin],
   });
+
+  // create validation for eco action
+  let i = 0;
+  const validations = [];
+  for (i = 0; i < 11; i++) {
+    validations.push({
+      name: `Validation ${i}`,
+      points: i,
+    });
+  }
+  await datasource.getRepository(Validation).save(validations);
 
   // create Company for userPartner
   await datasource.getRepository(Company).save({
@@ -68,18 +80,10 @@ async function resetDB(): Promise<void> {
       description: "EcoAction 1 description",
       author: userPartner,
       validations: [
-        {
-          name: "Validation 1",
-          points: 1,
-        },
-        {
-          name: "Validation 2",
-          points: 2,
-        },
-        {
-          name: "Validation 3",
-          points: 3,
-        },
+        validations[0],
+        validations[1],
+        validations[2],
+        validations[3],
       ],
     },
     {
@@ -87,36 +91,21 @@ async function resetDB(): Promise<void> {
       description: "EcoAction 2 description",
       author: userPartner,
       validations: [
-        {
-          name: "Validation 1",
-          points: 1,
-        },
-        {
-          name: "Validation 2",
-          points: 2,
-        },
-        {
-          name: "Validation 3",
-          points: 3,
-        },
+        validations[0],
+        validations[2],
+        validations[4],
+        validations[6],
       ],
     },
     {
       name: "EcoAction 3",
-      description: "EcoAction 3 description",
+      description:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec euismod, nisl eget aliquam ultricies, nunc nisl aliquet nunc, vitae aliquam nisl nunc sit amet nisl. Donec euismod, nisl eget aliquam ultricies, nunc nisl aliquet nunc, vitae aliquam nisl nunc sit amet nisl.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec euismod, nisl eget aliquam ultricies, nunc nisl aliquet nunc, vitae aliquam nisl nunc sit amet nisl. Donec euismod, nisl eget aliquam ultricies, nunc nisl aliquet nunc, vitae aliquam nisl nunc sit amet nisl",
       validations: [
-        {
-          name: "Validation 1",
-          points: 1,
-        },
-        {
-          name: "Validation 2",
-          points: 2,
-        },
-        {
-          name: "Validation 3",
-          points: 3,
-        },
+        validations[0],
+        validations[3],
+        validations[6],
+        validations[9],
       ],
     },
   ]);
@@ -169,49 +158,52 @@ async function resetDB(): Promise<void> {
   // create new userEcoActions
   await datasource.getRepository(UserEcoAction).save([
     {
-      user: [userFree],
-      ecoAction: [ecoActions[0]],
-      validationId: ecoActions[0].validations[0].id,
+      user: userFree,
+      groupId: groups[2].id,
+      ecoAction: ecoActions[0],
+      points: ecoActions[0].validations[0].points,
     },
     {
-      user: [userPartner],
-      ecoAction: [ecoActions[0]],
-      validationId: ecoActions[0].validations[0].id,
+      user: userFree,
+      groupId: groups[2].id,
+      ecoAction: ecoActions[1],
+      points: ecoActions[1].validations[2].points,
     },
     {
-      user: [admin],
-      ecoAction: [ecoActions[0]],
-      validationId: ecoActions[0].validations[0].id,
+      user: userFree,
+      groupId: groups[1].id,
+      ecoAction: ecoActions[2],
+      points: ecoActions[2].validations[0].points,
     },
     {
-      user: [userFree],
-      ecoAction: [ecoActions[1]],
-      validationId: ecoActions[1].validations[0].id,
+      user: userPartner,
+      groupId: groups[0].id,
+      ecoAction: ecoActions[0],
+      points: ecoActions[0].validations[1].points,
     },
     {
-      user: [userPartner],
-      ecoAction: [ecoActions[1]],
-      validationId: ecoActions[1].validations[0].id,
+      user: userPartner,
+      groupId: groups[0].id,
+      ecoAction: ecoActions[1],
+      points: ecoActions[1].validations[2].points,
     },
     {
-      user: [admin],
-      ecoAction: [ecoActions[1]],
-      validationId: ecoActions[1].validations[0].id,
+      user: userPartner,
+      groupId: groups[1].id,
+      ecoAction: ecoActions[1],
+      points: ecoActions[1].validations[1].points,
     },
     {
-      user: [userFree],
-      ecoAction: [ecoActions[2]],
-      validationId: ecoActions[2].validations[0].id,
+      user: admin,
+      groupId: groups[0].id,
+      ecoAction: ecoActions[0],
+      points: ecoActions[0].validations[2].points,
     },
     {
-      user: [userPartner],
-      ecoAction: [ecoActions[2]],
-      validationId: ecoActions[2].validations[0].id,
-    },
-    {
-      user: [admin],
-      ecoAction: [ecoActions[2]],
-      validationId: ecoActions[2].validations[0].id,
+      user: admin,
+      groupId: groups[1].id,
+      ecoAction: ecoActions[1],
+      points: ecoActions[1].validations[1].points,
     },
   ]);
 

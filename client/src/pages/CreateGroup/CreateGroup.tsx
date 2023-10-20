@@ -4,11 +4,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { addDays } from "date-fns";
+import Lottie, { Options as LottieOptions } from "react-lottie";
 
+import animationData from "@/assets/lotties/success.json";
 import {
   useCreateGroupMutation,
   useCreateTeamsMutation,
-  useGetCurrentUserQuery,
+  useSendNotificationMutation,
 } from "../../gql/generated/schema";
 import { Form } from "@/components/ui/form";
 import StepOne from "./StepOne";
@@ -16,6 +18,8 @@ import StepTwo from "./StepTwo";
 import StepThree from "./StepThree";
 import StepFour from "./StepFour";
 import { Progress } from "@/components/ui/progress";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { NotificationTypeEnum } from "@/types/global";
 
 const DEFAULT_GROUP = {
   name: "",
@@ -33,6 +37,17 @@ function CreateGroup() {
   const navigate = useNavigate();
   const [step, setStep] = useState<number>(1);
   const [isTeamChallenge, setIsTeamChallenge] = useState(false);
+  const [showLottie, setShowLottie] = useState(false);
+
+  const [sendNotification] = useSendNotificationMutation();
+
+  // Lottie options
+  const defaultOptions: LottieOptions = {
+    loop: false,
+    autoplay: true,
+    animationData: animationData,
+    rendererSettings: {},
+  };
 
   const formSchema = z.object({
     name: z.string().min(3, "3 caractères minium").max(150),
@@ -70,8 +85,7 @@ function CreateGroup() {
   const [createGroup, { loading: processing }] = useCreateGroupMutation();
   const [createTeams, { loading: processingTeams }] = useCreateTeamsMutation();
 
-  const { data } = useGetCurrentUserQuery();
-  const currentUser = data?.getCurrentUser;
+  const { currentUser } = useCurrentUser();
 
   const isPartner = currentUser?.subscriptionType === "partner";
   const maxSteps = isTeamChallenge ? 4 : 3;
@@ -121,12 +135,29 @@ function CreateGroup() {
         });
 
         const createdGroupId = createdGroup.data?.createGroup?.id;
-        navigate(`/groups/${createdGroupId}`);
+
+        // send notification to all participants
+        values.participants.forEach(async (user) => {
+          await sendNotification({
+            variables: {
+              data: {
+                receiverId: user.id,
+                type: NotificationTypeEnum.CHALLENGE_REQUEST,
+                groupId: createdGroupId,
+              },
+            },
+          });
+        });
+
+        setShowLottie(true);
+        setTimeout(() => {
+          setShowLottie(false);
+          navigate(`/groups/${createdGroupId}`);
+        }, 1500);
+
         return;
       } catch (err) {
         console.error("err", err);
-      } finally {
-        console.log("groupe créé !");
       }
     } else {
       setStep(4);
@@ -161,20 +192,44 @@ function CreateGroup() {
               },
             },
           });
-          navigate(`/groups/${createdGroupId}`);
+
+          // send notification to all participants
+          values.participants.forEach(async (user) => {
+            await sendNotification({
+              variables: {
+                data: {
+                  receiverId: user.id,
+                  type: NotificationTypeEnum.CHALLENGE_REQUEST,
+                  groupId: createdGroupId,
+                },
+              },
+            });
+          });
+
+          setShowLottie(true);
+          setTimeout(() => {
+            setShowLottie(false);
+            navigate(`/groups/${createdGroupId}`);
+          }, 1500);
         }
       } catch (err) {
         console.error("err", err);
-      } finally {
-        console.log("groupe créé !");
       }
     }
   };
 
   return (
     <>
+      {showLottie && (
+        <div className="bg-white absolute inset-0 z-50">
+          <Lottie options={defaultOptions} />
+        </div>
+      )}
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)}>
+        <form
+          onSubmit={form.handleSubmit(handleSubmit)}
+          className="max-w-3xl mx-auto"
+        >
           <Progress
             value={progressValue}
             max={maxSteps}

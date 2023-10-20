@@ -17,6 +17,7 @@ import EcoAction from "./EcoAction";
 import { Team } from "./Team";
 import { Company } from "./Company";
 import { UserEcoAction } from "./UserEcoAction";
+import LikeEcoAction from "./LikeEcoAction";
 
 export enum UserRole {
   ADMIN = "admin",
@@ -58,6 +59,10 @@ class User {
   @Column({ default: UserSubscriptionType.FREE, enum: UserSubscriptionType })
   subscriptionType: string;
 
+  @Field({ nullable: true })
+  @Column({ default: null, nullable: true })
+  subscriptionId?: string;
+
   @Field(() => Company, { nullable: true })
   @ManyToOne(() => Company, (company) => company.users, { cascade: true })
   company?: Company;
@@ -86,7 +91,7 @@ class User {
   createdEcoActions?: EcoAction[];
 
   @Field(() => [UserEcoAction])
-  @ManyToMany(() => UserEcoAction, (userEcoAction) => userEcoAction.user, {
+  @OneToMany(() => UserEcoAction, (userEcoAction) => userEcoAction.user, {
     cascade: true,
   })
   relatedEcoActions?: UserEcoAction[];
@@ -104,6 +109,12 @@ class User {
   })
   @JoinTable()
   friends: User[];
+
+  @Field(() => [LikeEcoAction])
+  @OneToMany(() => LikeEcoAction, (like) => like.user, {
+    cascade: true,
+  })
+  likes?: LikeEcoAction[];
 }
 
 @InputType()
@@ -133,6 +144,9 @@ export class UserInputSubscribe {
 
   @Field({ nullable: true, defaultValue: UserSubscriptionType.FREE })
   subscriptionType?: string;
+
+  @Field({ nullable: true, defaultValue: null })
+  subscriptionId?: string;
 }
 
 @InputType()

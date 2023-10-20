@@ -4,45 +4,57 @@ import DisplayDate from "@/components/DisplayDate";
 import { Badge } from "@/components/ui/badge";
 import {
   useGetCommentsForGroupQuery,
-  useGetCurrentUserQuery,
   useGetGroupQuery,
+  useGetTotalPossiblePointsQuery,
+  useGetUserEcoActionsByGroupIdQuery,
 } from "@/gql/generated/schema";
 import { Loading } from "./Loading";
-import {
-  NavigationMenu,
-  NavigationMenuList,
-  NavigationMenuItem,
-  NavigationMenuTrigger,
-  NavigationMenuContent,
-  NavigationMenuLink,
-} from "@radix-ui/react-navigation-menu";
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ShowChallengeParticipants from "@/components/ShowChallengeParticipants";
 import ShowChallengeComments from "@/components/ShowChallengeComments";
-import EcoCard from "@/components/EcoCard";
+import ChallengeEcoActionCard from "@/components/ChallengeEcoActionCard";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
+import RankingByTeam from "@/components/RankingByTeam";
+import RankingByUser from "@/components/RankingByUser";
+import { EcoActionType } from "@/types/global";
 
 const SingleGroup = () => {
   const { id = "0" } = useParams();
 
   const { data: challengeData, loading: groupLoading } = useGetGroupQuery({
-    variables: { groupId: parseInt(id, 10) || 0 },
+    variables: { groupId: parseInt(id || "0", 10) },
   });
   const challenge = challengeData?.getGroup;
-  console.log("challenge", challenge);
 
-  const { data: commentData, loading: commentLoading } =
-    useGetCommentsForGroupQuery({
-      variables: { groupId: challenge?.id || 0 },
-    });
+  const {
+    data: commentData,
+    loading: commentLoading,
+    refetch: refetchComments,
+  } = useGetCommentsForGroupQuery({
+    variables: { groupId: challenge?.id || 0 },
+  });
   const comments = commentData?.getCommentsForGroup;
 
-  const { data: currentUserData, loading: currentUseLoading } =
-    useGetCurrentUserQuery();
+  const { data: userEcoActionData, refetch: refetchUserEcoAction } =
+    useGetUserEcoActionsByGroupIdQuery({
+      variables: { groupId: challenge?.id || 0 },
+    });
+  const userEcoActions = userEcoActionData?.getUserEcoActionsByGroupId;
 
-  if (groupLoading || commentLoading || currentUseLoading) return <Loading />;
+  const { loading: currentUserLoading } = useCurrentUser();
+
+  const { data: maxPointsData } = useGetTotalPossiblePointsQuery({
+    variables: {
+      ecoAactionIds: challenge?.ecoActions.map((eco) => eco.id) ?? [],
+    },
+  });
+  const TotalMaxPoints = maxPointsData?.getTotalPossiblePoints ?? 0;
+
+  if (groupLoading || commentLoading || currentUserLoading) return <Loading />;
 
   return (
-    <>
+    <section className="max-w-5xl mx-auto">
       <h1 className="text-2xl font-bold">{challenge?.challengeName}</h1>
       <div className="space-y-3">
         <div className="flex flex-wrap justify-between items-center gap-2 md:gap-8 md:justify-start">
@@ -79,6 +91,8 @@ const SingleGroup = () => {
               </Badge>
             }
             comments={comments ?? []}
+            groupId={Number(id)}
+            refetchComments={refetchComments}
           />
         </div>
       </div>
@@ -87,13 +101,14 @@ const SingleGroup = () => {
           <TabsList className="w-full bg-transparent p-0">
             <TabsTrigger
               value="defis"
-              className="w-full rounded-none text-medium-green font-normal border-b-2 border-b-transparent  data-[state=active]:shadow-none  data-[state=active]:border-b-primary"
+              className="w-full rounded-none text-medium-green font-normal border-b-2 border-b-transparent  data-[state=active]:shadow-none  data-[state=active]:border-b-primary data-[state=active]:bg-zinc-100"
             >
               Défis
             </TabsTrigger>
             <TabsTrigger
               value="classement"
-              className="w-full rounded-none text-medium-green font-normal border-b-2 border-b-transparent  data-[state=active]:shadow-none  data-[state=active]:border-b-primary"
+              onClick={() => refetchUserEcoAction()}
+              className="w-full rounded-none text-medium-green font-normal border-b-2 border-b-transparent  data-[state=active]:shadow-none  data-[state=active]:border-b-primary data-[state=active]:bg-zinc-100"
             >
               Classement
             </TabsTrigger>
@@ -102,11 +117,11 @@ const SingleGroup = () => {
             <TabsContent key="defis" value="defis">
               <div>
                 {challenge?.ecoActions.map((eco) => (
-                  <EcoCard
+                  <ChallengeEcoActionCard
                     key={eco.id}
-                    name={eco.name}
-                    description={eco.description}
-                    ecoActionId={eco.id}
+                    ecoAction={eco as EcoActionType}
+                    challengeEndDate={challenge.endDate}
+                    challengeStartDate={challenge.startDate}
                     groupId={challenge.id}
                   />
                 ))}
@@ -120,55 +135,26 @@ const SingleGroup = () => {
                 exit={{ x: -100 }}
               >
                 <div>
-                  {currentUserData?.getCurrentUser?.subscriptionType ===
-                    "partner" && challenge?.teams.length
-                    ? challenge?.teams.map((team) => {
-                        if (!team || !team.users) return null;
-                        return (
-                          <div key={team.id}>
-                            <div
-                              className="flex justify-between pt-5"
-                              key={team.id}
-                            >
-                              <NavigationMenu>
-                                <NavigationMenuList>
-                                  <NavigationMenuItem>
-                                    <NavigationMenuTrigger>
-                                      {team.name}
-                                    </NavigationMenuTrigger>
-                                    {team?.users?.map((user) => (
-                                      <NavigationMenuContent key={user.id}>
-                                        <NavigationMenuLink className="text-xs">
-                                          {user.firstName}
-                                        </NavigationMenuLink>
-                                      </NavigationMenuContent>
-                                    ))}
-                                  </NavigationMenuItem>
-                                </NavigationMenuList>
-                              </NavigationMenu>
-                              <p className="text-[.9rem] font-bold">
-                                3 / 9 points
-                              </p>
-                            </div>
-                          </div>
-                        );
-                      })
-                    : challenge?.users.map((user) => (
-                        <div
-                          className="flex justify-between pt-5"
-                          key={user.id}
-                        >
-                          <p className="text-[.9rem]">{user.firstName}</p>
-                          <p className="text-[.9rem] font-bold">3 / 9 points</p>
-                        </div>
-                      ))}
+                  {challenge?.teams.length ? (
+                    <RankingByTeam
+                      teams={challenge?.teams ?? []}
+                      userEcoActions={userEcoActions ?? []}
+                      totalMaxPoints={TotalMaxPoints}
+                    />
+                  ) : (
+                    <RankingByUser
+                      users={challenge?.users ?? []}
+                      userEcoActions={userEcoActions ?? []}
+                      totalMaxPoints={TotalMaxPoints}
+                    />
+                  )}
                 </div>
               </motion.div>
             </TabsContent>
           </AnimatePresence>
         </Tabs>
       </div>
-    </>
+    </section>
   );
 };
 

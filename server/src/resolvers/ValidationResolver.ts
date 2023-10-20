@@ -20,6 +20,10 @@ export class ValidationResolver {
     return validation;
   }
 
+  @Authorized<UserSubscriptionType>([
+    UserSubscriptionType.FREE,
+    UserSubscriptionType.PARTNER,
+  ])
   @Query(() => Validation)
   async getMaxValidationPoints(
     @Arg("ecoActionId", () => Int) ecoActionId: number
@@ -31,7 +35,57 @@ export class ValidationResolver {
 
     if (validation === null) throw new Error("Validation not found");
 
-    console.log(validation);
     return validation;
+  }
+
+  @Authorized<UserSubscriptionType>([
+    UserSubscriptionType.FREE,
+    UserSubscriptionType.PARTNER,
+  ])
+  @Query(() => [Validation])
+  async getValidationsByEcoAction(
+    @Arg("ecoActionId", () => Int) ecoActionId: number
+  ): Promise<Validation[]> {
+    const validations = await datasource.getRepository(Validation).find({
+      where: { ecoAction: { id: ecoActionId } },
+      order: { points: "ASC" },
+    });
+
+    if (validations === null) throw new Error("Validation not found");
+
+    return validations;
+  }
+
+  @Authorized<UserSubscriptionType>([
+    UserSubscriptionType.FREE,
+    UserSubscriptionType.PARTNER,
+  ])
+  @Query(() => Int)
+  async getTotalPossiblePoints(
+    @Arg("ecoAactionIds", () => [Int]) ecoActionIds: number[]
+  ): Promise<number> {
+    // retrieve the highest validation for each ecoAction
+    const maxPoints = await Promise.all(
+      ecoActionIds.map(async (ecoActionId) => {
+        const test = await datasource.getRepository(Validation).find({
+          where: { ecoAction: { id: ecoActionId } },
+          order: { points: "DESC" },
+          take: 1,
+        });
+        return test[0].points;
+      })
+    );
+
+    // calculate total points
+    const total = maxPoints.reduce((acc, curr) => acc + curr, 0);
+
+    return total;
+  }
+
+  // retrieve all validations
+  @Authorized<UserSubscriptionType>([UserSubscriptionType.PARTNER])
+  @Query(() => [Validation])
+  async getAllValidations(): Promise<Validation[]> {
+    return await datasource.getRepository(Validation).find();
   }
 }
