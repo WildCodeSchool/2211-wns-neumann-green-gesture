@@ -41,6 +41,8 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           push: true
+          build-args: |
+            "VITE_PUBLIC_STRIPE_KEY=pk_test_51LBD35Foa9gE9N10nDr8v5WirNddQmAotINHNQoQyCLnfe8oWcXMgiP3rKOZMvjSuOEWRKtlP0I2I0gqGz87eofo00tAxBCJny"
           context: "{{defaultContext}}:client"
           file: "Dockerfile.production"
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/green-gesture-client:staging
