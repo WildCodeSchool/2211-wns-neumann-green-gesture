@@ -58,7 +58,7 @@ services:
 
   stripe-service:
     restart: always
-    image: samwildcode/green-gesture-microservice-stripe:staging
+    image: samwildcode/green-gesture-microservice-stripe:latest
     environment:
       - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY:-}
       - STRIPE_PRICE_ID=${STRIPE_PRICE_ID:-}
@@ -68,7 +68,7 @@ services:
       - ./stripe-service/index.js:/app/index.js
 
   discord-bot:
-    image: samwildcode/discord-bot:staging
+    image: samwildcode/discord-bot:latest
     depends_on:
       nginx:
         condition: service_started
