@@ -31,34 +31,6 @@ async function parseAndEcoActions(
   });
 
   return ecoActions;
-
-  /* fs.readFile(filePath, "utf8", async (err, data) => {
-    if (err != null) {
-      console.error(err);
-      return;
-    }
-
-    try {
-      const parsedEcoActions: Partial<EcoActionType[]> = JSON.parse(data);
-
-      const ecoActions = parsedEcoActions.map((ecoAction) => {
-        return {
-          name: ecoAction?.name,
-          description: ecoAction?.description,
-          validations: validations.filter(
-            (validation) =>
-              ecoAction?.validations.findIndex(
-                (val) => val.points === validation.points
-              ) !== -1
-          ),
-        };
-      });
-
-      return await datasource.getRepository(EcoAction).save(ecoActions);
-    } catch (error) {
-      console.error("Error parsing JSON string: ", error);
-    }
-  }); */
 }
 
 async function resetDB(): Promise<void> {
