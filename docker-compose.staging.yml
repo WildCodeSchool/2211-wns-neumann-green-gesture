@@ -68,7 +68,7 @@ services:
       - ./stripe-service/index.js:/app/index.js
 
   discord-bot:
-    image: samwildcode/discord-bot
+    image: samwildcode/discord-bot:latest
     depends_on:
       nginx:
         condition: service_started
