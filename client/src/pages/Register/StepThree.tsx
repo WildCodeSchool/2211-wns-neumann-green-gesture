@@ -38,7 +38,7 @@ export const StepThree = ({
   const [clientSecretKey, setClientSecret] = useState<string>("");
 
   useEffect(() => {
-    fetch("http://localhost:4002/payment", {
+    fetch("/payment", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
